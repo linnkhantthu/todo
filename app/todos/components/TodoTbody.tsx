@@ -1,13 +1,8 @@
+import { Todo } from "@/app/api/route";
 import React from "react";
 
-export interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
 const TodoTbody = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/todos/", {
+  const res = await fetch("http://localhost:3000/api/", {
     cache: "no-cache",
   });
   const todos: Todo[] = await res.json();

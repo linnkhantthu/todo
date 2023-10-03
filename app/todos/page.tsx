@@ -6,14 +6,14 @@ const Todos = () => {
     <>
       <h1>Todos</h1>
       <table className="table table-auto border-solid">
-        <thead>
+        <thead className="text-xl">
           <tr>
             <th>Id</th>
             <th>Title</th>
             <th>Completed</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-xl">
           <TodoTbody />
         </tbody>
       </table>
