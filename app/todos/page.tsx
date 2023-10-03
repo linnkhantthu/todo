@@ -1,16 +1,7 @@
 import React from "react";
+import TodoTbody from "./components/TodoTbody";
 
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
-const Todos = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/todos/", {
-    cache: "no-cache",
-  });
-  const todos: Todo[] = await res.json();
+const Todos = () => {
   return (
     <>
       <h1>Todos</h1>
@@ -23,13 +14,7 @@ const Todos = async () => {
           </tr>
         </thead>
         <tbody>
-          {todos.map((todo) => (
-            <tr key={todo.id}>
-              <td>{todo.id}</td>
-              <td>{todo.title}</td>
-              <td>{String(todo.completed)}</td>
-            </tr>
-          ))}
+          <TodoTbody />
         </tbody>
       </table>
     </>
