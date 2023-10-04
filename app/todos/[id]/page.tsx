@@ -11,7 +11,7 @@ async function Todo({ params }: { params: { id: string } }) {
   return (
     <>
       <h1 className="m-5">Todos</h1>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading dataLength={1} />}>
         <TodoList todos={[todo]} />
       </Suspense>
     </>

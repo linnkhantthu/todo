@@ -11,7 +11,7 @@ const Todos = async () => {
   return (
     <>
       <h1 className="m-5">Todos</h1>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading dataLength={100} />}>
         <TodoList todos={todos} />
       </Suspense>
     </>

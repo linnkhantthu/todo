@@ -1,7 +1,7 @@
 export interface Todo {
-    id: number;
-    title: string;
-    completed: boolean;
+    id: number | null;
+    title: string | null;
+    completed: boolean | null;
 }
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url); // Getting search parameters i.e: http://url?parameter=0

@@ -14,9 +14,27 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
       <tbody className="text-xl">
         {todos.map((todos) => (
           <tr key={todos.id}>
-            <td>{todos.id}</td>
-            <td>{todos.title}</td>
-            <td>{String(todos.completed)}</td>
+            <td>
+              {todos.id ? (
+                todos.id
+              ) : (
+                <div className="h-2 bg-slate-700 rounded"></div>
+              )}
+            </td>
+            <td>
+              {todos.title ? (
+                todos.title
+              ) : (
+                <div className="h-2 bg-slate-700 rounded"></div>
+              )}
+            </td>
+            <td>
+              {todos.completed !== null ? (
+                String(todos.completed)
+              ) : (
+                <div className="h-2 bg-slate-700 rounded"></div>
+              )}
+            </td>
           </tr>
         ))}
       </tbody>
