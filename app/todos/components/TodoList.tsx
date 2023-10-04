@@ -38,17 +38,33 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
               )}
             </td>
             <td>
-              <div className="flex flex-row text-sm">
-                <button className="btn btn-info m-1">
-                  <Link
-                    href={
-                      "/todos/" + (todo.id !== null ? todo.id.toString() : "")
-                    }
-                  >
-                    Edit
-                  </Link>
-                </button>
-                <button className="btn btn-error m-1">Delete</button>
+              <div className="text-sm">
+                {todo.id ? (
+                  <button className="btn btn-info m-1">
+                    <Link
+                      href={
+                        "/todos/" + (todo.id !== null ? todo.id.toString() : "")
+                      }
+                    >
+                      Edit
+                    </Link>
+                  </button>
+                ) : (
+                  <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
+                )}
+                {todo.id ? (
+                  <button className="btn btn-error m-1">
+                    <Link
+                      href={
+                        "/todos/" + (todo.id !== null ? todo.id.toString() : "")
+                      }
+                    >
+                      Delete
+                    </Link>
+                  </button>
+                ) : (
+                  <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
+                )}
               </div>
             </td>
           </tr>
