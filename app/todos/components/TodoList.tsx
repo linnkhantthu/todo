@@ -1,4 +1,5 @@
 import { Todo } from "@/app/api/route";
+import Link from "next/link";
 import React from "react";
 
 const TodoList = async ({ todos }: { todos: Todo[] }) => {
@@ -9,31 +10,46 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
           <th>Id</th>
           <th>Title</th>
           <th>Completed</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody className="text-xl">
-        {todos.map((todos) => (
-          <tr key={todos.id}>
+        {todos.map((todo) => (
+          <tr key={todo.id}>
             <td>
-              {todos.id ? (
-                todos.id
+              {todo.id ? (
+                todo.id
               ) : (
                 <div className="h-2 bg-slate-700 rounded"></div>
               )}
             </td>
             <td>
-              {todos.title ? (
-                todos.title
+              {todo.title ? (
+                todo.title
               ) : (
                 <div className="h-2 bg-slate-700 rounded"></div>
               )}
             </td>
             <td>
-              {todos.completed !== null ? (
-                String(todos.completed)
+              {todo.completed !== null ? (
+                String(todo.completed)
               ) : (
                 <div className="h-2 bg-slate-700 rounded"></div>
               )}
+            </td>
+            <td>
+              <div className="flex flex-row text-sm">
+                <button className="btn btn-info m-1">
+                  <Link
+                    href={
+                      "/todos/" + (todo.id !== null ? todo.id.toString() : "")
+                    }
+                  >
+                    Edit
+                  </Link>
+                </button>
+                <button className="btn btn-error m-1">Delete</button>
+              </div>
             </td>
           </tr>
         ))}
