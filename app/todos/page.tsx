@@ -1,22 +1,16 @@
 import React from "react";
-import TodoTbody from "./components/TodoTbody";
+import TodoList from "./components/TodoList";
+import { Todo } from "../api/route";
 
-const Todos = () => {
+const Todos = async () => {
+  const res = await fetch("http://localhost:3000/api/", {
+    cache: "no-cache",
+  });
+  const todos: Todo[] = await res.json();
   return (
     <>
       <h1>Todos</h1>
-      <table className="table table-auto border-solid">
-        <thead className="text-xl">
-          <tr>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Completed</th>
-          </tr>
-        </thead>
-        <tbody className="text-xl">
-          <TodoTbody />
-        </tbody>
-      </table>
+      <TodoList todos={todos} />
     </>
   );
 };
