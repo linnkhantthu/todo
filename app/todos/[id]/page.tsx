@@ -1,6 +1,7 @@
 import { Todo } from "@/app/api/route";
-import React from "react";
+import React, { Suspense } from "react";
 import TodoList from "../components/TodoList";
+import Loading from "../loading";
 
 async function Todo({ params }: { params: { id: string } }) {
   const res = await fetch("http://localhost:3000/api?id=" + params.id, {
@@ -9,7 +10,10 @@ async function Todo({ params }: { params: { id: string } }) {
   const todo: Todo = await res.json();
   return (
     <>
-      <TodoList todos={[todo]} />
+      <h1 className="m-5">Todos</h1>
+      <Suspense fallback={<Loading />}>
+        <TodoList todos={[todo]} />
+      </Suspense>
     </>
   );
 }

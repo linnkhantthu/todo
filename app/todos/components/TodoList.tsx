@@ -3,7 +3,7 @@ import React from "react";
 
 const TodoList = async ({ todos }: { todos: Todo[] }) => {
   return (
-    <table className="table table-auto border-solid">
+    <table className="table table-auto border-solid m-5">
       <thead className="text-xl">
         <tr>
           <th>Id</th>
