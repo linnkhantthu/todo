@@ -1,6 +1,5 @@
 "use client";
 import { Todo } from "@/app/api/route";
-import Link from "next/link";
 import React from "react";
 import TodoTitle from "./TodoTitle";
 import TodoCheckBox from "./TodoCheckBox";
