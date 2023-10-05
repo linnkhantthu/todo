@@ -41,20 +41,6 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
             <td>
               <div className="text-sm">
                 {_todoList.id ? (
-                  <button className="btn btn-info m-1">
-                    <Link
-                      href={
-                        "/todos/" +
-                        (_todoList.id !== null ? _todoList.id.toString() : "")
-                      }
-                    >
-                      Edit
-                    </Link>
-                  </button>
-                ) : (
-                  <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
-                )}
-                {_todoList.id ? (
                   <button
                     className="btn btn-error m-1"
                     onClick={() => DeleteTodo(_todoList)}

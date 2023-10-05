@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { FormEvent } from "react";
 
 function TodoTitle({ id, title }: { id: string; title: string }) {
   // useState
@@ -8,20 +8,26 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
   const [todoTitle, setTodoTitle] = React.useState(title);
 
   // onClick on the title
-  const handleClick = () => {
+  const enableEdit = () => {
+    setEdit((edit) => !edit);
+  };
+  const updateTodoTitle = (e: FormEvent) => {
+    e.preventDefault();
+    console.log(id);
     setEdit((edit) => !edit);
   };
   return (
     <>
       {edit ? (
         <form
-          key={id}
-          onSubmit={(e) => {
-            setEdit(false);
-          }}
+          className="form form-control shadow-md"
+          key={"form-" + id}
+          onSubmit={updateTodoTitle}
         >
           <input
-            key={id}
+            autoFocus
+            className="p-4 rounded"
+            key={"input-" + id}
             value={todoTitle}
             onChange={(e) => {
               setTodoTitle(e.target.value);
@@ -31,7 +37,7 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
       ) : (
         <span>
           {todoTitle ? (
-            <span onClick={handleClick}>{todoTitle}</span>
+            <span onClick={enableEdit}>{todoTitle}</span>
           ) : (
             <div className="h-2 bg-slate-700 rounded"></div>
           )}
