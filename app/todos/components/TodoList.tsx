@@ -1,49 +1,51 @@
+"use client";
 import { Todo } from "@/app/api/route";
 import Link from "next/link";
 import React from "react";
 import TodoTitle from "./TodoTitle";
 import TodoCheckBox from "./TodoCheckBox";
 
-const TodoList = async ({ todos }: { todos: Todo[] }) => {
+const TodoList = ({ todos }: { todos: Todo[] }) => {
+  const [todoList, setTodoList] = React.useState(todos);
+
+  // Delete Function
+  const DeleteTodo = (_todoList: Todo) => {
+    setTodoList(todoList.filter((value) => value.id !== _todoList.id));
+  };
+
   return (
     <table className="table table-auto border-solid m-5">
       <thead className="text-xl">
         <tr>
-          <th>Id</th>
+          <th></th>
           <th>Title</th>
-          <th>Completed</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody className="text-xl">
-        {todos.map((todo) => (
-          <tr key={todo.id}>
+        {todoList.map((_todoList) => (
+          <tr key={_todoList.id}>
             <td>
               <TodoCheckBox
-                id={todo.id ? todo.id.toString() : ""}
-                completed={todo.completed}
+                id={_todoList.id ? _todoList.id.toString() : ""}
+                completed={_todoList.completed}
               />
             </td>
             <td>
               <TodoTitle
-                id={todo.id ? todo.id.toString() : ""}
-                title={todo.title ? todo.title : ""}
+                id={_todoList.id ? _todoList.id.toString() : ""}
+                title={_todoList.title ? _todoList.title : ""}
               />
             </td>
-            <td>
-              {todo.completed !== null ? (
-                String(todo.completed)
-              ) : (
-                <div className="h-2 bg-slate-700 rounded"></div>
-              )}
-            </td>
+
             <td>
               <div className="text-sm">
-                {todo.id ? (
+                {_todoList.id ? (
                   <button className="btn btn-info m-1">
                     <Link
                       href={
-                        "/todos/" + (todo.id !== null ? todo.id.toString() : "")
+                        "/todos/" +
+                        (_todoList.id !== null ? _todoList.id.toString() : "")
                       }
                     >
                       Edit
@@ -52,15 +54,12 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
                 ) : (
                   <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
                 )}
-                {todo.id ? (
-                  <button className="btn btn-error m-1">
-                    <Link
-                      href={
-                        "/todos/" + (todo.id !== null ? todo.id.toString() : "")
-                      }
-                    >
-                      Delete
-                    </Link>
+                {_todoList.id ? (
+                  <button
+                    className="btn btn-error m-1"
+                    onClick={() => DeleteTodo(_todoList)}
+                  >
+                    Delete
                   </button>
                 ) : (
                   <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
