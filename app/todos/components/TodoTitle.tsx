@@ -3,8 +3,11 @@
 import React from "react";
 
 function TodoTitle({ id, title }: { id: string; title: string }) {
+  // useState
   const [edit, setEdit] = React.useState(false);
   const [todoTitle, setTodoTitle] = React.useState(title);
+
+  // onClick on the title
   const handleClick = () => {
     setEdit((edit) => !edit);
   };

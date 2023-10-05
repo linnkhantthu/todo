@@ -2,7 +2,7 @@ import { Todo } from "@/app/api/route";
 import Link from "next/link";
 import React from "react";
 import TodoTitle from "./TodoTitle";
-import TodoId from "./TodoId";
+import TodoCheckBox from "./TodoCheckBox";
 
 const TodoList = async ({ todos }: { todos: Todo[] }) => {
   return (
@@ -19,7 +19,10 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
         {todos.map((todo) => (
           <tr key={todo.id}>
             <td>
-              <TodoId id={todo.id} />
+              <TodoCheckBox
+                id={todo.id ? todo.id.toString() : ""}
+                completed={todo.completed}
+              />
             </td>
             <td>
               <TodoTitle
