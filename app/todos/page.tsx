@@ -2,11 +2,10 @@ import React, { Suspense } from "react";
 import TodoList from "./components/TodoList";
 import { Todo } from "../api/route";
 import Loading from "./loading";
-import { server } from "@/config";
 
 const Todos = async () => {
-  const res = await fetch(server+"/api/", {
-    cache: "no-cache",
+  const res = await fetch("http://localhost:3000" + "/api/", {
+    cache: "no-store",
   });
   const todos: Todo[] = await res.json();
   return (

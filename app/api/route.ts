@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const validSearchParams = searchParams.get("id");
     const url = "https://jsonplaceholder.typicode.com/todos/";
 
-    const res = await fetch(url + (validSearchParams ? validSearchParams: ""), {cache: "no-cache"})
+    const res = await fetch(url + (validSearchParams ? validSearchParams: ""), {cache: "no-store"})
     const todos = await res.json();
     return Response.json(todos);
 }

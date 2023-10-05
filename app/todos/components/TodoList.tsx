@@ -1,6 +1,7 @@
 import { Todo } from "@/app/api/route";
 import Link from "next/link";
 import React from "react";
+import TodoTitle from "./TodoTitle";
 
 const TodoList = async ({ todos }: { todos: Todo[] }) => {
   return (
@@ -17,18 +18,16 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
         {todos.map((todo) => (
           <tr key={todo.id}>
             <td>
-              {todo.id ? (
-                todo.id
-              ) : (
-                <div className="h-2 bg-slate-700 rounded"></div>
-              )}
+              <span>
+                {todo.id ? (
+                  todo.id
+                ) : (
+                  <div className="h-2 bg-slate-700 rounded"></div>
+                )}
+              </span>
             </td>
             <td>
-              {todo.title ? (
-                todo.title
-              ) : (
-                <div className="h-2 bg-slate-700 rounded"></div>
-              )}
+              <TodoTitle title={todo.title ? todo.title : ""} />
             </td>
             <td>
               {todo.completed !== null ? (
@@ -73,5 +72,4 @@ const TodoList = async ({ todos }: { todos: Todo[] }) => {
     </table>
   );
 };
-
 export default TodoList;
