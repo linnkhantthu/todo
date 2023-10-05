@@ -2,19 +2,33 @@
 
 import React from "react";
 
-function TodoTitle({ title }: { title: string }) {
+function TodoTitle({ id, title }: { id: string; title: string }) {
   const [edit, setEdit] = React.useState(false);
+  const [todoTitle, setTodoTitle] = React.useState(title);
   const handleClick = () => {
     setEdit((edit) => !edit);
   };
   return (
     <>
       {edit ? (
-        <input type="text" value={title} />
+        <form
+          key={id}
+          onSubmit={(e) => {
+            setEdit(false);
+          }}
+        >
+          <input
+            key={id}
+            value={todoTitle}
+            onChange={(e) => {
+              setTodoTitle(e.target.value);
+            }}
+          />
+        </form>
       ) : (
         <span>
-          {title ? (
-            <span onClick={handleClick}>{title}</span>
+          {todoTitle ? (
+            <span onClick={handleClick}>{todoTitle}</span>
           ) : (
             <div className="h-2 bg-slate-700 rounded"></div>
           )}
