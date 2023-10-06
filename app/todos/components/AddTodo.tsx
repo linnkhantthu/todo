@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Loading from "../loading";
-import LoadingSkeletonChild from "./LoadingSkeletonChild";
-
 const AddTodo = ({
   addTodo,
   isLoading,

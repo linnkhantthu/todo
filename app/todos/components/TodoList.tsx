@@ -44,7 +44,7 @@ const TodoList = ({
         </tr>
       </thead>
       <tbody className="text-xl">
-        <tr>
+        <tr key="tr-newTodo">
           <td></td>
           <td>
             <AddTodo isLoading={isLoading} addTodo={addTodo} />
@@ -52,7 +52,7 @@ const TodoList = ({
           <td></td>
         </tr>
         {todoList.map((_todoList, index) => (
-          <tr key={"tr-" + _todoList.id}>
+          <tr key={"tr-" + (_todoList.id === null ? index : _todoList.id)}>
             <td>
               <TodoCheckBox
                 id={_todoList.id ? _todoList.id.toString() : ""}
