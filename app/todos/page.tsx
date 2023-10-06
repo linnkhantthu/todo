@@ -19,10 +19,9 @@ const Todos = () => {
       {todos.length === 0 ? (
         <Loading dataLength={100} />
       ) : (
-        <>
-          <h1 className="m-5">Todos</h1>
+        <span className="m-1">
           <TodoList isLoading={false} todos={todos} />
-        </>
+        </span>
       )}
     </>
   );

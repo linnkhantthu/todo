@@ -21,7 +21,7 @@ function SingleTodo({ params }: { params: { id: string } }) {
       ) : (
         <>
           <h1 className="m-5">Todos</h1>
-          <TodoList todos={[todo]} />
+          <TodoList isLoading={false} todos={[todo]} />
         </>
       )}
     </>

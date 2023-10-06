@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 const AddTodo = ({
   addTodo,
   isLoading,
@@ -9,12 +9,16 @@ const AddTodo = ({
   isLoading: boolean;
 }) => {
   const [title, setTitle] = useState("");
+  const handleOnSubmit = (e: FormEvent) => {
+    addTodo(e);
+    setTitle("");
+  };
   return (
     <>
       {isLoading ? (
         ""
       ) : (
-        <form key="addTodo" className="flex" onSubmit={addTodo}>
+        <form key="addTodo" className="flex" onSubmit={handleOnSubmit}>
           <input
             className="p-3 rounded w-full"
             key="addTodo"
