@@ -1,19 +1,29 @@
-import React, { Suspense } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import TodoList from "./components/TodoList";
 import { Todo } from "../api/route";
 import Loading from "./loading";
 
-const Todos = async () => {
-  const res = await fetch("http://localhost:3000" + "/api/", {
-    cache: "no-store",
-  });
-  const todos: Todo[] = await res.json();
+const Todos = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  useEffect(() => {
+    fetch("/api")
+      .then((res) => res.json())
+      .then((data) => {
+        setTodos(data);
+      });
+  }, []);
   return (
     <>
-      <h1 className="m-5">Todos</h1>
-      <Suspense fallback={<Loading dataLength={100} />}>
-        <TodoList todos={todos} />
-      </Suspense>
+      {todos.length === 0 ? (
+        <Loading dataLength={200} />
+      ) : (
+        <>
+          <h1 className="m-5">Todos</h1>
+          <TodoList todos={todos} />
+        </>
+      )}
     </>
   );
 };

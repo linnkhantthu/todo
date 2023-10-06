@@ -1,21 +1,31 @@
+"use client";
+
 import { Todo } from "@/app/api/route";
-import React, { Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import TodoList from "../components/TodoList";
 import Loading from "../loading";
 
-async function Todo({ params }: { params: { id: string } }) {
-  const res = await fetch("http://localhost:3000" + "/api?id=" + params.id, {
-    cache: "no-store",
-  });
-  const todo: Todo = await res.json();
+function SingleTodo({ params }: { params: { id: string } }) {
+  const [todo, setTodo] = useState<Todo>();
+  useEffect(() => {
+    fetch("/api/?id=" + params.id)
+      .then((res) => res.json())
+      .then((data) => {
+        setTodo(data);
+      });
+  }, []);
   return (
     <>
-      <h1 className="m-5">Todos</h1>
-      <Suspense fallback={<Loading dataLength={1} />}>
-        <TodoList todos={[todo]} />
-      </Suspense>
+      {todo === undefined ? (
+        <Loading dataLength={1} />
+      ) : (
+        <>
+          <h1 className="m-5">Todos</h1>
+          <TodoList todos={[todo]} />
+        </>
+      )}
     </>
   );
 }
 
-export default Todo;
+export default SingleTodo;

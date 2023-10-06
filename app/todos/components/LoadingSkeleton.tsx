@@ -4,7 +4,7 @@ import { Todo } from "@/app/api/route";
 
 function LoadingSkeleton({ dataLength }: { dataLength: number }) {
   const todos: Todo[] = [];
-  for (let i = 0; i < (dataLength ? dataLength : 30); i++) {
+  for (let i = 0; i < dataLength; i++) {
     todos.push({
       id: null,
       title: null,
