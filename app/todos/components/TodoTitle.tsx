@@ -13,18 +13,19 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
   };
   const updateTodoTitle = (e: FormEvent) => {
     e.preventDefault();
-    console.log(id);
     setEdit((edit) => !edit);
   };
   return (
     <>
       {edit ? (
         <form
+          name={"inputForm-" + id}
           className="form form-control shadow-md"
           key={"form-" + id}
           onSubmit={updateTodoTitle}
         >
           <input
+            name={"input-" + id}
             autoFocus
             className="p-4 rounded"
             key={"input-" + id}

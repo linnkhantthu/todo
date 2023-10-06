@@ -1,15 +1,37 @@
 "use client";
 import { Todo } from "@/app/api/route";
-import React from "react";
+import React, { FormEvent, useEffect } from "react";
 import TodoTitle from "./TodoTitle";
 import TodoCheckBox from "./TodoCheckBox";
+import AddTodo from "./AddTodo";
 
-const TodoList = ({ todos }: { todos: Todo[] }) => {
+const TodoList = ({
+  todos,
+  isLoading,
+}: {
+  todos: Todo[];
+  isLoading: boolean;
+}) => {
   const [todoList, setTodoList] = React.useState(todos);
-
   // Delete Function
-  const DeleteTodo = (_todoList: Todo) => {
-    setTodoList(todoList.filter((value) => value.id !== _todoList.id));
+  const DeleteTodo = (id: any) => {
+    setTodoList(todoList.filter((value) => value.id !== id));
+  };
+  const addTodo = (e: FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+
+    const newTodo = formData.get("todoInput");
+    if (newTodo) {
+      setTodoList([
+        ...todoList,
+        {
+          id: Math.floor(Math.random() * 10000),
+          title: newTodo.toString(),
+          completed: false,
+        },
+      ]);
+    }
   };
 
   return (
@@ -22,8 +44,15 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
         </tr>
       </thead>
       <tbody className="text-xl">
-        {todoList.map((_todoList) => (
-          <tr key={_todoList.id}>
+        <tr>
+          <td></td>
+          <td>
+            <AddTodo isLoading={isLoading} addTodo={addTodo} />
+          </td>
+          <td></td>
+        </tr>
+        {todoList.map((_todoList, index) => (
+          <tr key={"tr-" + _todoList.id}>
             <td>
               <TodoCheckBox
                 id={_todoList.id ? _todoList.id.toString() : ""}
@@ -42,9 +71,9 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
                 {_todoList.id ? (
                   <button
                     className="btn btn-error m-1"
-                    onClick={() => DeleteTodo(_todoList)}
+                    onClick={() => DeleteTodo(_todoList.id)}
                   >
-                    Delete
+                    Delete {_todoList.id}
                   </button>
                 ) : (
                   <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>

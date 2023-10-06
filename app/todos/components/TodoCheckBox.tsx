@@ -16,6 +16,7 @@ function TodoCheckBox({
       <span>
         {completed !== null ? (
           <input
+            name={"checkbox-" + id}
             key={id}
             type="checkbox"
             checked={todoCompleted == undefined ? undefined : todoCompleted}

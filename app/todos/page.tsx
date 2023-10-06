@@ -17,11 +17,11 @@ const Todos = () => {
   return (
     <>
       {todos.length === 0 ? (
-        <Loading dataLength={200} />
+        <Loading dataLength={100} />
       ) : (
         <>
           <h1 className="m-5">Todos</h1>
-          <TodoList todos={todos} />
+          <TodoList isLoading={false} todos={todos} />
         </>
       )}
     </>

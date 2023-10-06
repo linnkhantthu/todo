@@ -13,7 +13,7 @@ function LoadingSkeleton({ dataLength }: { dataLength: number }) {
   }
   return (
     <>
-      <TodoList todos={todos} />
+      <TodoList isLoading={true} todos={todos} />
     </>
   );
 }
