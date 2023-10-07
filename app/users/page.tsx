@@ -1,6 +1,7 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 const Users = () => {
+  redirect("/users/register");
   return <></>;
 };
 
