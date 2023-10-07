@@ -1,12 +1,13 @@
+import Link from "next/link";
 import React from "react";
 
-const UserRegister = () => {
+const LoginForm = ({ handler }: any) => {
   return (
     <>
       <div className="container mx-auto py-4 px-4 max-w-sm">
         <fieldset>
           <legend>
-            <h1>Register Form</h1>
+            <h1>Login</h1>
           </legend>
           <form className=" form form-control text-lg">
             <label className="label label-text" htmlFor="username">
@@ -17,17 +18,6 @@ const UserRegister = () => {
               type="text"
               name="username"
             />
-
-            <label className="label label-text" htmlFor="email">
-              email
-            </label>
-            <input className="input input-bordered" type="email" name="email" />
-
-            <label className="label label-text" htmlFor="bod">
-              Birth Date
-            </label>
-            <input className="input input-bordered" type="date" name="bod" />
-
             <label className="label label-text" htmlFor="password">
               Password
             </label>
@@ -36,16 +26,6 @@ const UserRegister = () => {
               type="password"
               name="password"
             />
-
-            <label className="label label-text" htmlFor="confirmPassword">
-              Confirm Password
-            </label>
-            <input
-              className="input input-bordered"
-              type="password"
-              name="confirmPassword"
-            />
-
             <input
               className="my-2 btn btn-info w-20"
               type="submit"
@@ -53,9 +33,12 @@ const UserRegister = () => {
             />
           </form>
         </fieldset>
+        <a href="#" onClick={handler}>
+          Do not have an account?
+        </a>
       </div>
     </>
   );
 };
 
-export default UserRegister;
+export default LoginForm;

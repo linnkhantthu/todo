@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 const Users = () => {
-  redirect("/users/register");
+  redirect("/users/auth");
   return <></>;
 };
 
