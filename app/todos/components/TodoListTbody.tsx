@@ -1,4 +1,4 @@
-import { Todo } from "@/app/api/route";
+import { Todo } from "@/app/api/todos/route";
 import React from "react";
 import TodoCheckBox from "./TodoCheckBox";
 import TodoTitle from "./TodoTitle";

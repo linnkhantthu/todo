@@ -1,15 +1,16 @@
-import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
-const LoginForm = ({ handler }: any) => {
+const LoginForm = ({ handler, handleLogin} : any) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState(""); 
   return (
     <>
-      <div className="container mx-auto py-4 px-4 max-w-sm">
+      <div className="mx-auto">
         <fieldset>
           <legend>
             <h1>Login</h1>
           </legend>
-          <form className=" form form-control text-lg">
+          <form className=" form form-control text-lg" onSubmit={handleLogin}>
             <label className="label label-text" htmlFor="username">
               Username
             </label>
@@ -17,6 +18,9 @@ const LoginForm = ({ handler }: any) => {
               className="input input-bordered"
               type="text"
               name="username"
+              value={username}
+              onChange={(e) => {setUsername(e.target.value)}}
+              required
             />
             <label className="label label-text" htmlFor="password">
               Password
@@ -25,6 +29,9 @@ const LoginForm = ({ handler }: any) => {
               className="input input-bordered"
               type="password"
               name="password"
+              value={password}
+              onChange={(e) => {setPassword(e.target.value)}}
+              required
             />
             <input
               className="my-2 btn btn-info w-20"

@@ -1,6 +1,6 @@
 import React from "react";
 import TodoList from "./TodoList";
-import { Todo } from "@/app/api/route";
+import { Todo } from "@/app/api/todos/route";
 
 function LoadingSkeleton({ dataLength }: { dataLength: number }) {
   const todos: Todo[] = [];

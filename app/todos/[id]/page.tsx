@@ -1,6 +1,6 @@
 "use client";
 
-import { Todo } from "@/app/api/route";
+import { Todo } from "@/app/api/todos/route";
 import React, { useEffect, useState } from "react";
 import TodoList from "../components/TodoList";
 import Loading from "../loading";
@@ -8,7 +8,7 @@ import Loading from "../loading";
 function SingleTodo({ params }: { params: { id: string } }) {
   const [todo, setTodo] = useState<Todo>();
   useEffect(() => {
-    fetch("/api/?id=" + params.id)
+    fetch("/api/todos/?id=" + params.id)
       .then((res) => res.json())
       .then((data) => {
         setTodo(data);

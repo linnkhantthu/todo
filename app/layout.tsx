@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true} className="container mx-auto">
+      <body suppressHydrationWarning={true} className="container mx-auto py-4 px-4 max-w-lg">
+        <Link href="/users/auth">Auth</Link>
         {children}
       </body>
     </html>

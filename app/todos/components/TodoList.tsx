@@ -1,5 +1,5 @@
 "use client";
-import { Todo } from "@/app/api/route";
+import { Todo } from "@/app/api/todos/route";
 import React, { FormEvent, useEffect } from "react";
 import AddTodo from "./AddTodo";
 import TodoListTbody from "./TodoListTbody";

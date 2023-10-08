@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import TodoList from "./components/TodoList";
-import { Todo } from "../api/route";
+import { Todo } from "../api/todos/route";
 import Loading from "./loading";
 
 const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   useEffect(() => {
-    fetch("/api")
+    fetch("/api/todos")
       .then((res) => res.json())
       .then((data) => {
         setTodos(data);

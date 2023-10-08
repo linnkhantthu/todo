@@ -3,7 +3,7 @@ import React from "react";
 const RegisterForm = ({ handler }: any) => {
   return (
     <>
-      <div className="container mx-auto py-4 px-4 max-w-sm">
+      <div className="mx-auto">
         <fieldset>
           <legend>
             <h1>Register</h1>
