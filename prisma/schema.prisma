@@ -9,3 +9,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  authorId  Int
+  User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String? @db.VarChar(255)
+  email String  @unique @db.VarChar(255)
+  Post  Todo[]
+}
