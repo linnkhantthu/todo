@@ -37,6 +37,18 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 Prisma Commands
 
+### Create Database
+
+```bash
+CREATE DATABASE todo;
+```
+
+### .env
+
+```bash
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+```
+
 ### Create a directory for migrations
 
 ```bash
@@ -47,7 +59,6 @@ mkdir -p prisma\migrations\0_init
 
 ```bash
 npx prisma migrate diff --from-empty --to-schema-datamodel prisma\schema.prisma --script > prisma\migrations\0_init\migration.sql
-
 ```
 
 ### The command will mark 0_init as applied by adding it to the \_prisma_migrations table

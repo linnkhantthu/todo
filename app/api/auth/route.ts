@@ -1,22 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from '@prisma/client'
+import { User } from "../models";
 
 const prisma = new PrismaClient()
 
-async function main() {
-  const users = await prisma.user.findMany()
-  return users;
+async function login(username?: string) {
+  if(username !== undefined){
+    const data = await prisma.user.findFirst({
+      where: {
+        username: username,
+      }
+    })
+    if(data !== null){
+      return data
+    }
+  }
+  return undefined;
 }
 
 export async function POST(req: NextRequest) {
     const loginData = await req.json();
-    console.log(loginData);
-    const users = await main();
-    console.log(users);
+    const user = await login(loginData.username);
+    if(user !== undefined && user.password === loginData.password){
+      console.log("Logged in");
+    }
+    else{
+      console.log("Not logged in");
+    }
     return NextResponse.json({ message: true, status: 200 });
 }
 
-main()
+login()
   .then(async () => {
     await prisma.$disconnect()
   })
