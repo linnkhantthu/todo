@@ -70,5 +70,5 @@ npx prisma migrate resolve --applied 0_init
 ### Use this command to apply the changes to your database.
 
 ```bash
-npx prisma migrate dev
+npx prisma migrate dev --name "name"
 ```

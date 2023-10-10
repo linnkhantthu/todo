@@ -4,14 +4,15 @@ import type { NextRequest } from "next/server";
 import { User } from "@/lib/models";
 import { getIronSession } from "iron-session";
 
+// This is where we specify the typings of req.session.*
 declare module "iron-session" {
-  interface IronSessionData {
+  interface IronSession {
+    [x: string]: any;
     user?: User;
   }
 }
 
 export const middleware = async (req: NextRequest) => {
-  console.log("Middleware!");
   const res = NextResponse.next();
   const session = await getIronSession(req, res, {
     cookieName: "session",
@@ -34,19 +35,17 @@ export const middleware = async (req: NextRequest) => {
   // await session.save();
   // or maybe you want to destroy session:
   // await session.destroy();
-
-  console.log("from middleware", { user });
-
+  // console.log(user);
   // demo:
   if (user === undefined) {
     // unauthorized to see pages inside admin/
     // return NextResponse.redirect(new URL("/users/auth", req.url)); // redirect to /unauthorized page
-    return NextResponse.next();
+    return NextResponse.redirect(new URL("/users/auth", req.url));
   }
 
   return res;
 };
 
 export const config = {
-  matcher: "/:path*",
+  matcher: "/todos/:path*",
 };
