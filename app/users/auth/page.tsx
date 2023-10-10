@@ -30,7 +30,6 @@ const Auth = () => {
     }
   };
   const handleRegister = (e: FormEvent) => {
-    console.log("Called handleRegister");
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");

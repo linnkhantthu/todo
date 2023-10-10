@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { AuthResults } from "@/lib/models";
 
 const prisma = new PrismaClient();
 
@@ -51,19 +52,19 @@ async function register(
 
 export async function POST(req: NextRequest) {
   const loginData = await req.json();
-  let status = 403;
+  let message = AuthResults.INVALID;
   if (loginData.type === "LOGIN") {
-    status = 200;
     const user = await login(loginData.username);
     if (user !== undefined && user.password === loginData.password) {
       console.log("Logged in");
+      message = AuthResults.LOGGEDIN;
     } else {
       console.log("Not logged in");
+      message = AuthResults.LOGINFAILED;
     }
   }
 
   if (loginData.type === "REGISTER") {
-    status = 200;
     const registerData = await register(
       loginData.username,
       loginData.email,
@@ -72,12 +73,14 @@ export async function POST(req: NextRequest) {
     );
     if (registerData) {
       console.log(registerData);
+      message = AuthResults.REGISTERED;
     } else {
       console.log("Registeration Failed");
+      message = AuthResults.REGISTERATIONFAILED;
     }
   }
 
-  return NextResponse.json({ message: true, status: 200 });
+  return NextResponse.json({ message: message, status: 200 });
 }
 
 login()
