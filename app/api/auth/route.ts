@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { User } from "../models";
 
 const prisma = new PrismaClient();
 
@@ -25,13 +24,17 @@ async function register(
   password?: string
 ) {
   if (username && email && dob && password) {
-    const data = await prisma.user.findFirst({
+    const checkUsernameData = await prisma.user.findFirst({
       where: {
         username: username,
+      },
+    });
+    const checkEmailData = await prisma.user.findFirst({
+      where: {
         email: email,
       },
     });
-    if (data === null) {
+    if (checkUsernameData === null && checkEmailData === null) {
       const user = await prisma.user.create({
         data: {
           username: username,
