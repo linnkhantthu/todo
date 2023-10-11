@@ -10,4 +10,5 @@ export enum AuthResults {
   REGISTERATIONFAILED = "User already exist or incorrect info",
   REGISTERED = "Registered successfully",
   INVALID = "Invalid Request",
+  LOGGEDOUT = "Logged out",
 }
