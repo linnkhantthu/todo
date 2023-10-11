@@ -3,26 +3,17 @@
 import React, { FormEvent, useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
-import { User } from "@/lib/models";
+// import useSWR from "swr";
 import { redirect } from "next/navigation";
+import useUser from "@/lib/useUser";
 
-const isAuthenticated = async () => {
-  const data = {
-    passcode: process.env.COOKIE_PASSCODE,
-  };
-  const res = await fetch("/api/auth/getCookie", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const resData = await res.json();
-  const user: User | undefined = await resData.user;
-  return user;
-};
+// const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const Auth = () => {
+  // const { data } = useUser({ redirectTo: "/todos" });
+  // const { data, error, isLoading } = useSWR("/api/auth/getcookie", fetcher);
+  const { user, isError, isLoading } = useUser();
+
   const [register, setRegister] = useState(false);
   const handleSetRegister = () => {
     setRegister((register) => !register);
@@ -73,11 +64,14 @@ const Auth = () => {
       });
     }
   };
-  const isAuth = isAuthenticated();
-  console.log(isAuth);
-  if (isAuth === undefined) {
-    redirect("/todos");
-  }
+  // console.log(data);
+  // if (!data || data?.isLoggedIn === false) {
+  //   return <h1>Loading...</h1>;
+  // }
+  // if (data || data?.isLoggedIn === true) {
+  //   redirect("/todos");
+  // }
+
   return (
     <>
       {register ? (

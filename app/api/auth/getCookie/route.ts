@@ -3,8 +3,8 @@
 import { createResponse, getSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
-  const data = await request.json();
+export async function GET(request: NextRequest) {
+  // const data = await request.json();
   // if (data.passcode === process.env.COOKIE_PASSCODE) {
   //   const response = new Response();
   //   // Create session
