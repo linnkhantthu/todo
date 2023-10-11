@@ -1,18 +1,19 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
 // import useSWR from "swr";
 import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
-
-// const fetcher = (url) => fetch(url).then((res) => res.json());
+import { User } from "@/lib/models";
 
 const Auth = () => {
-  // const { data } = useUser({ redirectTo: "/todos" });
-  // const { data, error, isLoading } = useSWR("/api/auth/getcookie", fetcher);
   const { user, isError, isLoading } = useUser();
+  const [currentUser, setCurrentUser] = useState<User>();
+  useEffect(() => {
+    setCurrentUser(user);
+  }, [user]);
 
   const [register, setRegister] = useState(false);
   const handleSetRegister = () => {
@@ -64,26 +65,26 @@ const Auth = () => {
       });
     }
   };
-  // console.log(data);
-  // if (!data || data?.isLoggedIn === false) {
-  //   return <h1>Loading...</h1>;
-  // }
-  // if (data || data?.isLoggedIn === true) {
-  //   redirect("/todos");
-  // }
-
-  return (
-    <>
-      {register ? (
-        <RegisterForm
-          handler={handleSetRegister}
-          handleRegister={handleRegister}
-        />
-      ) : (
-        <LoginForm handler={handleSetRegister} handleLogin={handleLogin} />
-      )}
-    </>
-  );
+  if (isLoading || isError) {
+    return <h1>Loading...</h1>;
+  } else {
+    if (currentUser === undefined) {
+      return (
+        <>
+          {register ? (
+            <RegisterForm
+              handler={handleSetRegister}
+              handleRegister={handleRegister}
+            />
+          ) : (
+            <LoginForm handler={handleSetRegister} handleLogin={handleLogin} />
+          )}
+        </>
+      );
+    } else {
+      redirect("/todos");
+    }
+  }
 };
 
 export default Auth;
