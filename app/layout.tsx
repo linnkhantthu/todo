@@ -21,8 +21,6 @@ export default function RootLayout({
         suppressHydrationWarning={true}
         className="container mx-auto py-4 px-4 max-w-lg"
       >
-        <Link href="/users/auth">Auth</Link>
-        <Link href="/api/auth/logout">Logout</Link>
         {children}
       </body>
     </html>

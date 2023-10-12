@@ -1,14 +1,28 @@
+import { AuthResults } from "@/lib/models";
 import React, { useState } from "react";
 
-const LoginForm = ({ handler, handleLogin} : any) => {
+const LoginForm = ({
+  handler,
+  handleLogin,
+  flashMessage,
+}: {
+  handler: any;
+  handleLogin: any;
+  flashMessage: AuthResults | undefined;
+}) => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState(""); 
+  const [password, setPassword] = useState("");
   return (
     <>
       <div className="mx-auto">
         <fieldset>
           <legend>
             <h1>Login</h1>
+            {flashMessage ? (
+              <small className="text text-red-600">{flashMessage}</small>
+            ) : (
+              ""
+            )}
           </legend>
           <form className=" form form-control text-lg" onSubmit={handleLogin}>
             <label className="label label-text" htmlFor="username">
@@ -19,7 +33,9 @@ const LoginForm = ({ handler, handleLogin} : any) => {
               type="text"
               name="username"
               value={username}
-              onChange={(e) => {setUsername(e.target.value)}}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
               required
             />
             <label className="label label-text" htmlFor="password">
@@ -30,7 +46,9 @@ const LoginForm = ({ handler, handleLogin} : any) => {
               type="password"
               name="password"
               value={password}
-              onChange={(e) => {setPassword(e.target.value)}}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               required
             />
             <input

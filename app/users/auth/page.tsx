@@ -3,14 +3,14 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
-// import useSWR from "swr";
 import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
-import { User } from "@/lib/models";
+import { AuthResults, User } from "@/lib/models";
 
 const Auth = () => {
-  const { user, isError, isLoading, isLoggedIn } = useUser();
+  const { user, isError, isLoading } = useUser();
   const [currentUser, setCurrentUser] = useState<User>();
+  const [flashMessage, setFlashMessage] = useState<AuthResults>();
   useEffect(() => {
     setCurrentUser(user);
   }, [user]);
@@ -41,6 +41,8 @@ const Auth = () => {
       const user: User | undefined = data.user;
       if (user) {
         setCurrentUser(user);
+      } else {
+        setFlashMessage(AuthResults.LOGINFAILED);
       }
     }
   };
@@ -83,7 +85,11 @@ const Auth = () => {
               handleRegister={handleRegister}
             />
           ) : (
-            <LoginForm handler={handleSetRegister} handleLogin={handleLogin} />
+            <LoginForm
+              handler={handleSetRegister}
+              handleLogin={handleLogin}
+              flashMessage={flashMessage}
+            />
           )}
         </>
       );
