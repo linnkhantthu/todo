@@ -9,7 +9,7 @@ import useUser from "@/lib/useUser";
 import { User } from "@/lib/models";
 
 const Auth = () => {
-  const { user, isError, isLoading } = useUser();
+  const { user, isError, isLoading, isLoggedIn } = useUser();
   const [currentUser, setCurrentUser] = useState<User>();
   useEffect(() => {
     setCurrentUser(user);
@@ -19,7 +19,7 @@ const Auth = () => {
   const handleSetRegister = () => {
     setRegister((register) => !register);
   };
-  const handleLogin = (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");
@@ -30,16 +30,23 @@ const Auth = () => {
         username: username,
         password: password,
       };
-      fetch("/api/auth", {
+      const res = await fetch("/api/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(loginData),
       });
+      const data = await res.json();
+      const user: User | undefined = data.user;
+      if (user) {
+        setCurrentUser(user);
+      }
     }
   };
-  const handleRegister = (e: FormEvent) => {
+
+  // Registeration handler
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");
@@ -48,7 +55,6 @@ const Auth = () => {
     const password = formData.get("password");
 
     if (username && password && email && dob && password) {
-      console.log("Got Data");
       const registerData = {
         type: "REGISTER",
         username: username,
