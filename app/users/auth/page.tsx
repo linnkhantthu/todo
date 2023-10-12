@@ -6,6 +6,7 @@ import LoginForm from "../components/LoginForm";
 import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
 import { AuthResults, User } from "@/lib/models";
+import Loading from "../components/Loading";
 
 const Auth = () => {
   const { user, isError, isLoading } = useUser();
@@ -74,7 +75,7 @@ const Auth = () => {
     }
   };
   if (isLoading || isError) {
-    return <h1>Loading...</h1>;
+    return <Loading />;
   } else {
     if (currentUser === undefined) {
       return (
