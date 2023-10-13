@@ -2,6 +2,7 @@ import { Todo } from "@/app/api/todos/route";
 import React from "react";
 import TodoCheckBox from "./TodoCheckBox";
 import TodoTitle from "./TodoTitle";
+import LoadingSkeletonChild from "./LoadingSkeletonChild";
 
 function TodoListTbody({
   todoList,
@@ -35,13 +36,13 @@ function TodoListTbody({
             <div className="text-sm">
               {_todoList.id ? (
                 <b
-                  className="text text-red-600"
+                  className="text text-red-600 cursor-pointer"
                   onClick={() => DeleteTodo(_todoList.id)}
                 >
-                  X
+                  x
                 </b>
               ) : (
-                <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
+                <LoadingSkeletonChild />
               )}
             </div>
           </td>

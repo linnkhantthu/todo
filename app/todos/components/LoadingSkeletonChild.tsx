@@ -1,7 +1,7 @@
 import React from "react";
 
 function LoadingSkeletonChild() {
-  return <div className="h-2 bg-slate-700 rounded"></div>;
+  return <progress className="progress" value="100" max="100"></progress>;
 }
 
 export default LoadingSkeletonChild;

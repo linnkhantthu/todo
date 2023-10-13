@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FormEvent } from "react";
+import LoadingSkeletonChild from "./LoadingSkeletonChild";
 
 function TodoTitle({ id, title }: { id: string; title: string }) {
   // useState
@@ -20,11 +21,11 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
       {edit ? (
         <form
           name={"inputForm-" + id}
-          className="form form-control shadow-md"
+          className="form form-control"
           key={"form-" + id}
           onSubmit={updateTodoTitle}
         >
-          <input
+          <textarea
             name={"input-" + id}
             autoFocus
             className="p-2 rounded text-sm"
@@ -34,13 +35,16 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
               setTodoTitle(e.target.value);
             }}
           />
+          <button type="submit" className="btn mt-1 w-fit">
+            Done
+          </button>
         </form>
       ) : (
         <span>
           {todoTitle ? (
             <span onClick={enableEdit}>{todoTitle}</span>
           ) : (
-            <div className="h-2 bg-slate-700 rounded"></div>
+            <LoadingSkeletonChild />
           )}
         </span>
       )}

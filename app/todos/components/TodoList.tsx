@@ -38,24 +38,26 @@ const TodoList = ({
 
   return (
     <>
-      <span key="tr-newTodo" className="">
+      <div>
         <AddTodo isLoading={isLoading} addTodo={addTodo} />
-      </span>
-      <table className="flex flex-col table table-auto border-solid">
-        <thead className="text-xl">
-          <tr>
-            <th></th>
-            <th>Title</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <TodoListTbody
-          todoList={todoList}
-          DeleteTodo={DeleteTodo}
-          isLoading={isLoading}
-          addTodo={addTodo}
-        />
-      </table>
+      </div>
+      <div className="flex flex-col">
+        <table className="table table-auto border-solid">
+          <thead className="text-xl">
+            <tr>
+              <th></th>
+              <th>Title</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <TodoListTbody
+            todoList={todoList}
+            DeleteTodo={DeleteTodo}
+            isLoading={isLoading}
+            addTodo={addTodo}
+          />
+        </table>
+      </div>
     </>
   );
 };
