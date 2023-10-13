@@ -5,20 +5,6 @@ import { createResponse, getSession } from "@/lib/session";
 
 const prisma = new PrismaClient();
 
-async function login(username?: string) {
-  if (username) {
-    const data = await prisma.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
-    if (data !== null) {
-      return data;
-    }
-  }
-  return undefined;
-}
-
 async function register(
   username?: string,
   email?: string,
@@ -62,52 +48,23 @@ export async function POST(request: NextRequest) {
 
   let message = AuthResults.INVALID;
 
-  if (loginData.type === "LOGIN") {
-    const user = await login(loginData.username);
-    if (user !== undefined && user.password === loginData.password) {
-      session.user = {
-        username: user.username,
-        email: user.email,
-        dob: user.dob,
-      };
-      await session.save();
-      currentUser = session.user;
-      message = AuthResults.LOGGEDIN;
-    } else {
-      console.log("Not logged in");
-      message = AuthResults.LOGINFAILED;
-    }
-  }
-
-  if (loginData.type === "REGISTER") {
-    const registerData = await register(
-      loginData.username,
-      loginData.email,
-      loginData.dob,
-      loginData.password
-    );
-    if (registerData) {
-      message = AuthResults.REGISTERED;
-    } else {
-      console.log("Registeration Failed");
-      message = AuthResults.REGISTERATIONFAILED;
-    }
+  const registerData = await register(
+    loginData.username,
+    loginData.email,
+    loginData.dob,
+    loginData.password
+  );
+  if (registerData) {
+    message = AuthResults.REGISTERED;
+  } else {
+    console.log("Registeration Failed");
+    message = AuthResults.REGISTERATIONFAILED;
   }
   return createResponse(
     response,
     JSON.stringify({ user: currentUser, message: message, status: 200 })
   );
 }
-
-login()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
 
 register()
   .then(async () => {

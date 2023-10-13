@@ -6,9 +6,13 @@ import TodoTitle from "./TodoTitle";
 function TodoListTbody({
   todoList,
   DeleteTodo,
+  isLoading,
+  addTodo,
 }: {
   todoList: Todo[];
   DeleteTodo: any;
+  isLoading: boolean;
+  addTodo: any;
 }) {
   return (
     <tbody className="text-xl">
@@ -30,12 +34,12 @@ function TodoListTbody({
           <td>
             <div className="text-sm">
               {_todoList.id ? (
-                <button
-                  className="btn btn-error m-1"
+                <b
+                  className="text text-red-600"
                   onClick={() => DeleteTodo(_todoList.id)}
                 >
-                  Delete {_todoList.id}
-                </button>
+                  X
+                </b>
               ) : (
                 <div className="mx-5 my-1 h-2 bg-slate-700 rounded"></div>
               )}

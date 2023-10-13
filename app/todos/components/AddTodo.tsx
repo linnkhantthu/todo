@@ -18,7 +18,11 @@ const AddTodo = ({
       {isLoading ? (
         ""
       ) : (
-        <form key="addTodo" className="flex" onSubmit={handleOnSubmit}>
+        <form
+          key="addTodo"
+          className="flex flex-row ml-5"
+          onSubmit={handleOnSubmit}
+        >
           <input
             className="p-3 rounded w-full"
             key="addTodo"

@@ -31,7 +31,7 @@ const Auth = () => {
         username: username,
         password: password,
       };
-      const res = await fetch("/api/auth", {
+      const res = await fetch("/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const Auth = () => {
         dob: dob,
         password: password,
       };
-      fetch("/api/auth", {
+      fetch("/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -14,8 +14,8 @@ const LoginForm = ({
   const [password, setPassword] = useState("");
   return (
     <>
-      <div className="mx-auto">
-        <fieldset>
+      <div className="flex flex-row justify-center m-2 w-screen">
+        <fieldset className="flex flex-col w-1/3">
           <legend>
             <h1>Login</h1>
             {flashMessage ? (
@@ -24,11 +24,15 @@ const LoginForm = ({
               ""
             )}
           </legend>
-          <form className=" form form-control text-lg" onSubmit={handleLogin}>
+          <form
+            className="flex flex-col flex-none form form-control text-lg"
+            onSubmit={handleLogin}
+          >
             <label className="label label-text" htmlFor="username">
               Username
             </label>
             <input
+              id="username"
               className="input input-bordered"
               type="text"
               name="username"
@@ -42,6 +46,7 @@ const LoginForm = ({
               Password
             </label>
             <input
+              id="password"
               className="input input-bordered"
               type="password"
               name="password"
@@ -57,10 +62,10 @@ const LoginForm = ({
               value={"Submit"}
             />
           </form>
+          <a href="#" onClick={handler}>
+            Do not have an account?
+          </a>
         </fieldset>
-        <a href="#" onClick={handler}>
-          Do not have an account?
-        </a>
       </div>
     </>
   );

@@ -17,11 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        suppressHydrationWarning={true}
-        className="container mx-auto py-4 px-4 max-w-lg"
-      >
-        {children}
+      <body suppressHydrationWarning={true}>
+        <main className="container flex flex-row justify-center w-screen h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

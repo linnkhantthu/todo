@@ -27,7 +27,7 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
           <input
             name={"input-" + id}
             autoFocus
-            className="p-4 rounded"
+            className="p-2 rounded text-sm"
             key={"input-" + id}
             value={todoTitle}
             onChange={(e) => {

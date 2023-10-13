@@ -1,6 +1,6 @@
 "use client";
 import { Todo } from "@/app/api/todos/route";
-import React, { FormEvent, useEffect } from "react";
+import React, { FormEvent } from "react";
 import AddTodo from "./AddTodo";
 import TodoListTbody from "./TodoListTbody";
 
@@ -38,10 +38,10 @@ const TodoList = ({
 
   return (
     <>
-      <span key="tr-newTodo">
+      <span key="tr-newTodo" className="">
         <AddTodo isLoading={isLoading} addTodo={addTodo} />
       </span>
-      <table className="table table-auto border-solid m-5">
+      <table className="flex flex-col table table-auto border-solid">
         <thead className="text-xl">
           <tr>
             <th></th>
@@ -49,7 +49,12 @@ const TodoList = ({
             <th>Actions</th>
           </tr>
         </thead>
-        <TodoListTbody todoList={todoList} DeleteTodo={DeleteTodo} />
+        <TodoListTbody
+          todoList={todoList}
+          DeleteTodo={DeleteTodo}
+          isLoading={isLoading}
+          addTodo={addTodo}
+        />
       </table>
     </>
   );

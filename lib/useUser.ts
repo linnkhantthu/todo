@@ -5,7 +5,7 @@ const fetcher = (url: RequestInfo | URL) =>
   fetch(url).then((res) => res.json());
 
 export default function useUser() {
-  const { data, error, isLoading } = useSWR("/api/auth/getcookie", fetcher);
+  const { data, error, isLoading } = useSWR("/api/users/getcookie", fetcher);
   let user: User | undefined = undefined;
   if (data?.username) {
     user = {
