@@ -12,3 +12,12 @@ export enum AuthResults {
   INVALID = "Invalid Request",
   LOGGEDOUT = "Logged out",
 }
+
+export interface Todo {
+  id: number;
+  title: string;
+  createdAt: Date;
+  completed: boolean;
+  author: any;
+  authorId: number;
+}

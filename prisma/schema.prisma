@@ -7,19 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Todo {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model User {
   id       Int      @id @default(autoincrement())
   username String   @unique @db.VarChar(255)
   email    String   @unique @db.VarChar(255)
   password String   @db.VarChar(255)
   dob      DateTime @db.Date
-  Post     Todo[]
+  todos    Todo[]
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  completed Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authorId  Int
 }
