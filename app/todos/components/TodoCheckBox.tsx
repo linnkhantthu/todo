@@ -8,13 +8,13 @@ function TodoCheckBox({
   completed,
 }: {
   id: string;
-  completed: boolean | null;
+  completed: boolean | undefined;
 }) {
   const [todoCompleted, setTodoCompleted] = React.useState(completed);
   return (
     <>
       <span>
-        {completed !== null ? (
+        {completed !== undefined ? (
           <input
             name={"checkbox-" + id}
             key={id}

@@ -1,8 +1,8 @@
-import { Todo } from "@/app/api/todos/route";
 import React from "react";
 import TodoCheckBox from "./TodoCheckBox";
 import TodoTitle from "./TodoTitle";
 import LoadingSkeletonChild from "./LoadingSkeletonChild";
+import { Todo } from "@/lib/models";
 
 function TodoListTbody({
   todoList,
@@ -10,13 +10,11 @@ function TodoListTbody({
 }: {
   todoList: Todo[];
   DeleteTodo: any;
-  isLoading: boolean;
-  addTodo: any;
 }) {
   return (
     <tbody>
       {todoList.map((_todoList, index) => (
-        <tr key={"tr-" + (_todoList.id === null ? index : _todoList.id)}>
+        <tr key={"tr-" + (_todoList.id === undefined ? index : _todoList.id)}>
           <td>
             <TodoCheckBox
               id={_todoList.id ? _todoList.id.toString() : ""}

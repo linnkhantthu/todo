@@ -14,10 +14,10 @@ export enum AuthResults {
 }
 
 export interface Todo {
-  id: number;
-  title: string;
-  createdAt: Date;
-  completed: boolean;
-  author: any;
-  authorId: number;
+  id?: number;
+  title?: string;
+  createdAt?: Date;
+  completed?: boolean;
+  author?: any;
+  authorId?: number;
 }

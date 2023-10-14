@@ -1,8 +1,9 @@
 "use client";
-import { Todo } from "@/app/api/todos/route";
+
 import React, { FormEvent } from "react";
 import AddTodo from "./AddTodo";
 import TodoListTbody from "./TodoListTbody";
+import { Todo } from "@/lib/models";
 
 const TodoList = ({
   todos,
@@ -18,21 +19,28 @@ const TodoList = ({
   const DeleteTodo = (id: any) => {
     setTodoList(todoList.filter((value) => value.id !== id));
   };
-  const addTodo = (e: FormEvent) => {
+
+  const addTodo = async (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const newTodo = formData.get("todoInput");
-    if (newTodo) {
-      setTodoList(
-        [
-          ...todoList.reverse(),
-          {
-            id: Math.floor(Math.random() * 10000),
-            title: newTodo.toString(),
-            completed: false,
-          },
-        ].reverse()
-      );
+    const todoTitle = formData.get("todoInput")?.toString();
+    const newTodo = {
+      title: todoTitle,
+    };
+    // Adding new Todo into database
+    const res = await fetch("/api/todos/new", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newTodo),
+    });
+    const data = await res.json();
+    const addedTodo: Todo = await data?.todo;
+    console.log(addedTodo);
+
+    if (addedTodo) {
+      setTodoList([...todoList.reverse(), addedTodo].reverse());
     }
   };
 
@@ -50,12 +58,7 @@ const TodoList = ({
               <th>Actions</th>
             </tr>
           </thead>
-          <TodoListTbody
-            todoList={todoList}
-            DeleteTodo={DeleteTodo}
-            isLoading={isLoading}
-            addTodo={addTodo}
-          />
+          <TodoListTbody todoList={todoList} DeleteTodo={DeleteTodo} />
         </table>
       </div>
     </>
