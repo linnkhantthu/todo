@@ -1,8 +1,6 @@
 "use client";
 
 import React, { FormEvent, useState } from "react";
-import LoadingSkeletonChild from "./LoadingSkeletonChild";
-import Loading from "@/app/users/components/Loading";
 const AddTodo = ({
   addTodo,
   isLoading,
@@ -20,13 +18,9 @@ const AddTodo = ({
       {isLoading ? (
         <div className="ml-5 w-full"></div>
       ) : (
-        <form
-          key="addTodo"
-          className="flex flex-row ml-5"
-          onSubmit={handleOnSubmit}
-        >
+        <form key="addTodo" className="flex flex-row" onSubmit={handleOnSubmit}>
           <input
-            className="p-3 rounded w-full "
+            className="p-3 rounded w-10/12"
             key="addTodo"
             type="text"
             name="todoInput"

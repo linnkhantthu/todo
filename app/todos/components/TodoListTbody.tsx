@@ -7,8 +7,6 @@ import LoadingSkeletonChild from "./LoadingSkeletonChild";
 function TodoListTbody({
   todoList,
   DeleteTodo,
-  isLoading,
-  addTodo,
 }: {
   todoList: Todo[];
   DeleteTodo: any;
@@ -16,7 +14,7 @@ function TodoListTbody({
   addTodo: any;
 }) {
   return (
-    <tbody className="text-xl">
+    <tbody>
       {todoList.map((_todoList, index) => (
         <tr key={"tr-" + (_todoList.id === null ? index : _todoList.id)}>
           <td>

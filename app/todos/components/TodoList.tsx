@@ -42,8 +42,8 @@ const TodoList = ({
         <AddTodo isLoading={isLoading} addTodo={addTodo} />
       </div>
       <div className="flex flex-col">
-        <table className="table table-auto border-solid">
-          <thead className="text-xl">
+        <table className="table table-auto border-solid text-xl">
+          <thead>
             <tr>
               <th></th>
               <th>Title</th>
