@@ -5,7 +5,7 @@ export default function Layout({ children }: any) {
     <>
       <main className="flex flex-col w-11/12">
         <>
-          <Link className="ml-5" href="/api/auth/logout">
+          <Link className="ml-5" href="/users/auth/logout">
             Logout
           </Link>
         </>
