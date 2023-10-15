@@ -23,7 +23,7 @@ function TodoListTbody({
               />
             </span>
           </td>
-          <td>
+          <td className="break-words">
             <span>
               <TodoTitle
                 id={_todoList.id ? _todoList.id.toString() : ""}

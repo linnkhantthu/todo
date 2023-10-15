@@ -55,7 +55,7 @@ const TodoList = ({
         <table className="table table-auto border-solid text-xl">
           <thead>
             <tr>
-              <th></th>
+              <th className="w-3"></th>
               <th>Title</th>
               <th>Actions</th>
             </tr>
