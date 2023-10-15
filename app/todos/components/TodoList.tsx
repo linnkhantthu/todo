@@ -16,8 +16,22 @@ const TodoList = ({
     todos.filter((value) => value.completed !== true).reverse()
   );
   // Delete Function
-  const DeleteTodo = (id: any) => {
-    setTodoList(todoList.filter((value) => value.id !== id));
+  const DeleteTodo = async (id: any) => {
+    const res = await fetch("/api/todos/crud", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    });
+    const data = await res.json();
+    const deletedTodo: Todo = await data?.todo;
+    if (deletedTodo) {
+      setTodoList(todoList.filter((value) => value.id !== id));
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const addTodo: (e: FormEvent) => Promise<boolean> = async (e: FormEvent) => {
@@ -28,7 +42,7 @@ const TodoList = ({
       title: todoTitle,
     };
     // Adding new Todo into database
-    const res = await fetch("/api/todos/new", {
+    const res = await fetch("/api/todos/crud", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

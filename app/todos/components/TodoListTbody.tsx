@@ -1,8 +1,9 @@
-import React from "react";
+import React, { FormEvent, useState } from "react";
 import TodoCheckBox from "./TodoCheckBox";
 import TodoTitle from "./TodoTitle";
 import LoadingSkeletonChild from "./LoadingSkeletonChild";
 import { Todo } from "@/lib/models";
+import Loading from "@/app/users/components/Loading";
 
 function TodoListTbody({
   todoList,
@@ -11,6 +12,15 @@ function TodoListTbody({
   todoList: Todo[];
   DeleteTodo: any;
 }) {
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleDelete = async (id: any) => {
+    setIsAdding(true);
+    if (await DeleteTodo(id)) {
+      setIsAdding(false);
+    }
+  };
+
   return (
     <tbody>
       {todoList.map((_todoList, index) => (
@@ -32,14 +42,14 @@ function TodoListTbody({
             </span>
           </td>
 
-          <td className="float-right">
+          <td className="float-right" key={_todoList.id}>
             <div className="text-sm">
               {_todoList.id ? (
                 <b
                   className="text text-red-600 cursor-pointer"
-                  onClick={() => DeleteTodo(_todoList.id)}
+                  onClick={() => handleDelete(_todoList.id)}
                 >
-                  x
+                  {isAdding ? <Loading /> : "x"}
                 </b>
               ) : (
                 <LoadingSkeletonChild />
