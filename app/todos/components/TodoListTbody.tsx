@@ -23,7 +23,7 @@ function TodoListTbody({
               />
             </span>
           </td>
-          <td className="break-words">
+          <td className="break-words ">
             <span>
               <TodoTitle
                 id={_todoList.id ? _todoList.id.toString() : ""}
@@ -32,7 +32,7 @@ function TodoListTbody({
             </span>
           </td>
 
-          <td>
+          <td className="float-right">
             <div className="text-sm">
               {_todoList.id ? (
                 <b

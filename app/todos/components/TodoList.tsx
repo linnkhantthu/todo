@@ -51,13 +51,13 @@ const TodoList = ({
       <div>
         <AddTodo isLoading={isLoading} addTodo={addTodo} />
       </div>
-      <div className="flex flex-col">
-        <table className="table table-auto border-solid text-xl">
+      <div>
+        <table className="table table-fixed border-solid w-full">
           <thead>
             <tr>
               <th className="w-3"></th>
-              <th>Title</th>
-              <th>Actions</th>
+              <th className="w-2/3">Title</th>
+              <th className="float-right">Actions</th>
             </tr>
           </thead>
           <TodoListTbody todoList={todoList} DeleteTodo={DeleteTodo} />
