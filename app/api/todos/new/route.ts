@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { Todo, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";

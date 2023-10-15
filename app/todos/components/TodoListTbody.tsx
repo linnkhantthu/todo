@@ -16,16 +16,20 @@ function TodoListTbody({
       {todoList.map((_todoList, index) => (
         <tr key={"tr-" + (_todoList.id === undefined ? index : _todoList.id)}>
           <td>
-            <TodoCheckBox
-              id={_todoList.id ? _todoList.id.toString() : ""}
-              completed={_todoList.completed}
-            />
+            <span>
+              <TodoCheckBox
+                id={_todoList.id ? _todoList.id.toString() : ""}
+                completed={_todoList.completed}
+              />
+            </span>
           </td>
           <td>
-            <TodoTitle
-              id={_todoList.id ? _todoList.id.toString() : ""}
-              title={_todoList.title ? _todoList.title : ""}
-            />
+            <span>
+              <TodoTitle
+                id={_todoList.id ? _todoList.id.toString() : ""}
+                title={_todoList.title ? _todoList.title : ""}
+              />
+            </span>
           </td>
 
           <td>

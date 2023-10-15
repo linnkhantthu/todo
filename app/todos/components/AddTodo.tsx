@@ -25,7 +25,7 @@ const AddTodo = ({
       ) : (
         <form key="addTodo" className="flex flex-row" onSubmit={handleOnSubmit}>
           <input
-            className="p-3 rounded w-10/12"
+            className="p-3 rounded w-full"
             key="addTodo"
             type="text"
             name="todoInput"
