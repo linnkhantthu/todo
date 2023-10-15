@@ -39,7 +39,6 @@ async function deleteTodo(id?: number, username?: string) {
           author: user,
         },
       });
-      console.log("HERE");
       return todo as Todo;
     }
   }
@@ -74,7 +73,7 @@ export async function DELETE(request: NextRequest) {
   const data = await request.json();
 
   const todo = await deleteTodo(data?.id, currentUser?.username);
-  console.log(todo);
+
   return createResponse(
     response,
     JSON.stringify({ todo: todo, message: "message", status: 200 })

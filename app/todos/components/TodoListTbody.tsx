@@ -12,12 +12,12 @@ function TodoListTbody({
   todoList: Todo[];
   DeleteTodo: any;
 }) {
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState<number>();
 
   const handleDelete = async (id: any) => {
-    setIsAdding(true);
+    setIsAdding(id);
     if (await DeleteTodo(id)) {
-      setIsAdding(false);
+      setIsAdding(undefined);
     }
   };
 
@@ -46,10 +46,17 @@ function TodoListTbody({
             <div className="text-sm">
               {_todoList.id ? (
                 <b
+                  key={_todoList.id}
                   className="text text-red-600 cursor-pointer"
                   onClick={() => handleDelete(_todoList.id)}
                 >
-                  {isAdding ? <Loading /> : "x"}
+                  {isAdding === _todoList.id ? (
+                    <small>
+                      <span className="loading loading-dots loading-sm"></span>
+                    </small>
+                  ) : (
+                    "x"
+                  )}
                 </b>
               ) : (
                 <LoadingSkeletonChild />

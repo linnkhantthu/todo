@@ -25,7 +25,8 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
           key={"form-" + id}
           onSubmit={updateTodoTitle}
         >
-          <textarea
+          <input
+            type="text"
             name={"input-" + id}
             autoFocus
             className="p-2 rounded text-sm"
@@ -35,9 +36,6 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
               setTodoTitle(e.target.value);
             }}
           />
-          <button type="submit" className="btn mt-1 w-fit">
-            Done
-          </button>
         </form>
       ) : (
         <span>
