@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
   const data = await request.json();
 
   const todo = await addTodo(data.title, currentUser?.username);
+  console.log(todo);
   return createResponse(
     response,
     JSON.stringify({ todo: todo, message: "message", status: 200 })

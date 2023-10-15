@@ -20,7 +20,7 @@ const TodoList = ({
     setTodoList(todoList.filter((value) => value.id !== id));
   };
 
-  const addTodo = async (e: FormEvent) => {
+  const addTodo: (e: FormEvent) => Promise<boolean> = async (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const todoTitle = formData.get("todoInput")?.toString();
@@ -37,10 +37,12 @@ const TodoList = ({
     });
     const data = await res.json();
     const addedTodo: Todo = await data?.todo;
-    console.log(addedTodo);
 
     if (addedTodo) {
       setTodoList([...todoList.reverse(), addedTodo].reverse());
+      return true;
+    } else {
+      return false;
     }
   };
 

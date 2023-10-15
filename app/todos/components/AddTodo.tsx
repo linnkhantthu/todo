@@ -1,16 +1,21 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 const AddTodo = ({
   addTodo,
   isLoading,
 }: {
-  addTodo: any;
+  addTodo: (e: FormEvent) => Promise<boolean>;
   isLoading: boolean;
 }) => {
   const [title, setTitle] = useState("");
-  const handleOnSubmit = (e: FormEvent) => {
-    addTodo(e);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleOnSubmit = async (e: FormEvent) => {
+    setIsAdding(true);
+    if (await addTodo(e)) {
+      setIsAdding(false);
+    }
     setTitle("");
   };
   return (
@@ -32,7 +37,11 @@ const AddTodo = ({
             }}
           />
           <button className="btn btn-success btn-outline m-2" type="submit">
-            Add
+            {isAdding ? (
+              <span className="loading loading-dots loading-lg"></span>
+            ) : (
+              "Add"
+            )}
           </button>
         </form>
       )}
