@@ -1,6 +1,15 @@
+import { AuthResults } from "@/lib/models";
 import React, { useState } from "react";
 
-const RegisterForm = ({ handler, handleRegister }: any) => {
+const RegisterForm = ({
+  handler,
+  handleRegister,
+  flashMessage,
+}: {
+  handler: any;
+  handleRegister: any;
+  flashMessage: AuthResults | undefined;
+}) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState(Date.now().toString());
@@ -13,6 +22,11 @@ const RegisterForm = ({ handler, handleRegister }: any) => {
         <fieldset>
           <legend>
             <h1>Register</h1>
+            {flashMessage ? (
+              <small className="text text-red-600">{flashMessage}</small>
+            ) : (
+              ""
+            )}
           </legend>
           <form
             className=" form form-control text-lg"

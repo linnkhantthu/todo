@@ -11,7 +11,9 @@ import Loading from "../components/Loading";
 const Auth = () => {
   const { user, isError, isLoading } = useUser();
   const [currentUser, setCurrentUser] = useState<User>();
-  const [flashMessage, setFlashMessage] = useState<AuthResults>();
+  const [registerFlashMessage, setRegisterFlashMessage] =
+    useState<AuthResults>();
+  const [loginFlashMessage, setLoginFlashMessage] = useState<AuthResults>();
   useEffect(() => {
     setCurrentUser(user);
   }, [user]);
@@ -43,7 +45,7 @@ const Auth = () => {
       if (user) {
         setCurrentUser(user);
       } else {
-        setFlashMessage(AuthResults.LOGINFAILED);
+        setLoginFlashMessage(AuthResults.LOGINFAILED);
       }
     }
   };
@@ -65,13 +67,20 @@ const Auth = () => {
         dob: dob,
         password: password,
       };
-      fetch("/api/users/register", {
+      const res = await fetch("/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(registerData),
       });
+      const data = await res.json();
+      const message: AuthResults = data?.message;
+      if (message === AuthResults.REGISTERED) {
+        setCurrentUser(undefined);
+      } else {
+        setRegisterFlashMessage(message);
+      }
     }
   };
   if (isLoading || isError) {
@@ -84,12 +93,13 @@ const Auth = () => {
             <RegisterForm
               handler={handleSetRegister}
               handleRegister={handleRegister}
+              flashMessage={registerFlashMessage}
             />
           ) : (
             <LoginForm
               handler={handleSetRegister}
               handleLogin={handleLogin}
-              flashMessage={flashMessage}
+              flashMessage={loginFlashMessage}
             />
           )}
         </>

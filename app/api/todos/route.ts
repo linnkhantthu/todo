@@ -32,7 +32,7 @@ export async function GET(request: Request) {
   currentUser = session.user;
   const todos: Todo[] | undefined = await fetchTodos(currentUser?.username);
   if (todos) {
-    return Response.json(todos);
+    return Response.json({ todos: todos, message: "" });
   } else {
     return Response.json([]);
   }

@@ -31,7 +31,7 @@ async function register(
           password: password,
         },
       });
-      return user;
+      return user as User;
     }
   }
   return undefined;
@@ -39,30 +39,36 @@ async function register(
 
 export async function POST(request: NextRequest) {
   let currentUser: User | undefined = undefined;
+  let registeredUser: User | undefined = undefined;
   // Create response
   const response = new Response();
   // Create session
   const session = await getSession(request, response);
-  // Get login data
-  const loginData = await request.json();
-
+  currentUser = session.user;
   let message = AuthResults.INVALID;
-
-  const registerData = await register(
-    loginData.username,
-    loginData.email,
-    loginData.dob,
-    loginData.password
-  );
-  if (registerData) {
-    message = AuthResults.REGISTERED;
-  } else {
-    console.log("Registeration Failed");
-    message = AuthResults.REGISTERATIONFAILED;
+  if (currentUser === undefined) {
+    const loginData = await request.json();
+    const user = await register(
+      loginData.username,
+      loginData.email,
+      loginData.dob,
+      loginData.password
+    );
+    if (user) {
+      message = AuthResults.REGISTERED;
+      registeredUser = user;
+    } else {
+      message = AuthResults.REGISTERATIONFAILED;
+    }
   }
+  // Get login data
   return createResponse(
     response,
-    JSON.stringify({ user: currentUser, message: message, status: 200 })
+    JSON.stringify({
+      user: registeredUser,
+      message: message,
+      status: 200,
+    })
   );
 }
 
