@@ -2,6 +2,7 @@
 
 import React, { FormEvent } from "react";
 import LoadingSkeletonChild from "./LoadingSkeletonChild";
+import { Todo } from "@/lib/models";
 
 function TodoTitle({ id, title }: { id: string; title: string }) {
   // useState
@@ -14,7 +15,20 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
   };
   const updateTodoTitle = (e: FormEvent) => {
     e.preventDefault();
-    setEdit((edit) => !edit);
+    fetch("/api/todos/crud", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: parseInt(id), title: todoTitle }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // setTodos(data?.todos);
+        const todo: Todo = data?.todo;
+        setTodoTitle(todo?.title ? todo.title : todoTitle);
+        setEdit((edit) => !edit);
+      });
   };
   return (
     <>

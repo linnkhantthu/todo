@@ -45,6 +45,29 @@ async function deleteTodo(id?: number, username?: string) {
   return undefined;
 }
 
+async function updateTodo(id?: number, username?: string, title?: string) {
+  if (id && username) {
+    const user = await prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+    });
+    if (user !== null) {
+      const todo = prisma.todo.update({
+        where: {
+          id: id,
+          author: user,
+        },
+        data: {
+          title: title,
+        },
+      });
+      return todo as Todo;
+    }
+  }
+  return undefined;
+}
+
 export async function POST(request: NextRequest) {
   let currentUser: User | undefined = undefined;
   // Create response
@@ -58,7 +81,24 @@ export async function POST(request: NextRequest) {
   const todo = await addTodo(data.title, currentUser?.username);
   return createResponse(
     response,
-    JSON.stringify({ todo: todo, message: "message", status: 200 })
+    JSON.stringify({ todo: todo, message: "Add Todo", status: 200 })
+  );
+}
+
+export async function PUT(request: NextRequest) {
+  let currentUser: User | undefined = undefined;
+  // Create response
+  const response = new Response();
+  // Create session
+  const session = await getSession(request, response);
+  currentUser = session.user;
+  // Get login data
+  const data = await request.json();
+
+  const todo = await updateTodo(data?.id, currentUser?.username, data?.title);
+  return createResponse(
+    response,
+    JSON.stringify({ todo: todo, message: "Update todo", status: 200 })
   );
 }
 
