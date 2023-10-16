@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { Todo, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
+import prisma from "@/db";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 async function addTodo(title?: string, username?: string) {
   if (title) {

@@ -1,8 +1,8 @@
+import prisma from "@/db";
 import { Todo, User } from "@/lib/models";
 import { getSession } from "@/lib/session";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 async function fetchTodos(username?: string) {
   if (username) {

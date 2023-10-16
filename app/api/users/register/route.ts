@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { AuthResults, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
+import prisma from "@/db";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 async function register(
   username?: string,
