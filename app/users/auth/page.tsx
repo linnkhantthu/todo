@@ -3,7 +3,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import useUser from "@/lib/useUser";
 import { AuthResults, User } from "@/lib/models";
 import Loading from "../components/Loading";
@@ -11,12 +11,18 @@ import Loading from "../components/Loading";
 const Auth = () => {
   const { user, isError, isLoading } = useUser();
   const [currentUser, setCurrentUser] = useState<User>();
+  const [isRegistered, setIsRegistered] = useState<AuthResults>();
   const [registerFlashMessage, setRegisterFlashMessage] =
     useState<AuthResults>();
   const [loginFlashMessage, setLoginFlashMessage] = useState<AuthResults>();
   useEffect(() => {
     setCurrentUser(user);
   }, [user]);
+  useEffect(() => {
+    if (isRegistered === AuthResults.REGISTERED) {
+      redirect("/users/auth");
+    }
+  }, [isRegistered]);
 
   const [register, setRegister] = useState(false);
   const handleSetRegister = () => {
@@ -76,8 +82,9 @@ const Auth = () => {
       });
       const data = await res.json();
       const message: AuthResults = data?.message;
+      console.log(message);
       if (message === AuthResults.REGISTERED) {
-        setCurrentUser(undefined);
+        setIsRegistered(message);
       } else {
         setRegisterFlashMessage(message);
       }
