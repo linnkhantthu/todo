@@ -1,9 +1,9 @@
 "use client";
 
-import { Todo } from "@/app/api/todos/route";
 import React, { useEffect, useState } from "react";
 import TodoList from "../components/TodoList";
 import Loading from "../loading";
+import { Todo } from "@/lib/models";
 
 function SingleTodo({ params }: { params: { id: string } }) {
   const [todo, setTodo] = useState<Todo>();
