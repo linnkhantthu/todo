@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import TodoList from "./components/TodoList";
 import Loading from "./loading";
 import { Todo } from "@/lib/models";
+import Navbar from "./components/Navbar";
 
 const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -18,6 +19,7 @@ const Todos = () => {
   }, []);
   return (
     <>
+      <Navbar />
       {isLoading ? (
         <Loading dataLength={100} />
       ) : (
