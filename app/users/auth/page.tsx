@@ -9,6 +9,7 @@ import { AuthResults, User } from "@/lib/models";
 import Loading from "../components/Loading";
 
 const Auth = () => {
+  const router = useRouter();
   const { user, isError, isLoading } = useUser();
   const [currentUser, setCurrentUser] = useState<User>();
   const [isRegistered, setIsRegistered] = useState<AuthResults>();
