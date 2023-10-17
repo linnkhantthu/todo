@@ -1,6 +1,7 @@
 "use client";
 
 import useUser from "@/lib/useUser";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
   const { user, isLoading, isError, isLoggedIn } = useUser();

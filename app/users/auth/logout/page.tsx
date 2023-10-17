@@ -8,14 +8,12 @@ import { redirect } from "next/navigation";
 function Logout() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [result, setResult] = useState<AuthResults>();
-  useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("/api/users/logout");
-      const data = await res.json();
+  fetch("/api/users/logout")
+    .then((res) => res.json())
+    .then((data) => {
       setResult(data?.message);
-    }
-    fetchData();
-  }, []);
+      setIsLoading(false);
+    });
   if (isLoading && result === undefined) {
     return <Loading />;
   } else {
