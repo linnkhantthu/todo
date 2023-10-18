@@ -1,10 +1,12 @@
 "use client";
 
 import useUser from "@/lib/useUser";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function Navbar() {
-  const { user, isLoading, isError, isLoggedIn } = useUser();
+  const { user, isLoading, isError } = useUser();
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
@@ -12,7 +14,7 @@ function Navbar() {
       </div>
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
-          {isLoading ? (
+          {isLoading || isError ? (
             <span className="loading loading-dots loading-sm"></span>
           ) : user ? (
             <li>
@@ -33,7 +35,7 @@ function Navbar() {
               </details>
             </li>
           ) : (
-            ""
+            <Link href={"/users/auth"}>Login</Link>
           )}
         </ul>
       </div>
