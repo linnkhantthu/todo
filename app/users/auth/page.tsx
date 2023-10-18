@@ -3,22 +3,23 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
 import { AuthResults, User } from "@/lib/models";
 import Loading from "../components/Loading";
 
 const Auth = () => {
-  const router = useRouter();
   const { user, isError, isLoading } = useUser();
-  const [currentUser, setCurrentUser] = useState<User>();
+  const [currentUser, setCurrentUser] = useState<User>(user);
+  const [isUserLoading, setIsUserLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState<AuthResults>();
   const [registerFlashMessage, setRegisterFlashMessage] =
     useState<AuthResults>();
   const [loginFlashMessage, setLoginFlashMessage] = useState<AuthResults>();
   useEffect(() => {
     setCurrentUser(user);
-  }, [user]);
+    setIsUserLoading(isLoading);
+  }, [user, isLoading]);
   useEffect(() => {
     if (isRegistered === AuthResults.REGISTERED) {
       redirect("/users/auth");
@@ -91,10 +92,10 @@ const Auth = () => {
       }
     }
   };
-  if (isLoading || isError) {
+  if (isUserLoading || isError) {
     return <Loading />;
   } else {
-    if (currentUser === undefined) {
+    if (currentUser === undefined && isUserLoading === false) {
       return (
         <>
           {register ? (

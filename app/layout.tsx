@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
+import Body from "./components/Body";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
-        <Navbar />
-        <main className="container flex flex-row justify-center w-11/12 h-screen">
-          {children}
-        </main>
-      </body>
+      <body suppressHydrationWarning={true}>{children}</body>
     </html>
   );
 }
