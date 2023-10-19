@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { User } from "./models";
 import { useEffect, useState } from "react";
 
@@ -10,13 +10,6 @@ export default function useUser() {
     "/api/users/getcookie",
     fetcher
   );
-  // const [user, setUser] = useState<User>(data?.user);
-  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(data?.isLoggedIn);
-
-  // useEffect(() => {
-  //   setUser(data?.user);
-  //   setIsLoggedIn(data?.isLoggedIn);
-  // }, [data]);
 
   return {
     data: data,

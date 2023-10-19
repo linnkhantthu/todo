@@ -2,20 +2,23 @@
 
 import { AuthResults } from "@/lib/models";
 import useUser from "@/lib/useUser";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 function UserNavbar() {
-  const { data, isLoading, isError, mutateUser } = useUser();
   const router = useRouter();
+
+  // Fetch user from cookie
+  const { data, isLoading, isError, mutateUser } = useUser();
+
+  // Handle Logout
   const handleLogout = () => {
     fetch("/api/users/logout")
       .then((res) => res.json())
       .then((resData) => {
         if (resData?.message === AuthResults.LOGGEDOUT) {
           router.push("/users/auth");
-          mutateUser({ ...data, user: undefined });
+          mutateUser({ ...data, user: undefined, isLoggedIn: false });
         }
       });
   };

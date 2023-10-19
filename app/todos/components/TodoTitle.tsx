@@ -24,7 +24,6 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        // setTodos(data?.todos);
         const todo: Todo = data?.todo;
         setTodoTitle(todo?.title ? todo.title : todoTitle);
         setEdit((edit) => !edit);

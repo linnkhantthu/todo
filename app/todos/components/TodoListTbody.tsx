@@ -3,14 +3,15 @@ import TodoCheckBox from "./TodoCheckBox";
 import TodoTitle from "./TodoTitle";
 import LoadingSkeletonChild from "./LoadingSkeletonChild";
 import { Todo } from "@/lib/models";
-import Loading from "@/app/users/components/Loading";
 
 function TodoListTbody({
   todoList,
   DeleteTodo,
+  handleCheckBox,
 }: {
   todoList: Todo[];
   DeleteTodo: any;
+  handleCheckBox: any;
 }) {
   const [isAdding, setIsAdding] = useState<number>();
 
@@ -30,6 +31,7 @@ function TodoListTbody({
               <TodoCheckBox
                 id={_todoList.id ? _todoList.id.toString() : ""}
                 completed={_todoList.completed}
+                handleCheckBox={handleCheckBox}
               />
             </span>
           </td>

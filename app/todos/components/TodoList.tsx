@@ -60,6 +60,10 @@ const TodoList = ({
     }
   };
 
+  const handleCheckBox = (id: number, isChecked: boolean) => {
+    setTodoList(todoList.filter((value) => value.id !== id));
+  };
+
   return (
     <>
       <div>
@@ -74,7 +78,11 @@ const TodoList = ({
               <th className="float-right">Actions</th>
             </tr>
           </thead>
-          <TodoListTbody todoList={todoList} DeleteTodo={DeleteTodo} />
+          <TodoListTbody
+            todoList={todoList}
+            DeleteTodo={DeleteTodo}
+            handleCheckBox={handleCheckBox}
+          />
         </table>
       </div>
     </>
