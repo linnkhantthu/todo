@@ -9,11 +9,13 @@ function TableRow({
   index,
   handleCheckBox,
   DeleteTodo,
+  isCompletedTodos,
 }: {
   todo: Todo;
   index: number;
   handleCheckBox: any;
   DeleteTodo: any;
+  isCompletedTodos: boolean;
 }) {
   const [isAdding, setIsAdding] = useState<number>();
   const handleDelete = async (id: any) => {
@@ -24,7 +26,7 @@ function TableRow({
   };
   return (
     <tr
-      className={todo.completed ? "animate-ping" : ""}
+      className={todo.completed && !isCompletedTodos ? "animate-ping" : ""}
       key={"tr-" + (todo.id === undefined ? index : todo.id)}
     >
       <td>

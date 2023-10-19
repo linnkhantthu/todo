@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent } from "react";
+import React, { FormEvent, useState } from "react";
 import AddTodo from "./AddTodo";
 import TodoListTbody from "./TodoListTbody";
 import { Todo } from "@/lib/models";
@@ -8,13 +8,16 @@ import { Todo } from "@/lib/models";
 const TodoList = ({
   todos,
   isLoading,
+  handleCompletedTodos,
 }: {
   todos: Todo[];
   isLoading: boolean;
+  handleCompletedTodos: any;
 }) => {
   const [todoList, setTodoList] = React.useState(
     todos.filter((value) => value.completed !== true).reverse()
   );
+  const [isCompletedTodos, setIsCompletedTodos] = useState(false);
   // Delete Function
   const DeleteTodo = async (id: any) => {
     const res = await fetch("/api/todos/crud", {
@@ -81,11 +84,21 @@ const TodoList = ({
         }
       });
   };
+  const handleCompletedTodosData = () => {
+    handleCompletedTodos();
+    setIsCompletedTodos(true);
+    setTodoList(todos.filter((value) => value.completed === true).reverse());
+  };
 
   return (
     <>
       <div>
         <AddTodo isLoading={isLoading} addTodo={addTodo} />
+      </div>
+      <div>
+        <span className=" cursor-pointer" onClick={handleCompletedTodosData}>
+          Completed Todos
+        </span>
       </div>
       <div>
         <table className="table table-fixed border-solid w-full">
@@ -100,6 +113,7 @@ const TodoList = ({
             todoList={todoList}
             DeleteTodo={DeleteTodo}
             handleCheckBox={handleCheckBox}
+            isCompletedTodos={isCompletedTodos}
           />
         </table>
       </div>

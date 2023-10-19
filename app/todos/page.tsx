@@ -8,6 +8,10 @@ import { Todo } from "@/lib/models";
 const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reloadData, setReloadData] = useState(false);
+  const handleCompletedTodos = () => {
+    setReloadData(!reloadData);
+  };
   useEffect(() => {
     fetch("/api/todos")
       .then((res) => res.json())
@@ -15,14 +19,18 @@ const Todos = () => {
         setTodos(data?.todos);
         setIsLoading(false);
       });
-  }, []);
+  }, [reloadData]);
   return (
     <>
       {isLoading ? (
         <Loading dataLength={100} />
       ) : (
         <span className="m-1">
-          <TodoList isLoading={false} todos={todos} />
+          <TodoList
+            isLoading={false}
+            todos={todos}
+            handleCompletedTodos={handleCompletedTodos}
+          />
           {todos.length === 0 ? <small>No todos found.</small> : ""}
         </span>
       )}

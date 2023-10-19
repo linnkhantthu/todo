@@ -9,20 +9,13 @@ function TodoListTbody({
   todoList,
   DeleteTodo,
   handleCheckBox,
+  isCompletedTodos,
 }: {
   todoList: Todo[];
   DeleteTodo: any;
   handleCheckBox: any;
+  isCompletedTodos: boolean;
 }) {
-  const [isAdding, setIsAdding] = useState<number>();
-
-  const handleDelete = async (id: any) => {
-    setIsAdding(id);
-    if (await DeleteTodo(id)) {
-      setIsAdding(undefined);
-    }
-  };
-
   return (
     <tbody>
       {todoList.map((_todoList, index) => (
@@ -32,6 +25,7 @@ function TodoListTbody({
           index={index}
           handleCheckBox={handleCheckBox}
           DeleteTodo={DeleteTodo}
+          isCompletedTodos={isCompletedTodos}
         />
       ))}
     </tbody>
