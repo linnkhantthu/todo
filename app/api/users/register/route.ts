@@ -47,28 +47,38 @@ export async function POST(request: NextRequest) {
   currentUser = session.user;
   let message = AuthResults.INVALID;
   if (currentUser === undefined) {
-    const loginData = await request.json();
-    const user = await register(
-      loginData.username,
-      loginData.email,
-      loginData.dob,
-      loginData.password
-    );
-    if (user) {
-      message = AuthResults.REGISTERED;
-      registeredUser = user;
-    } else {
-      message = AuthResults.REGISTERATIONFAILED;
+    if (currentUser === undefined) {
+      const loginData = await request.json();
+      const user = await register(
+        loginData.username,
+        loginData.email,
+        loginData.dob,
+        loginData.password
+      );
+      if (user) {
+        message = AuthResults.REGISTERED;
+        registeredUser = user;
+      } else {
+        message = AuthResults.REGISTERATIONFAILED;
+      }
     }
+    // Get login data
+    return createResponse(
+      response,
+      JSON.stringify({
+        user: registeredUser,
+        message: message,
+      }),
+      { status: 200 }
+    );
   }
-  // Get login data
   return createResponse(
     response,
     JSON.stringify({
       user: registeredUser,
-      message: message,
-      status: 200,
-    })
+      message: AuthResults.ALREADYLOGGEDIN,
+    }),
+    { status: 403 }
   );
 }
 

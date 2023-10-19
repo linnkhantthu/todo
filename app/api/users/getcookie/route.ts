@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const user = session.user;
   return createResponse(
     response,
-    JSON.stringify({ user: user, isLoggedIn: user ? true : false })
+    JSON.stringify({ user: user, isLoggedIn: user ? true : false }),
+    { status: 200 }
   );
 }

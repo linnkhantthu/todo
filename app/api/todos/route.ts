@@ -2,8 +2,6 @@ import prisma from "@/db";
 import { AuthResults, Todo, User } from "@/lib/models";
 import { getSession } from "@/lib/session";
 
-// const prisma = new PrismaClient();
-
 async function fetchTodos(username?: string) {
   if (username) {
     const user = await prisma.user.findFirst({
@@ -31,10 +29,13 @@ export async function GET(request: Request) {
   const session = await getSession(request, response);
   currentUser = session.user;
   const todos: Todo[] | undefined = await fetchTodos(currentUser?.username);
-  if (todos) {
-    return Response.json({ todos: todos });
+  if (currentUser) {
+    return Response.json({ todos: todos }, { status: 200 });
   } else {
-    return Response.json({ todos: [], message: AuthResults.INVALID });
+    return Response.json(
+      { todos: undefined, message: AuthResults.INVALID },
+      { status: 403 }
+    );
   }
 }
 

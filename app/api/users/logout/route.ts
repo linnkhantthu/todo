@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   await session.destroy();
   return createResponse(
     response,
-    JSON.stringify({ message: AuthResults.LOGGEDOUT, status: 200 })
+    JSON.stringify({ message: AuthResults.LOGGEDOUT }),
+    { status: 200 }
   );
 }

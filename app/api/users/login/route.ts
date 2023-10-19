@@ -25,28 +25,37 @@ export async function POST(request: NextRequest) {
   const response = new Response();
   // Create session
   const session = await getSession(request, response);
-  // Get login data
-  const loginData = await request.json();
+  currentUser = session.user;
+  if (currentUser === undefined) {
+    // Get login data
+    const loginData = await request.json();
 
-  let message = AuthResults.INVALID;
+    let message = AuthResults.INVALID;
 
-  const user = await login(loginData.username);
-  if (user !== undefined && user.password === loginData.password) {
-    session.user = {
-      username: user.username,
-      email: user.email,
-      dob: user.dob,
-    };
-    await session.save();
-    currentUser = session.user;
-    message = AuthResults.LOGGEDIN;
-  } else {
-    console.log("Not logged in");
-    message = AuthResults.LOGINFAILED;
+    const user = await login(loginData.username);
+    if (user !== undefined && user.password === loginData.password) {
+      session.user = {
+        username: user.username,
+        email: user.email,
+        dob: user.dob,
+      };
+      await session.save();
+      currentUser = session.user;
+      message = AuthResults.LOGGEDIN;
+    } else {
+      console.log("Not logged in");
+      message = AuthResults.LOGINFAILED;
+    }
+    return createResponse(
+      response,
+      JSON.stringify({ user: currentUser, message: message }),
+      { status: 200 }
+    );
   }
   return createResponse(
     response,
-    JSON.stringify({ user: currentUser, message: message, status: 200 })
+    JSON.stringify({ message: AuthResults.ALREADYLOGGEDIN }),
+    { status: 403 }
   );
 }
 

@@ -11,6 +11,7 @@ export enum AuthResults {
   REGISTERED = "Registered successfully",
   INVALID = "Unauthorized request",
   LOGGEDOUT = "Logged out",
+  ALREADYLOGGEDIN = "User already logged in",
 }
 
 export interface Todo {
