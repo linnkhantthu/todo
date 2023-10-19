@@ -1,16 +1,7 @@
 import React from "react";
-import Navbar from "./Navbar";
-
-function Body({
-  children,
-  isLoggedIn,
-}: {
-  children: React.ReactNode;
-  isLoggedIn: boolean;
-}) {
+function Body({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Navbar isLoggedIn={isLoggedIn} />
       <main className="container flex flex-row justify-center w-11/12 h-screen">
         {children}
       </main>

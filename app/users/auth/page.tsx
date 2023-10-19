@@ -9,17 +9,17 @@ import { AuthResults, User } from "@/lib/models";
 import Loading from "../components/Loading";
 
 const Auth = () => {
-  const { user, isError, isLoading } = useUser();
-  const [currentUser, setCurrentUser] = useState<User>(user);
-  const [isUserLoading, setIsUserLoading] = useState(true);
+  const { data, isError, isLoading, mutateUser } = useUser();
+  // const [currentUser, setCurrentUser] = useState<User>(user);
+  // const [isUserLoading, setIsUserLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState<AuthResults>();
   const [registerFlashMessage, setRegisterFlashMessage] =
     useState<AuthResults>();
   const [loginFlashMessage, setLoginFlashMessage] = useState<AuthResults>();
-  useEffect(() => {
-    setCurrentUser(user);
-    setIsUserLoading(isLoading);
-  }, [user, isLoading]);
+  // useEffect(() => {
+  //   setCurrentUser(user);
+  //   setIsUserLoading(isLoading);
+  // }, [user, isLoading]);
   useEffect(() => {
     if (isRegistered === AuthResults.REGISTERED) {
       redirect("/users/auth");
@@ -30,6 +30,8 @@ const Auth = () => {
   const handleSetRegister = () => {
     setRegister((register) => !register);
   };
+
+  // Handle Login Submit
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -51,7 +53,7 @@ const Auth = () => {
       const data = await res.json();
       const user: User | undefined = data.user;
       if (user) {
-        setCurrentUser(user);
+        mutateUser({ ...data, user: user });
       } else {
         setLoginFlashMessage(AuthResults.LOGINFAILED);
       }
@@ -92,10 +94,10 @@ const Auth = () => {
       }
     }
   };
-  if (isUserLoading || isError) {
+  if (isLoading || isError) {
     return <Loading />;
   } else {
-    if (currentUser === undefined && isUserLoading === false) {
+    if (data?.user === undefined) {
       return (
         <>
           {register ? (

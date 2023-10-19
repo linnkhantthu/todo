@@ -6,19 +6,22 @@ const fetcher = (url: RequestInfo | URL) =>
   fetch(url).then((res) => res.json());
 
 export default function useUser() {
-  const { data, error, isLoading } = useSWR("/api/users/getcookie", fetcher);
-  const [user, setUser] = useState<User>(data?.user);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(data?.isLoggedIn);
+  const { data, error, isLoading, mutate } = useSWR(
+    "/api/users/getcookie",
+    fetcher
+  );
+  // const [user, setUser] = useState<User>(data?.user);
+  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(data?.isLoggedIn);
 
-  useEffect(() => {
-    setUser(data?.user);
-    setIsLoggedIn(data?.isLoggedIn);
-  }, [data]);
+  // useEffect(() => {
+  //   setUser(data?.user);
+  //   setIsLoggedIn(data?.isLoggedIn);
+  // }, [data]);
 
   return {
-    user: user,
-    isLoggedIn: isLoggedIn,
+    data: data,
     isLoading,
     isError: error,
+    mutateUser: mutate,
   };
 }

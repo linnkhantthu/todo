@@ -18,7 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>{children}</body>
+      <body suppressHydrationWarning={true}>
+        <Navbar isLoggedIn={true} />
+        <Body>{children}</Body>
+      </body>
     </html>
   );
 }
