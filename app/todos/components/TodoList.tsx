@@ -61,12 +61,25 @@ const TodoList = ({
   };
 
   const handleCheckBox = (id: number, isChecked: boolean) => {
-    const indexToUpdate = todoList.findIndex((value) => value.id === id);
-    todoList[indexToUpdate].completed = isChecked;
-    setTodoList([...todoList]);
-    setTimeout(() => {
-      setTodoList(todoList.filter((value) => value.id !== id));
-    }, 600);
+    fetch("/api/todos/crud", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id, completed: isChecked }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const todo: Todo | undefined = data?.todo;
+        if (todo) {
+          const indexToUpdate = todoList.findIndex((value) => value.id === id);
+          todoList[indexToUpdate].completed = isChecked;
+          setTodoList([...todoList]);
+          setTimeout(() => {
+            setTodoList(todoList.filter((value) => value.id !== id));
+          }, 600);
+        }
+      });
   };
 
   return (

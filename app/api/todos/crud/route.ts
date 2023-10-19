@@ -25,7 +25,12 @@ async function addTodo(title?: string, username?: string) {
 }
 
 // Update Todo Function
-async function updateTodo(id?: number, username?: string, title?: string) {
+async function updateTodo(
+  id?: number,
+  username?: string,
+  title?: string,
+  completed?: boolean
+) {
   if (id && username) {
     const user = await prisma.user.findFirst({
       where: {
@@ -33,15 +38,29 @@ async function updateTodo(id?: number, username?: string, title?: string) {
       },
     });
     if (user !== null) {
-      const todo = prisma.todo.update({
-        where: {
-          id: id,
-          author: user,
-        },
-        data: {
-          title: title,
-        },
-      });
+      let todo: Todo | undefined;
+      if (title) {
+        todo = prisma.todo.update({
+          where: {
+            id: id,
+            author: user,
+          },
+          data: {
+            title: title,
+          },
+        });
+      }
+      if (completed) {
+        todo = prisma.todo.update({
+          where: {
+            id: id,
+            author: user,
+          },
+          data: {
+            completed: completed,
+          },
+        });
+      }
       return todo as Todo;
     }
   }
@@ -111,9 +130,9 @@ export async function PUT(request: NextRequest) {
   currentUser = session.user;
   // Get login data
   if (currentUser) {
-    const data = await request.json();
-
-    const todo = await updateTodo(data?.id, currentUser?.username, data?.title);
+    let todo: Todo | undefined;
+    const { id, title, completed } = await request.json();
+    todo = await updateTodo(id, currentUser?.username, title, completed);
     return createResponse(response, JSON.stringify({ todo: todo }), {
       status: 200,
     });
