@@ -9,7 +9,7 @@ export enum AuthResults {
   LOGGEDIN = "Logged in successfully",
   REGISTERATIONFAILED = "User already exist or incorrect info",
   REGISTERED = "Registered successfully",
-  INVALID = "Invalid Request",
+  INVALID = "Unauthorized request",
   LOGGEDOUT = "Logged out",
 }
 

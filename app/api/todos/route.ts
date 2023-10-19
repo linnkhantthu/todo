@@ -1,5 +1,5 @@
 import prisma from "@/db";
-import { Todo, User } from "@/lib/models";
+import { AuthResults, Todo, User } from "@/lib/models";
 import { getSession } from "@/lib/session";
 
 // const prisma = new PrismaClient();
@@ -32,9 +32,9 @@ export async function GET(request: Request) {
   currentUser = session.user;
   const todos: Todo[] | undefined = await fetchTodos(currentUser?.username);
   if (todos) {
-    return Response.json({ todos: todos, message: "" });
+    return Response.json({ todos: todos });
   } else {
-    return Response.json([]);
+    return Response.json({ todos: [], message: AuthResults.INVALID });
   }
 }
 

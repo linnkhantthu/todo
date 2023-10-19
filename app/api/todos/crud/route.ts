@@ -1,9 +1,7 @@
 import { NextRequest } from "next/server";
-import { Todo, User } from "@/lib/models";
+import { AuthResults, Todo, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-
-// const prisma = new PrismaClient();
 
 async function addTodo(title?: string, username?: string) {
   if (title) {
@@ -68,6 +66,7 @@ async function updateTodo(id?: number, username?: string, title?: string) {
   return undefined;
 }
 
+// Add todo
 export async function POST(request: NextRequest) {
   let currentUser: User | undefined = undefined;
   // Create response
@@ -75,13 +74,24 @@ export async function POST(request: NextRequest) {
   // Create session
   const session = await getSession(request, response);
   currentUser = session.user;
-  // Get login data
-  const data = await request.json();
+  if (currentUser) {
+    // Get login data
+    const data = await request.json();
 
-  const todo = await addTodo(data.title, currentUser?.username);
+    const todo = await addTodo(data.title, currentUser?.username);
+
+    return createResponse(
+      response,
+      JSON.stringify({ todo: todo, status: 200 })
+    );
+  }
   return createResponse(
     response,
-    JSON.stringify({ todo: todo, message: "Add Todo", status: 200 })
+    JSON.stringify({
+      todo: undefined,
+      message: AuthResults.INVALID,
+      status: 403,
+    })
   );
 }
 
@@ -93,12 +103,22 @@ export async function PUT(request: NextRequest) {
   const session = await getSession(request, response);
   currentUser = session.user;
   // Get login data
-  const data = await request.json();
+  if (currentUser) {
+    const data = await request.json();
 
-  const todo = await updateTodo(data?.id, currentUser?.username, data?.title);
+    const todo = await updateTodo(data?.id, currentUser?.username, data?.title);
+    return createResponse(
+      response,
+      JSON.stringify({ todo: todo, status: 200 })
+    );
+  }
   return createResponse(
     response,
-    JSON.stringify({ todo: todo, message: "Update todo", status: 200 })
+    JSON.stringify({
+      todo: undefined,
+      message: AuthResults.INVALID,
+      status: 403,
+    })
   );
 }
 
@@ -110,13 +130,23 @@ export async function DELETE(request: NextRequest) {
   const session = await getSession(request, response);
   currentUser = session.user;
   // Get login data
-  const data = await request.json();
+  if (currentUser) {
+    const data = await request.json();
 
-  const todo = await deleteTodo(data?.id, currentUser?.username);
+    const todo = await deleteTodo(data?.id, currentUser?.username);
 
+    return createResponse(
+      response,
+      JSON.stringify({ todo: todo, status: 200 })
+    );
+  }
   return createResponse(
     response,
-    JSON.stringify({ todo: todo, message: "message", status: 200 })
+    JSON.stringify({
+      todo: undefined,
+      message: AuthResults.INVALID,
+      status: 403,
+    })
   );
 }
 
