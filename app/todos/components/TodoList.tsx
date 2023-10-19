@@ -61,7 +61,12 @@ const TodoList = ({
   };
 
   const handleCheckBox = (id: number, isChecked: boolean) => {
-    setTodoList(todoList.filter((value) => value.id !== id));
+    const indexToUpdate = todoList.findIndex((value) => value.id === id);
+    todoList[indexToUpdate].completed = isChecked;
+    setTodoList([...todoList]);
+    setTimeout(() => {
+      setTodoList(todoList.filter((value) => value.id !== id));
+    }, 600);
   };
 
   return (

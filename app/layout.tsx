@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true} className="overflow-hidden">
         <Navbar isLoggedIn={true} />
         <Body>{children}</Body>
       </body>
