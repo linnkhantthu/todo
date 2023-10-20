@@ -4,6 +4,7 @@ import React, { FormEvent, useState } from "react";
 import AddTodo from "./AddTodo";
 import TodoListTbody from "./TodoListTbody";
 import { Todo } from "@/lib/models";
+import Loading from "@/app/users/components/Loading";
 
 const TodoList = ({
   todos,
@@ -13,6 +14,7 @@ const TodoList = ({
   addTodo,
   DeleteTodo,
   handleCheckBox,
+  isTodoLoading,
 }: {
   todos: Todo[];
   isLoading: boolean;
@@ -21,6 +23,7 @@ const TodoList = ({
   addTodo: any;
   DeleteTodo: any;
   handleCheckBox: any;
+  isTodoLoading: boolean;
 }) => {
   const handleCompletedTodosData = () => {
     handleCompletedTodos();
@@ -33,7 +36,7 @@ const TodoList = ({
       </div>
       <div>
         {isLoading ? (
-          ""
+          <Loading />
         ) : (
           <button
             className={"m-2 btn btn-neutral"}
@@ -60,6 +63,7 @@ const TodoList = ({
             DeleteTodo={DeleteTodo}
             handleCheckBox={handleCheckBox}
             isCompletedTodos={isCompletedTodos}
+            isTodoLoading={isTodoLoading}
           />
         </table>
       </div>

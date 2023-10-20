@@ -9,6 +9,7 @@ const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCompletedTodos, setIsCompletedTodos] = useState(false);
+  const [isTodoLoading, setIsTodoLoading] = useState(false);
 
   const DeleteTodo = async (id: any) => {
     const res = await fetch("/api/todos/crud", {
@@ -25,8 +26,8 @@ const Todos = () => {
         setTodos(todos.filter((value) => value.id !== id));
         return true;
       }
-      return false;
     }
+    return false;
   };
 
   const addTodo: (e: FormEvent) => Promise<boolean> = async (e: FormEvent) => {
@@ -73,7 +74,9 @@ const Todos = () => {
           setTimeout(() => {
             setTodos(todos.filter((value) => value.id !== id));
           }, 50);
+          return true;
         }
+        return false;
       });
   };
   const handleCompletedTodos = () => {
@@ -81,17 +84,18 @@ const Todos = () => {
   };
 
   useEffect(() => {
+    setIsTodoLoading(true);
     fetch("/api/todos")
       .then((res) => res.json())
       .then((data) => {
         const { todos }: { todos: Todo[] } = data;
-        // setIsLoading(true);
         if (isCompletedTodos) {
           setTodos(todos.filter((value) => value.completed === true).reverse());
         } else {
           setTodos(todos.filter((value) => value.completed !== true).reverse());
         }
         setIsLoading(false);
+        setIsTodoLoading(false);
       });
   }, [isCompletedTodos]);
   return (
@@ -108,6 +112,7 @@ const Todos = () => {
             addTodo={addTodo}
             DeleteTodo={DeleteTodo}
             handleCheckBox={handleCheckBox}
+            isTodoLoading={isTodoLoading}
           />
           {todos.length === 0 ? <small>No todos found.</small> : ""}
         </span>
