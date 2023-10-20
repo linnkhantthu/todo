@@ -18,9 +18,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true} className="overflow-hidden">
+      <body suppressHydrationWarning={true} className="h-screen">
         <Navbar isLoggedIn={true} />
         <Body>{children}</Body>
+        <footer className="footer footer-center fixed bottom-0 bg-slate-800 p-2">
+          <a href="mailto:linnkhantthu1999mdy@gmail.com">
+            This project is written by linnkhantthu &copy; 2023
+          </a>
+        </footer>
       </body>
     </html>
   );
