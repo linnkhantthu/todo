@@ -8,86 +8,22 @@ import { Todo } from "@/lib/models";
 const TodoList = ({
   todos,
   isLoading,
+  isCompletedTodos,
   handleCompletedTodos,
+  addTodo,
+  DeleteTodo,
+  handleCheckBox,
 }: {
   todos: Todo[];
   isLoading: boolean;
+  isCompletedTodos: boolean;
   handleCompletedTodos: any;
+  addTodo: any;
+  DeleteTodo: any;
+  handleCheckBox: any;
 }) => {
-  const [todoList, setTodoList] = React.useState(
-    todos.filter((value) => value.completed !== true).reverse()
-  );
-  const [isCompletedTodos, setIsCompletedTodos] = useState(false);
-  // Delete Function
-  const DeleteTodo = async (id: any) => {
-    const res = await fetch("/api/todos/crud", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    });
-    const data = await res.json();
-    const deletedTodo: Todo = await data?.todo;
-    if (deletedTodo) {
-      setTodoList(todoList.filter((value) => value.id !== id));
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const addTodo: (e: FormEvent) => Promise<boolean> = async (e: FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const todoTitle = formData.get("todoInput")?.toString();
-    const newTodo = {
-      title: todoTitle,
-    };
-    // Adding new Todo into database
-    const res = await fetch("/api/todos/crud", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newTodo),
-    });
-    const data = await res.json();
-    const addedTodo: Todo = await data?.todo;
-
-    if (addedTodo) {
-      setTodoList([...todoList.reverse(), addedTodo].reverse());
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const handleCheckBox = (id: number, isChecked: boolean) => {
-    fetch("/api/todos/crud", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id, completed: isChecked }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const todo: Todo | undefined = data?.todo;
-        if (todo) {
-          const indexToUpdate = todoList.findIndex((value) => value.id === id);
-          todoList[indexToUpdate].completed = isChecked;
-          setTodoList([...todoList]);
-          setTimeout(() => {
-            setTodoList(todoList.filter((value) => value.id !== id));
-          }, 600);
-        }
-      });
-  };
   const handleCompletedTodosData = () => {
     handleCompletedTodos();
-    setIsCompletedTodos(true);
-    setTodoList(todos.filter((value) => value.completed === true).reverse());
   };
 
   return (
@@ -96,9 +32,19 @@ const TodoList = ({
         <AddTodo isLoading={isLoading} addTodo={addTodo} />
       </div>
       <div>
-        <span className=" cursor-pointer" onClick={handleCompletedTodosData}>
-          Completed Todos
-        </span>
+        {isLoading ? (
+          ""
+        ) : (
+          <button
+            className={"m-2 btn btn-neutral"}
+            onClick={handleCompletedTodosData}
+          >
+            <span>Completed Todos</span>
+            <span className="text text-red-600">
+              {isCompletedTodos ? "x" : ""}
+            </span>
+          </button>
+        )}
       </div>
       <div>
         <table className="table table-fixed border-solid w-full">
@@ -110,7 +56,7 @@ const TodoList = ({
             </tr>
           </thead>
           <TodoListTbody
-            todoList={todoList}
+            todoList={todos}
             DeleteTodo={DeleteTodo}
             handleCheckBox={handleCheckBox}
             isCompletedTodos={isCompletedTodos}

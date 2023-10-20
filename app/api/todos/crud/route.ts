@@ -50,7 +50,7 @@ async function updateTodo(
           },
         });
       }
-      if (completed) {
+      if (completed !== undefined) {
         todo = prisma.todo.update({
           where: {
             id: id,

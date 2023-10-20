@@ -26,7 +26,12 @@ function TableRow({
   };
   return (
     <tr
-      className={todo.completed && !isCompletedTodos ? "animate-ping" : ""}
+      className={
+        (!isCompletedTodos && todo.completed) ||
+        (isCompletedTodos && !todo.completed)
+          ? "animate-ping"
+          : ""
+      }
       key={"tr-" + (todo.id === undefined ? index : todo.id)}
     >
       <td>
