@@ -18,12 +18,13 @@ const Todos = () => {
       },
       body: JSON.stringify({ id: id }),
     });
-    const data = await res.json();
-    const deletedTodo: Todo = await data?.todo;
-    if (deletedTodo) {
-      setTodos(todos.filter((value) => value.id !== id));
-      return true;
-    } else {
+    if (res.ok) {
+      const data = await res.json();
+      const deletedTodo: Todo = await data?.todo;
+      if (deletedTodo) {
+        setTodos(todos.filter((value) => value.id !== id));
+        return true;
+      }
       return false;
     }
   };
@@ -43,15 +44,15 @@ const Todos = () => {
       },
       body: JSON.stringify(newTodo),
     });
-    const data = await res.json();
-    const addedTodo: Todo = await data?.todo;
-
-    if (addedTodo) {
-      setTodos([...todos.reverse(), addedTodo].reverse());
-      return true;
-    } else {
-      return false;
+    if (res.ok) {
+      const data = await res.json();
+      const addedTodo: Todo = await data?.todo;
+      if (addedTodo) {
+        setTodos([...todos.reverse(), addedTodo].reverse());
+        return true;
+      }
     }
+    return false;
   };
 
   const handleCheckBox = (id: number, isChecked: boolean) => {
@@ -71,7 +72,7 @@ const Todos = () => {
           setTodos([...todos]);
           setTimeout(() => {
             setTodos(todos.filter((value) => value.id !== id));
-          }, 600);
+          }, 50);
         }
       });
   };
@@ -80,7 +81,6 @@ const Todos = () => {
   };
 
   useEffect(() => {
-    console.log("Fetch Data");
     fetch("/api/todos")
       .then((res) => res.json())
       .then((data) => {

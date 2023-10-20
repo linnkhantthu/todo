@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import LoadingSkeletonChild from "./LoadingSkeletonChild";
 
 function TodoCheckBox({
@@ -13,9 +13,13 @@ function TodoCheckBox({
   handleCheckBox: any;
 }) {
   const [todoCompleted, setTodoCompleted] = React.useState(completed);
+  const [isLoading, setIsLoading] = useState(false);
+
   const localhandleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsLoading(true);
     handleCheckBox(parseInt(id), e.target.checked);
     setTodoCompleted((todoCompleted) => !todoCompleted);
+    setIsLoading(false);
   };
   return (
     <>
@@ -28,6 +32,7 @@ function TodoCheckBox({
             type="checkbox"
             checked={todoCompleted}
             onChange={localhandleCheckBox}
+            disabled={isLoading}
           />
         ) : (
           <LoadingSkeletonChild />

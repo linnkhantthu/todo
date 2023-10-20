@@ -11,7 +11,15 @@ function LoadingSkeleton({ dataLength }: { dataLength: number }) {
   }
   return (
     <>
-      <TodoList isLoading={true} todos={todos} />
+      <TodoList
+        isLoading={true}
+        todos={todos}
+        isCompletedTodos={false}
+        handleCompletedTodos={undefined}
+        addTodo={undefined}
+        DeleteTodo={undefined}
+        handleCheckBox={undefined}
+      />
     </>
   );
 }

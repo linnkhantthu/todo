@@ -50,12 +50,16 @@ const Auth = () => {
         },
         body: JSON.stringify(loginData),
       });
-      const data = await res.json();
-      const user: User | undefined = data.user;
-      if (user) {
-        mutateUser({ ...data, user: user });
+      if (res.ok) {
+        const data = await res.json();
+        const user: User | undefined = data.user;
+        if (user) {
+          mutateUser({ ...data, user: user });
+        } else {
+          setLoginFlashMessage(AuthResults.LOGINFAILED);
+        }
       } else {
-        setLoginFlashMessage(AuthResults.LOGINFAILED);
+        setLoginFlashMessage(AuthResults.INVALID);
       }
     }
   };
@@ -84,13 +88,17 @@ const Auth = () => {
         },
         body: JSON.stringify(registerData),
       });
-      const data = await res.json();
-      const message: AuthResults = data?.message;
-      console.log(message);
-      if (message === AuthResults.REGISTERED) {
-        setIsRegistered(message);
+      if (res.ok) {
+        const data = await res.json();
+        const message: AuthResults = data?.message;
+        console.log(message);
+        if (message === AuthResults.REGISTERED) {
+          setIsRegistered(message);
+        } else {
+          setRegisterFlashMessage(message);
+        }
       } else {
-        setRegisterFlashMessage(message);
+        setRegisterFlashMessage(AuthResults.INVALID);
       }
     }
   };
