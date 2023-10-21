@@ -56,8 +56,8 @@ const Todos = () => {
     return false;
   };
 
-  const handleCheckBox = (id: number, isChecked: boolean) => {
-    fetch("/api/todos/crud", {
+  const handleCheckBox = async (id: number, isChecked: boolean) => {
+    await fetch("/api/todos/crud", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -76,8 +76,8 @@ const Todos = () => {
           }, 50);
           return true;
         }
-        return false;
       });
+    return false;
   };
   const handleCompletedTodos = () => {
     setIsCompletedTodos((isCompletedTodos) => !isCompletedTodos);
