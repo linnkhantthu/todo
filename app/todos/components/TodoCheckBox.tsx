@@ -16,8 +16,9 @@ function TodoCheckBox({
   const localhandleCheckBox = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    setTodoCompleted((todoCompleted) => !todoCompleted);
     const updated = await handleCheckBox(parseInt(id), e.target.checked);
-    if (updated) {
+    if (!updated) {
       setTodoCompleted((todoCompleted) => !todoCompleted);
     }
   };

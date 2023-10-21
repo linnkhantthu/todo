@@ -19,6 +19,7 @@ function LoadingSkeleton({ dataLength }: { dataLength: number }) {
         addTodo={undefined}
         DeleteTodo={undefined}
         handleCheckBox={undefined}
+        isTodoLoading={false}
       />
     </>
   );

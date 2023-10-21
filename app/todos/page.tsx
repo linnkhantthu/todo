@@ -66,12 +66,12 @@ const Todos = () => {
       return false;
     }
   };
-  const setIsInputTagsDisabled = (disabled: boolean) => {
+  const setIsInputTagsDisabled = (disabled: boolean, isChecked: boolean) => {
     const checkbox = document.getElementsByTagName("input");
     for (let index = 0; index < checkbox.length; index++) {
       if (
         checkbox[index].type === "checkbox" &&
-        checkbox[index].checked === true
+        checkbox[index].checked === !isChecked
       ) {
         checkbox[index].disabled = disabled;
       }
@@ -79,7 +79,7 @@ const Todos = () => {
   };
   const handleCheckBox = async (id: number, isChecked: boolean) => {
     try {
-      setIsInputTagsDisabled(true);
+      setIsInputTagsDisabled(true, isChecked);
       await fetch("/api/todos/crud", {
         method: "PUT",
         headers: {
@@ -97,11 +97,11 @@ const Todos = () => {
             setTimeout(() => {
               setTodos(todos.filter((value) => value.id !== id));
             }, 50);
-            setIsInputTagsDisabled(false);
+            setIsInputTagsDisabled(false, isChecked);
             return true;
           }
         });
-      setIsInputTagsDisabled(false);
+      setIsInputTagsDisabled(false, isChecked);
       return false;
     } catch (error) {
       setIsBodyLoading(true);
