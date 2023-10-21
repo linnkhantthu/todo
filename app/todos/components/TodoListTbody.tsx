@@ -17,11 +17,17 @@ function TodoListTbody({
   isTodoLoading: boolean;
 }) {
   return (
-    <>
+    <tbody>
       {isTodoLoading ? (
-        <Loading />
+        <tr>
+          <td></td>
+          <td>
+            <Loading />
+          </td>
+          <td></td>
+        </tr>
       ) : (
-        <tbody>
+        <>
           {todoList.map((_todoList, index) => (
             <TableRow
               key={"tr-" + (_todoList.id === undefined ? index : _todoList.id)}
@@ -32,9 +38,9 @@ function TodoListTbody({
               isCompletedTodos={isCompletedTodos}
             />
           ))}
-        </tbody>
+        </>
       )}
-    </>
+    </tbody>
   );
 }
 
