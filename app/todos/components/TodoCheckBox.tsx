@@ -12,17 +12,13 @@ function TodoCheckBox({
   completed: boolean | undefined;
   handleCheckBox: (id: number, isChecked: boolean) => Promise<boolean>;
 }) {
-  const [todoCompleted, setTodoCompleted] = React.useState(completed);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [todoCompleted, setTodoCompleted] = useState(completed);
   const localhandleCheckBox = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsLoading(true);
     const updated = await handleCheckBox(parseInt(id), e.target.checked);
     if (updated) {
       setTodoCompleted((todoCompleted) => !todoCompleted);
-      setIsLoading(false);
     }
   };
   return (
@@ -36,7 +32,6 @@ function TodoCheckBox({
             type="checkbox"
             checked={todoCompleted}
             onChange={localhandleCheckBox}
-            disabled={isLoading}
           />
         ) : (
           <LoadingSkeletonChild />

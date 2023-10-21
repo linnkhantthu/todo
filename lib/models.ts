@@ -12,6 +12,7 @@ export enum AuthResults {
   INVALID = "Unauthorized request",
   LOGGEDOUT = "Logged out",
   ALREADYLOGGEDIN = "User already logged in",
+  CONNECTIONFAILED = "Connection failed, please try again",
 }
 
 export interface Todo {

@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useEffect, useState } from "react";
 import Loading from "./loading";
-import { Todo } from "@/lib/models";
+import { AuthResults, Todo } from "@/lib/models";
 import TodoList from "./components/TodoList";
 
 const Todos = () => {
@@ -10,24 +10,30 @@ const Todos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCompletedTodos, setIsCompletedTodos] = useState(false);
   const [isTodoLoading, setIsTodoLoading] = useState(false);
+  const [isBodyLoading, setIsBodyLoading] = useState(false);
 
   const DeleteTodo = async (id: any) => {
-    const res = await fetch("/api/todos/crud", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const deletedTodo: Todo = await data?.todo;
-      if (deletedTodo) {
-        setTodos(todos.filter((value) => value.id !== id));
-        return true;
+    try {
+      const res = await fetch("/api/todos/crud", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const deletedTodo: Todo = await data?.todo;
+        if (deletedTodo) {
+          setTodos(todos.filter((value) => value.id !== id));
+          return true;
+        }
       }
+      return false;
+    } catch (error) {
+      setIsBodyLoading(true);
+      return false;
     }
-    return false;
   };
 
   const addTodo: (e: FormEvent) => Promise<boolean> = async (e: FormEvent) => {
@@ -38,69 +44,102 @@ const Todos = () => {
       title: todoTitle,
     };
     // Adding new Todo into database
-    const res = await fetch("/api/todos/crud", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newTodo),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const addedTodo: Todo = await data?.todo;
-      if (addedTodo) {
-        setTodos([...todos.reverse(), addedTodo].reverse());
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const handleCheckBox = async (id: number, isChecked: boolean) => {
-    await fetch("/api/todos/crud", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id, completed: isChecked }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const { todo }: { todo: Todo | undefined } = data;
-        if (todo) {
-          const indexToUpdate = todos.findIndex((value) => value.id === id);
-          todos[indexToUpdate].completed = isChecked;
-          setTodos([...todos]);
-          setTimeout(() => {
-            setTodos(todos.filter((value) => value.id !== id));
-          }, 50);
+    try {
+      const res = await fetch("/api/todos/crud", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTodo),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const addedTodo: Todo = await data?.todo;
+        if (addedTodo) {
+          setTodos([...todos.reverse(), addedTodo].reverse());
           return true;
         }
-      });
-    return false;
+      }
+      return false;
+    } catch (error) {
+      setIsBodyLoading(true);
+      return false;
+    }
+  };
+  const setIsInputTagsDisabled = (disabled: boolean) => {
+    const checkbox = document.getElementsByTagName("input");
+    for (let index = 0; index < checkbox.length; index++) {
+      if (
+        checkbox[index].type === "checkbox" &&
+        checkbox[index].checked === true
+      ) {
+        checkbox[index].disabled = disabled;
+      }
+    }
+  };
+  const handleCheckBox = async (id: number, isChecked: boolean) => {
+    try {
+      setIsInputTagsDisabled(true);
+      await fetch("/api/todos/crud", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id, completed: isChecked }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const { todo }: { todo: Todo | undefined } = data;
+          if (todo) {
+            const indexToUpdate = todos.findIndex((value) => value.id === id);
+            todos[indexToUpdate].completed = isChecked;
+            setTodos([...todos]);
+            setTimeout(() => {
+              setTodos(todos.filter((value) => value.id !== id));
+            }, 50);
+            setIsInputTagsDisabled(false);
+            return true;
+          }
+        });
+      setIsInputTagsDisabled(false);
+      return false;
+    } catch (error) {
+      setIsBodyLoading(true);
+      return false;
+    }
   };
   const handleCompletedTodos = () => {
     setIsCompletedTodos((isCompletedTodos) => !isCompletedTodos);
   };
 
   useEffect(() => {
-    setIsTodoLoading(true);
-    fetch("/api/todos")
-      .then((res) => res.json())
-      .then((data) => {
-        const { todos }: { todos: Todo[] } = data;
-        if (isCompletedTodos) {
-          setTodos(todos.filter((value) => value.completed === true).reverse());
-        } else {
-          setTodos(todos.filter((value) => value.completed !== true).reverse());
-        }
-        setIsLoading(false);
-        setIsTodoLoading(false);
-      });
+    try {
+      setIsTodoLoading(true);
+      fetch("/api/todos")
+        .then((res) => res.json())
+        .then((data) => {
+          const { todos }: { todos: Todo[] } = data;
+          if (isCompletedTodos) {
+            setTodos(
+              todos.filter((value) => value.completed === true).reverse()
+            );
+          } else {
+            setTodos(
+              todos.filter((value) => value.completed !== true).reverse()
+            );
+          }
+          setIsLoading(false);
+          setIsTodoLoading(false);
+        });
+    } catch (error: any) {
+      setIsBodyLoading(true);
+    }
   }, [isCompletedTodos]);
   return (
     <>
-      {isLoading ? (
+      {isBodyLoading ? (
+        AuthResults.CONNECTIONFAILED
+      ) : isLoading ? (
         <Loading dataLength={100} />
       ) : (
         <span className="m-1">
