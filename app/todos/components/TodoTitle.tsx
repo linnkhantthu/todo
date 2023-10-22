@@ -4,7 +4,15 @@ import React, { FormEvent } from "react";
 import LoadingSkeletonChild from "./LoadingSkeletonChild";
 import { Todo } from "@/lib/models";
 
-function TodoTitle({ id, title }: { id: string; title: string }) {
+function TodoTitle({
+  id,
+  title,
+  updateTodoTitle,
+}: {
+  id: string;
+  title: string;
+  updateTodoTitle: (id: number, title: string) => Promise<Todo | undefined>;
+}) {
   // useState
   const [edit, setEdit] = React.useState(false);
   const [todoTitle, setTodoTitle] = React.useState(title);
@@ -13,21 +21,14 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
   const enableEdit = () => {
     setEdit((edit) => !edit);
   };
-  const updateTodoTitle = (e: FormEvent) => {
+  const updateTodoTitleLocal = async (e: FormEvent) => {
     e.preventDefault();
-    fetch("/api/todos/crud", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: parseInt(id), title: todoTitle }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const todo: Todo = data?.todo;
-        setTodoTitle(todo?.title ? todo.title : todoTitle);
-        setEdit((edit) => !edit);
-      });
+    const todo = await updateTodoTitle(parseInt(id), todoTitle);
+    console.log(todo);
+    if (todo !== undefined) {
+      setTodoTitle(todo?.title ? todo.title : todoTitle);
+    }
+    setEdit((edit) => !edit);
   };
   return (
     <>
@@ -36,7 +37,7 @@ function TodoTitle({ id, title }: { id: string; title: string }) {
           name={"inputForm-" + id}
           className="form form-control"
           key={"form-" + id}
-          onSubmit={updateTodoTitle}
+          onSubmit={updateTodoTitleLocal}
         >
           <input
             type="text"

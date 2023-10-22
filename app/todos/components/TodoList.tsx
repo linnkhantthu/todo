@@ -15,6 +15,7 @@ const TodoList = ({
   DeleteTodo,
   handleCheckBox,
   isTodoLoading,
+  updateTodoTitle,
 }: {
   todos: Todo[];
   isLoading: boolean;
@@ -24,6 +25,7 @@ const TodoList = ({
   DeleteTodo: any;
   handleCheckBox: any;
   isTodoLoading: boolean;
+  updateTodoTitle: any;
 }) => {
   const handleCompletedTodosData = () => {
     handleCompletedTodos();
@@ -64,6 +66,7 @@ const TodoList = ({
             handleCheckBox={handleCheckBox}
             isCompletedTodos={isCompletedTodos}
             isTodoLoading={isTodoLoading}
+            updateTodoTitle={updateTodoTitle}
           />
         </table>
       </div>

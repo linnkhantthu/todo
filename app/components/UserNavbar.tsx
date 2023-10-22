@@ -3,29 +3,37 @@
 import { AuthResults } from "@/lib/models";
 import useUser from "@/lib/useUser";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 function UserNavbar() {
   const router = useRouter();
 
   // Fetch user from cookie
   const { data, isLoading, isError, mutateUser } = useUser();
+  const [isConnectionFailed, setIsConnectionFailed] = useState(false);
 
   // Handle Logout
   const handleLogout = () => {
-    fetch("/api/users/logout")
-      .then((res) => res.json())
-      .then((resData) => {
-        if (resData?.message === AuthResults.LOGGEDOUT) {
-          router.push("/users/auth");
-          mutateUser({ ...data, user: undefined, isLoggedIn: false });
-        }
-      });
+    try {
+      fetch("/api/users/logout")
+        .then((res) => res.json())
+        .then((resData) => {
+          if (resData?.message === AuthResults.LOGGEDOUT) {
+            router.push("/users/auth");
+            mutateUser({ ...data, user: undefined, isLoggedIn: false });
+          }
+        });
+    } catch (error: any) {
+      setIsConnectionFailed(true);
+      console.log(error.message);
+    }
   };
 
   return (
     <>
-      {isLoading || isError ? (
+      {isConnectionFailed ? (
+        AuthResults.CONNECTIONFAILED
+      ) : isLoading || isError ? (
         <span className="loading loading-dots loading-sm"></span>
       ) : data?.user ? (
         <ul className="menu menu-horizontal px-1">

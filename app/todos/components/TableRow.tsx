@@ -10,18 +10,24 @@ function TableRow({
   handleCheckBox,
   DeleteTodo,
   isCompletedTodos,
+  updateTodoTitle,
 }: {
   todo: Todo;
   index: number;
   handleCheckBox: any;
-  DeleteTodo: any;
+  DeleteTodo: (id: any) => Promise<{
+    isSuccess: boolean;
+    isError: boolean;
+  }>;
   isCompletedTodos: boolean;
+  updateTodoTitle: any;
 }) {
-  const [isAdding, setIsAdding] = useState<number>();
+  const [deletingId, setDeletingId] = useState<number>();
   const handleDelete = async (id: any) => {
-    setIsAdding(id);
-    if (await DeleteTodo(id)) {
-      setIsAdding(undefined);
+    setDeletingId(id);
+    const { isSuccess } = await DeleteTodo(id);
+    if (isSuccess) {
+      setDeletingId(undefined);
     }
   };
   return (
@@ -48,6 +54,7 @@ function TableRow({
           <TodoTitle
             id={todo.id ? todo.id.toString() : ""}
             title={todo.title ? todo.title : ""}
+            updateTodoTitle={updateTodoTitle}
           />
         </span>
       </td>
@@ -60,7 +67,7 @@ function TableRow({
               className="text text-red-600 cursor-pointer"
               onClick={() => handleDelete(todo.id)}
             >
-              {isAdding === todo.id ? (
+              {deletingId === todo.id ? (
                 <small>
                   <span className="loading loading-dots loading-sm"></span>
                 </small>

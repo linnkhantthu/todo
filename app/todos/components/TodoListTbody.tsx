@@ -9,12 +9,14 @@ function TodoListTbody({
   handleCheckBox,
   isCompletedTodos,
   isTodoLoading,
+  updateTodoTitle,
 }: {
   todoList: Todo[];
   DeleteTodo: any;
   handleCheckBox: any;
   isCompletedTodos: boolean;
   isTodoLoading: boolean;
+  updateTodoTitle: any;
 }) {
   return (
     <tbody>
@@ -36,6 +38,7 @@ function TodoListTbody({
               handleCheckBox={handleCheckBox}
               DeleteTodo={DeleteTodo}
               isCompletedTodos={isCompletedTodos}
+              updateTodoTitle={updateTodoTitle}
             />
           ))}
         </>

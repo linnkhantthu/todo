@@ -10,15 +10,21 @@ function TodoCheckBox({
 }: {
   id: string;
   completed: boolean | undefined;
-  handleCheckBox: (id: number, isChecked: boolean) => Promise<boolean>;
+  handleCheckBox: (
+    id: number,
+    isChecked: boolean
+  ) => Promise<{
+    isSuccess: boolean;
+    isError: boolean;
+  }>;
 }) {
   const [todoCompleted, setTodoCompleted] = useState(completed);
   const localhandleCheckBox = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setTodoCompleted((todoCompleted) => !todoCompleted);
-    const updated = await handleCheckBox(parseInt(id), e.target.checked);
-    if (!updated) {
+    const { isSuccess } = await handleCheckBox(parseInt(id), e.target.checked);
+    if (!isSuccess) {
       setTodoCompleted((todoCompleted) => !todoCompleted);
     }
   };

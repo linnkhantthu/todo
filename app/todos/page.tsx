@@ -10,9 +10,11 @@ const Todos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCompletedTodos, setIsCompletedTodos] = useState(false);
   const [isTodoLoading, setIsTodoLoading] = useState(false);
-  const [isBodyLoading, setIsBodyLoading] = useState(false);
+  const [isConnectionFailed, setIsConnectionFailed] = useState(false);
 
   const DeleteTodo = async (id: any) => {
+    let isSuccess: boolean = false;
+    let isError: boolean = false;
     try {
       const res = await fetch("/api/todos/crud", {
         method: "DELETE",
@@ -26,18 +28,21 @@ const Todos = () => {
         const deletedTodo: Todo = await data?.todo;
         if (deletedTodo) {
           setTodos(todos.filter((value) => value.id !== id));
-          return true;
+          isSuccess = true;
         }
       }
-      return false;
     } catch (error) {
-      setIsBodyLoading(true);
-      return false;
+      isError = true;
+      setIsConnectionFailed(true);
+    } finally {
+      return { isSuccess, isError };
     }
   };
 
-  const addTodo: (e: FormEvent) => Promise<boolean> = async (e: FormEvent) => {
+  const addTodo = async (e: FormEvent) => {
     e.preventDefault();
+    let isSuccess: boolean = false;
+    let isError: boolean = false;
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const todoTitle = formData.get("todoInput")?.toString();
     const newTodo = {
@@ -57,13 +62,35 @@ const Todos = () => {
         const addedTodo: Todo = await data?.todo;
         if (addedTodo) {
           setTodos([...todos.reverse(), addedTodo].reverse());
-          return true;
+          isSuccess = true;
         }
       }
-      return false;
     } catch (error) {
-      setIsBodyLoading(true);
-      return false;
+      isError = true;
+      setIsConnectionFailed(true);
+    }
+    return { isSuccess, isError };
+  };
+  const updateTodoTitle = async (id: number, title: string) => {
+    let todo: Todo | undefined;
+    try {
+      await fetch("/api/todos/crud", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id, title: title }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          todo = data?.todo as Todo;
+        });
+    } catch (error: any) {
+      todo = undefined;
+      setIsConnectionFailed(true);
+      console.log(error.message);
+    } finally {
+      return todo;
     }
   };
   const setIsInputTagsDisabled = (disabled: boolean, isChecked: boolean) => {
@@ -78,6 +105,8 @@ const Todos = () => {
     }
   };
   const handleCheckBox = async (id: number, isChecked: boolean) => {
+    let isSuccess: boolean = false;
+    let isError: boolean = false;
     try {
       setIsInputTagsDisabled(true, isChecked);
       await fetch("/api/todos/crud", {
@@ -98,14 +127,15 @@ const Todos = () => {
               setTodos(todos.filter((value) => value.id !== id));
             }, 50);
             setIsInputTagsDisabled(false, isChecked);
-            return true;
+            isSuccess = true;
           }
         });
       setIsInputTagsDisabled(false, isChecked);
-      return false;
     } catch (error) {
-      setIsBodyLoading(true);
-      return false;
+      isError = false;
+      setIsConnectionFailed(true);
+    } finally {
+      return { isSuccess, isError };
     }
   };
   const handleCompletedTodos = () => {
@@ -132,12 +162,12 @@ const Todos = () => {
           setIsTodoLoading(false);
         });
     } catch (error: any) {
-      setIsBodyLoading(true);
+      setIsConnectionFailed(true);
     }
   }, [isCompletedTodos]);
   return (
     <>
-      {isBodyLoading ? (
+      {isConnectionFailed ? (
         AuthResults.CONNECTIONFAILED
       ) : isLoading ? (
         <Loading dataLength={100} />
@@ -152,6 +182,7 @@ const Todos = () => {
             DeleteTodo={DeleteTodo}
             handleCheckBox={handleCheckBox}
             isTodoLoading={isTodoLoading}
+            updateTodoTitle={updateTodoTitle}
           />
           {todos.length === 0 ? <small>No todos found.</small> : ""}
         </span>
