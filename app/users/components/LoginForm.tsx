@@ -1,5 +1,6 @@
-import { AuthResults } from "@/lib/models";
+import { AuthResults, FlashMessage } from "@/lib/models";
 import React, { useState } from "react";
+import Legend from "./Legend";
 
 const LoginForm = ({
   handler,
@@ -8,7 +9,7 @@ const LoginForm = ({
 }: {
   handler: any;
   handleLogin: any;
-  flashMessage: AuthResults | undefined;
+  flashMessage: FlashMessage | undefined;
 }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,14 +17,7 @@ const LoginForm = ({
     <>
       <div className="flex flex-row justify-center m-2 w-screen">
         <fieldset className="flex flex-col w-1/3">
-          <legend>
-            <h1>Login</h1>
-            {flashMessage ? (
-              <small className="text text-red-600">{flashMessage}</small>
-            ) : (
-              ""
-            )}
-          </legend>
+          <Legend title={"Login"} flashMessage={flashMessage} />
           <form
             className="flex flex-col flex-none form form-control text-lg"
             onSubmit={handleLogin}

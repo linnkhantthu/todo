@@ -1,5 +1,6 @@
-import { AuthResults } from "@/lib/models";
+import { AuthResults, FlashMessage } from "@/lib/models";
 import React, { useState } from "react";
+import Legend from "./Legend";
 
 const RegisterForm = ({
   handler,
@@ -8,7 +9,7 @@ const RegisterForm = ({
 }: {
   handler: any;
   handleRegister: any;
-  flashMessage: AuthResults | undefined;
+  flashMessage: FlashMessage | undefined;
 }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -20,14 +21,7 @@ const RegisterForm = ({
     <>
       <div className="mx-auto">
         <fieldset>
-          <legend>
-            <h1>Register</h1>
-            {flashMessage ? (
-              <small className="text text-red-600">{flashMessage}</small>
-            ) : (
-              ""
-            )}
-          </legend>
+          <Legend title={"Register"} flashMessage={flashMessage} />
           <form
             className=" form form-control text-lg"
             onSubmit={handleRegister}

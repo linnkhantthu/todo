@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true} className="h-screen">
+      <body suppressHydrationWarning={true}>
         <Navbar isLoggedIn={true} />
         <Body>{children}</Body>
         <footer className="footer footer-center fixed bottom-0 bg-slate-800 p-2">

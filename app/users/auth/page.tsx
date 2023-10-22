@@ -5,23 +5,23 @@ import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
 import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
-import { AuthResults, User } from "@/lib/models";
+import { AuthResults, FlashMessage, User } from "@/lib/models";
 import Loading from "../components/Loading";
 
 const Auth = () => {
   const { data, isError, isLoading, mutateUser } = useUser();
   // const [currentUser, setCurrentUser] = useState<User>(user);
   // const [isUserLoading, setIsUserLoading] = useState(true);
-  const [isRegistered, setIsRegistered] = useState<AuthResults>();
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [registerFlashMessage, setRegisterFlashMessage] =
-    useState<AuthResults>();
-  const [loginFlashMessage, setLoginFlashMessage] = useState<AuthResults>();
+    useState<FlashMessage>();
+  const [loginFlashMessage, setLoginFlashMessage] = useState<FlashMessage>();
   // useEffect(() => {
   //   setCurrentUser(user);
   //   setIsUserLoading(isLoading);
   // }, [user, isLoading]);
   useEffect(() => {
-    if (isRegistered === AuthResults.REGISTERED) {
+    if (isRegistered) {
       redirect("/users/auth");
     }
   }, [isRegistered]);
@@ -56,10 +56,16 @@ const Auth = () => {
         if (user) {
           mutateUser({ ...data, user: user });
         } else {
-          setLoginFlashMessage(AuthResults.LOGINFAILED);
+          setLoginFlashMessage({
+            message: AuthResults.LOGINFAILED,
+            category: "bg-error",
+          });
         }
       } else {
-        setLoginFlashMessage(AuthResults.INVALID);
+        setLoginFlashMessage({
+          message: AuthResults.INVALID,
+          category: "bg-error",
+        });
       }
     }
   };
@@ -91,14 +97,21 @@ const Auth = () => {
       if (res.ok) {
         const data = await res.json();
         const message: AuthResults = data?.message;
-        console.log(message);
+
         if (message === AuthResults.REGISTERED) {
-          setIsRegistered(message);
+          setIsRegistered(true);
+          setLoginFlashMessage({
+            message: "Registered successfully" + registerData.email,
+            category: "bg-success",
+          });
         } else {
-          setRegisterFlashMessage(message);
+          setRegisterFlashMessage({ message: message, category: "bg-error" });
         }
       } else {
-        setRegisterFlashMessage(AuthResults.INVALID);
+        setRegisterFlashMessage({
+          message: AuthResults.INVALID,
+          category: "bg-info",
+        });
       }
     }
   };

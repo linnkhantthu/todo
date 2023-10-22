@@ -4,6 +4,11 @@ export interface User {
   dob: Date;
 }
 
+export interface FlashMessage {
+  message: string;
+  category: string;
+}
+
 export enum AuthResults {
   LOGINFAILED = "Incorrect username or password",
   LOGGEDIN = "Logged in successfully",
@@ -13,6 +18,8 @@ export enum AuthResults {
   LOGGEDOUT = "Logged out",
   ALREADYLOGGEDIN = "User already logged in",
   CONNECTIONFAILED = "Connection failed, please try again",
+  USERFOUND = "User found",
+  USERNOTDOUND = "User not found",
 }
 
 export interface Todo {

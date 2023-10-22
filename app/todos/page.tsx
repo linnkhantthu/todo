@@ -150,13 +150,9 @@ const Todos = () => {
         .then((data) => {
           const { todos }: { todos: Todo[] } = data;
           if (isCompletedTodos) {
-            setTodos(
-              todos.filter((value) => value.completed === true).reverse()
-            );
+            setTodos(todos.filter((value) => value.completed === true));
           } else {
-            setTodos(
-              todos.filter((value) => value.completed !== true).reverse()
-            );
+            setTodos(todos.filter((value) => value.completed !== true));
           }
           setIsLoading(false);
           setIsTodoLoading(false);
