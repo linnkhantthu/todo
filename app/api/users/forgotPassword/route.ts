@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { AuthResults, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
+import { Resend } from "resend";
+import ForgotPasswordEmailTemplate from "@/app/users/components/ForgotPasswordEmailTemplate";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function fetchUser(email?: string) {
   if (email) {
@@ -20,6 +24,7 @@ async function fetchUser(email?: string) {
 export async function POST(request: NextRequest) {
   let currentUser: User | undefined = undefined;
   let isUserFound: boolean = false;
+  let email: string | undefined = undefined;
   // Create response
   const response = new Response();
   // Create session
@@ -32,15 +37,35 @@ export async function POST(request: NextRequest) {
 
     const user = await fetchUser(formData.email);
     if (user !== undefined) {
+      try {
+        email = user.email;
+        const data = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: email,
+          subject: "Todo: Reset password",
+          react: ForgotPasswordEmailTemplate({
+            username: user.username,
+            token: "",
+          }),
+        });
+        isUserFound = true;
+        message = AuthResults.USERFOUND;
+      } catch (error) {
+        email = undefined;
+        message = AuthResults.INVALID;
+      }
       // Generate resetPassword Token and send a mail to the client with a link
-      isUserFound = true;
-      message = AuthResults.USERFOUND;
     } else {
+      email = undefined;
       message = AuthResults.USERNOTDOUND;
     }
     return createResponse(
       response,
-      JSON.stringify({ isUserFound: isUserFound, message: message }),
+      JSON.stringify({
+        isUserFound: isUserFound,
+        email: email,
+        message: message,
+      }),
       { status: 200 }
     );
   }

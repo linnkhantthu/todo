@@ -56,8 +56,11 @@ const LoginForm = ({
               value={"Submit"}
             />
           </form>
-          <a href="#" onClick={handler}>
+          <a href="#" className="link link-success" onClick={handler}>
             Do not have an account?
+          </a>
+          <a href="/users/auth/forgotPassword" className="link link-success">
+            Forgot Password?
           </a>
         </fieldset>
       </div>

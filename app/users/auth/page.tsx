@@ -10,16 +10,11 @@ import Loading from "../components/Loading";
 
 const Auth = () => {
   const { data, isError, isLoading, mutateUser } = useUser();
-  // const [currentUser, setCurrentUser] = useState<User>(user);
-  // const [isUserLoading, setIsUserLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [registerFlashMessage, setRegisterFlashMessage] =
     useState<FlashMessage>();
   const [loginFlashMessage, setLoginFlashMessage] = useState<FlashMessage>();
-  // useEffect(() => {
-  //   setCurrentUser(user);
-  //   setIsUserLoading(isLoading);
-  // }, [user, isLoading]);
+
   useEffect(() => {
     if (isRegistered) {
       redirect("/users/auth");
