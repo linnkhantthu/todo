@@ -8,15 +8,17 @@ datasource db {
 }
 
 model User {
-  id                 Int      @id @default(autoincrement())
-  username           String   @unique @db.VarChar(255)
-  email              String   @unique @db.VarChar(255)
-  password           String   @db.VarChar(255)
-  dob                DateTime @db.Date
-  verified           Boolean  @default(false)
-  verifyToken        String?  @unique
-  resetPasswordToken String?  @unique
-  todos              Todo[]
+  id                       Int       @id @default(autoincrement())
+  username                 String    @unique @db.VarChar(255)
+  email                    String    @unique @db.VarChar(255)
+  password                 String    @db.VarChar(255)
+  dob                      DateTime  @db.Date
+  verified                 Boolean   @default(false)
+  verifyToken              String?   @unique
+  verifyTokenExpire        DateTime?
+  resetPasswordToken       String?   @unique
+  resetPasswordTokenExpire DateTime?
+  todos                    Todo[]
 }
 
 model Todo {

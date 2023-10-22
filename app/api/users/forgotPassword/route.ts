@@ -4,6 +4,7 @@ import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import { Resend } from "resend";
 import ForgotPasswordEmailTemplate from "@/app/users/components/ForgotPasswordEmailTemplate";
+import { generateToken, getExpireDate } from "@/lib/utils";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -19,6 +20,23 @@ async function fetchUser(email?: string) {
     }
   }
   return undefined;
+}
+
+async function insertToken(email?: string) {
+  let token: string | undefined = undefined;
+  const user = await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: {
+      resetPasswordToken: generateToken(),
+      resetPasswordTokenExpire: getExpireDate(),
+    },
+  });
+  if (user && user.resetPasswordToken) {
+    token = user.resetPasswordToken;
+  }
+  return { token };
 }
 
 export async function POST(request: NextRequest) {
@@ -37,27 +55,31 @@ export async function POST(request: NextRequest) {
 
     const user = await fetchUser(formData.email);
     if (user !== undefined) {
-      try {
-        email = user.email;
-        const data = await resend.emails.send({
-          from: "onboarding@resend.dev",
-          to: email,
-          subject: "Todo: Reset password",
-          react: ForgotPasswordEmailTemplate({
-            username: user.username,
-            token: "",
-          }),
-        });
-        isUserFound = true;
-        message = AuthResults.USERFOUND;
-      } catch (error) {
-        email = undefined;
-        message = AuthResults.INVALID;
+      email = user.email;
+      const { token } = await insertToken(email);
+      if (email && token) {
+        try {
+          const data = await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: [email],
+            subject: "Todo: Reset password",
+            react: ForgotPasswordEmailTemplate({
+              username: user.username,
+              token: token,
+            }),
+          });
+          isUserFound = true;
+          if (data.id) {
+            message = AuthResults.SUCCESS;
+          }
+        } catch (error) {
+          email = undefined;
+          message = AuthResults.INVALID;
+        }
       }
-      // Generate resetPassword Token and send a mail to the client with a link
     } else {
       email = undefined;
-      message = AuthResults.USERNOTDOUND;
+      message = AuthResults.FAIL;
     }
     return createResponse(
       response,

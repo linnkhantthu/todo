@@ -15,7 +15,15 @@ function ForgotPasswordEmailTemplate({
         Hello, {username}, please click the following button to reset the
         password
       </h1>
-      <button className="btn btn-error">Reset Password</button>
+      <button className="btn btn-error">
+        <a
+          href={
+            "http://example.com/users/auth/verifyResetPasswordToken/" + token
+          }
+        >
+          Reset Password
+        </a>
+      </button>
     </div>
   );
 }

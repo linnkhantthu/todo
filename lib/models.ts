@@ -18,8 +18,8 @@ export enum AuthResults {
   LOGGEDOUT = "Logged out",
   ALREADYLOGGEDIN = "User already logged in",
   CONNECTIONFAILED = "Connection failed, please try again",
-  USERFOUND = "User found",
-  USERNOTDOUND = "User not found",
+  SUCCESS = "Operation successful",
+  FAIL = "Operation Failed",
 }
 
 export interface Todo {
