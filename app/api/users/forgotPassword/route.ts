@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
   }
   return createResponse(
     response,
-    JSON.stringify({ message: AuthResults.ALREADYLOGGEDIN }),
+    JSON.stringify({ message: AuthResults.INVALID }),
     { status: 403 }
   );
 }
