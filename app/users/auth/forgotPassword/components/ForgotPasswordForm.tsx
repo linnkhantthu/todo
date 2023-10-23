@@ -9,6 +9,11 @@ function ForgotPasswordForm({
   handleSubmit: (e: FormEvent) => Promise<void>;
 }) {
   const [email, setEmail] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const handleSubmitLocal = (e: FormEvent) => {
+    setIsSubmitting(true);
+    handleSubmit(e).then(() => setIsSubmitting(false));
+  };
   return (
     <div className="flex flex-row justify-center m-2 w-screen">
       <fieldset className="flex flex-col w-1/3">
@@ -28,7 +33,7 @@ function ForgotPasswordForm({
         </legend>
         <form
           className="flex flex-col flex-none form form-control text-lg"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitLocal}
         >
           <label className="label label-text" htmlFor="email">
             Email
@@ -47,7 +52,7 @@ function ForgotPasswordForm({
           <input
             className="my-2 btn btn-info w-20"
             type="submit"
-            value={"Submit"}
+            value={isSubmitting ? "Submitting..." : "Submit"}
           />
         </form>
       </fieldset>

@@ -40,7 +40,7 @@ function ForgotPassword() {
           message:
             "We have sent you an email to " +
             foundEmail +
-            " reset the password",
+            " to reset the password",
           category: "bg-success",
         });
       } else {

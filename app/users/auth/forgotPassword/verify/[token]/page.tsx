@@ -2,9 +2,12 @@
 
 import Loading from "@/app/users/components/Loading";
 import { FlashMessage } from "@/lib/models";
+import useUser from "@/lib/useUser";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function VerifyResetPasswordToken({ params }: { params: any }) {
+  const { data, isError, isLoading: isUserLoading } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
@@ -17,26 +20,37 @@ function VerifyResetPasswordToken({ params }: { params: any }) {
         },
         body: JSON.stringify({ token: token }),
       });
+      const { token: fetchedToken, message } = await res.json();
       if (res.ok) {
-        const { token, message } = await res.json();
-        if (token) {
+        if (fetchedToken !== undefined) {
           setFlashMessage({ message: message, category: "bg-success" });
           setIsVerified(true);
+        } else {
+          setFlashMessage({ message: message, category: "bg-error" });
         }
+      } else {
         setFlashMessage({ message: message, category: "bg-error" });
-        setIsLoading(false);
       }
     }
-    verifyToken(params.token);
+    try {
+      verifyToken(params.token);
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
   return (
-    // <div className="flex flex-col justify-center">
-    //   <span className=" flex flex-row justify-center">
-    //     <span className="loading loading-dots loading-lg"></span>
-    //   </span>
-    // </div>
-    <div>
-      {isLoading ? (
+    <>
+      {isUserLoading ? (
+        <Loading />
+      ) : data?.user ? (
+        <div className="flex flex-col justify-center">
+          <span className=" flex flex-row justify-center">
+            <p className={flashMessage?.category}>{flashMessage?.message}</p>
+          </span>
+        </div>
+      ) : isLoading ? (
         <>
           <Loading />
           <span>Verifying ... </span>
@@ -45,17 +59,20 @@ function VerifyResetPasswordToken({ params }: { params: any }) {
         <div className="flex flex-col justify-center">
           <span className=" flex flex-row justify-center">
             <p>Verification Succeed</p>
+            {/* Show Password reset form */}
           </span>
         </div>
       ) : (
         <div className="flex flex-col justify-center">
-          <span className=" flex flex-row justify-center">
-            <p>Verification Failed</p>
-            <a href="/users/auth"></a>
+          <span
+            className={"flex flex-row justify-center " + flashMessage?.category}
+          >
+            <p>{flashMessage?.message}</p>
+            <a href="/users/auth">Try Again?</a>
           </span>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

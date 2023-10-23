@@ -17,7 +17,9 @@ function ForgotPasswordEmailTemplate({
       </h1>
       <button className="btn btn-error">
         <a
-          href={"http://example.com/users/auth/forgotPassword/verify/" + token}
+          href={
+            "http://localhost:3000/users/auth/forgotPassword/verify/" + token
+          }
         >
           Reset Password
         </a>
