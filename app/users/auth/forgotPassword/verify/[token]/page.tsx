@@ -5,6 +5,7 @@ import { FlashMessage } from "@/lib/models";
 import useUser from "@/lib/useUser";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import PasswordResetForm from "../../components/PasswordResetForm";
 
 function VerifyResetPasswordToken({ params }: { params: any }) {
   const { data, isError, isLoading: isUserLoading } = useUser();
@@ -58,8 +59,10 @@ function VerifyResetPasswordToken({ params }: { params: any }) {
       ) : isVerified ? (
         <div className="flex flex-col justify-center">
           <span className=" flex flex-row justify-center">
-            <p>Verification Succeed</p>
-            {/* Show Password reset form */}
+            <PasswordResetForm
+              flashMessage={flashMessage}
+              handleSubmit={undefined}
+            />
           </span>
         </div>
       ) : (
