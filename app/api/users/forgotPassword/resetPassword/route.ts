@@ -1,13 +1,13 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { AuthResults, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 
-async function fetchUser(token?: string) {
-  if (token) {
+async function fetchUser(resetToken?: string) {
+  if (resetToken) {
     const data = await prisma.user.findFirst({
       where: {
-        resetPasswordToken: token,
+        resetPasswordToken: resetToken,
         resetPasswordTokenExpire: {
           gt: new Date(),
         },
@@ -20,9 +20,27 @@ async function fetchUser(token?: string) {
   return undefined;
 }
 
+async function updatePassword(token?: string, password?: string) {
+  const user = await prisma.user.update({
+    where: {
+      resetPasswordToken: token,
+      resetPasswordTokenExpire: {
+        gt: new Date(),
+      },
+    },
+    data: {
+      password: password,
+    },
+  });
+  if (user) {
+    return user;
+  }
+  return undefined;
+}
+
 export async function POST(request: NextRequest) {
   let currentUser: User | undefined = undefined;
-  let token: string | undefined = undefined;
+  let email: string | undefined = undefined;
   // Create response
   const response = new Response();
   // Create session
@@ -31,17 +49,25 @@ export async function POST(request: NextRequest) {
   if (currentUser === undefined) {
     // Get login data
     const formData = await request.json();
-    let message = AuthResults.FAIL;
-
+    let message = AuthResults.INVALID;
+    console.log(formData?.token);
     const user = await fetchUser(formData.token);
     if (user !== undefined && user.resetPasswordToken) {
-      token = user.resetPasswordToken;
-      message = AuthResults.SUCCESS;
+      const updatedUser = await updatePassword(
+        user.resetPasswordToken,
+        formData?.password
+      );
+      if (updatedUser) {
+        email = user.email;
+        message = AuthResults.SUCCESS;
+      }
+    } else {
+      message = AuthResults.FAIL;
     }
     return createResponse(
       response,
       JSON.stringify({
-        token: token,
+        email: email,
         message: message,
       }),
       { status: 200 }

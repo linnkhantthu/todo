@@ -9,3 +9,8 @@ export function getExpireDate(): Date {
   now.setMinutes(now.getMinutes() + 15);
   return now;
 }
+
+export function getDateNow(): Date {
+  const now = new Date();
+  return now;
+}

@@ -1,17 +1,30 @@
 import { FlashMessage } from "@/lib/models";
-import React, { useState } from "react";
+import { redirect } from "next/navigation";
+import React, { FormEvent, useState } from "react";
 
 function PasswordResetForm({
   flashMessage,
   handleSubmit,
+  fetchedToken,
 }: {
   flashMessage: FlashMessage | undefined;
-  handleSubmit: any;
+  handleSubmit: (e: FormEvent, token: string) => Promise<void>;
+  fetchedToken: string | undefined;
 }) {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  return (
+
+  const handleSubmitLocal = (e: FormEvent) => {
+    e.preventDefault();
+    if (fetchedToken !== undefined) {
+      setIsSubmitting(true);
+      handleSubmit(e, fetchedToken).then(() => {
+        setIsSubmitting(false);
+      });
+    }
+  };
+  return fetchedToken !== undefined ? (
     <div className="flex flex-row justify-center m-2 w-screen">
       <fieldset className="flex flex-col w-1/3">
         <legend className="flex flex-col w-full">
@@ -30,7 +43,7 @@ function PasswordResetForm({
         </legend>
         <form
           className="flex flex-col flex-none form form-control text-lg"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitLocal}
         >
           <label className="label label-text" htmlFor="email">
             New Password
@@ -46,6 +59,10 @@ function PasswordResetForm({
             }}
             required
           />
+
+          <label className="label label-text" htmlFor="email">
+            Confirm Password
+          </label>
           <input
             id="confirmPassword"
             className="input input-bordered"
@@ -66,13 +83,15 @@ function PasswordResetForm({
           )}
 
           <input
-            className="my-2 btn btn-info w-20"
+            className="my-2 btn btn-info w-24"
             type="submit"
             value={isSubmitting ? "Submitting..." : "Submit"}
           />
         </form>
       </fieldset>
     </div>
+  ) : (
+    redirect("/users/auth")
   );
 }
 

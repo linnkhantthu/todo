@@ -3,15 +3,42 @@
 import Loading from "@/app/users/components/Loading";
 import { FlashMessage } from "@/lib/models";
 import useUser from "@/lib/useUser";
-import { redirect } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import PasswordResetForm from "../../components/PasswordResetForm";
+import { redirect } from "next/navigation";
 
 function VerifyResetPasswordToken({ params }: { params: any }) {
   const { data, isError, isLoading: isUserLoading } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
+  const [fetchedToken, setFetchedToken] = useState<string | undefined>(
+    undefined
+  );
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isResetted, setIsResetted] = useState(false);
+
+  const handleSubmit = async (e: FormEvent, token: string) => {
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const password = formData.get("password");
+    const res = await fetch("/api/users/forgotPassword/resetPassword", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: token, password: password?.toString() }),
+    });
+    const { email, message } = await res.json();
+    if (res.ok) {
+      if (email) {
+        setIsResetted(true);
+        setIsSubmitted(true);
+      } else {
+        setIsResetted(false);
+        setIsSubmitted(true);
+      }
+    }
+  };
   useEffect(() => {
     async function verifyToken(token: string) {
       const res = await fetch("/api/users/forgotPassword/verify", {
@@ -22,15 +49,17 @@ function VerifyResetPasswordToken({ params }: { params: any }) {
         body: JSON.stringify({ token: token }),
       });
       const { token: fetchedToken, message } = await res.json();
+      console.log(message);
       if (res.ok) {
         if (fetchedToken !== undefined) {
           setFlashMessage({ message: message, category: "bg-success" });
+          setFetchedToken(fetchedToken);
           setIsVerified(true);
         } else {
-          setFlashMessage({ message: message, category: "bg-error" });
+          setFlashMessage({ message: message, category: "text-error" });
         }
       } else {
-        setFlashMessage({ message: message, category: "bg-error" });
+        setFlashMessage({ message: message, category: "text-error" });
       }
     }
     try {
@@ -57,21 +86,26 @@ function VerifyResetPasswordToken({ params }: { params: any }) {
           <span>Verifying ... </span>
         </>
       ) : isVerified ? (
-        <div className="flex flex-col justify-center">
-          <span className=" flex flex-row justify-center">
-            <PasswordResetForm
-              flashMessage={flashMessage}
-              handleSubmit={undefined}
-            />
-          </span>
-        </div>
+        isSubmitted && isResetted ? (
+          redirect("/users/auth")
+        ) : (
+          <div className="flex flex-col justify-center">
+            <span className=" flex flex-row justify-center">
+              <PasswordResetForm
+                flashMessage={flashMessage}
+                handleSubmit={handleSubmit}
+                fetchedToken={fetchedToken}
+              />
+            </span>
+          </div>
+        )
       ) : (
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-row justify-center">
           <span
-            className={"flex flex-row justify-center " + flashMessage?.category}
+            className={"flex flex-col justify-center " + flashMessage?.category}
           >
-            <p>{flashMessage?.message}</p>
-            <a href="/users/auth">Try Again?</a>
+            <span>{flashMessage?.message}</span>
+            <a href="/users/auth/forgotPassword">Try Again?</a>
           </span>
         </div>
       )}
