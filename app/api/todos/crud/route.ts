@@ -2,7 +2,11 @@ import { NextRequest } from "next/server";
 import { AuthResults, Results, Todo, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-import { deleteTodo, insertTodo, updateTodo } from "@/lib/query/todo/query";
+import {
+  deleteTodoById,
+  insertTodoByUsername,
+  updateTodoByIdAndUsername,
+} from "@/lib/query/todo/query";
 
 // Add Todo if method: POST {todo, message}: {todo: Todo, message: Results}
 // Need { title }
@@ -22,7 +26,7 @@ export async function POST(request: NextRequest) {
     const { title } = await request.json();
 
     // Call Function
-    const todo = await insertTodo(title, currentUser.username);
+    const todo = await insertTodoByUsername(title, currentUser.username);
     message = todo ? Results.SUCCESS : Results.FAIL;
     return createResponse(
       response,
@@ -53,7 +57,12 @@ export async function PUT(request: NextRequest) {
   // Get data
   if (currentUser) {
     const { id, title, completed } = await request.json();
-    const todo = await updateTodo(id, currentUser?.username, title, completed);
+    const todo = await updateTodoByIdAndUsername(
+      id,
+      currentUser?.username,
+      title,
+      completed
+    );
     message = todo ? Results.SUCCESS : Results.FAIL;
     return createResponse(
       response,
@@ -84,7 +93,7 @@ export async function DELETE(request: NextRequest) {
   // Get data
   if (currentUser) {
     const { id } = await request.json();
-    const todo = await deleteTodo(id, currentUser?.username);
+    const todo = await deleteTodoById(id, currentUser?.username);
     message = todo ? Results.SUCCESS : Results.FAIL;
     return createResponse(
       response,
@@ -103,7 +112,7 @@ export async function DELETE(request: NextRequest) {
   );
 }
 
-insertTodo()
+insertTodoByUsername()
   .then(async () => {
     await prisma.$disconnect();
   })
@@ -113,7 +122,7 @@ insertTodo()
     process.exit(1);
   });
 
-updateTodo()
+updateTodoByIdAndUsername()
   .then(async () => {
     await prisma.$disconnect();
   })
@@ -123,7 +132,7 @@ updateTodo()
     process.exit(1);
   });
 
-deleteTodo()
+deleteTodoById()
   .then(async () => {
     await prisma.$disconnect();
   })

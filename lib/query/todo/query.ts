@@ -21,7 +21,7 @@ export async function getAllTodoByUsername(username?: string) {
   }
   return undefined;
 }
-export async function insertTodo(title?: string, username?: string) {
+export async function insertTodoByUsername(title?: string, username?: string) {
   if (title) {
     const user = await prisma.user.findFirst({
       where: {
@@ -41,7 +41,7 @@ export async function insertTodo(title?: string, username?: string) {
   return undefined;
 }
 
-export async function updateTodo(
+export async function updateTodoByIdAndUsername(
   id?: number,
   username?: string,
   title?: string,
@@ -83,7 +83,7 @@ export async function updateTodo(
   return undefined;
 }
 
-export async function deleteTodo(id?: number, username?: string) {
+export async function deleteTodoById(id?: number, username?: string) {
   if (id && username) {
     const user = await prisma.user.findFirst({
       where: {

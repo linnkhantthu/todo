@@ -1,43 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { AuthResults, Results, User } from "@/lib/models";
+import { NextRequest } from "next/server";
+import { Results, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import { Resend } from "resend";
 import ForgotPasswordEmailTemplate from "@/app/users/components/ForgotPasswordEmailTemplate";
-import { generateToken, getExpireDate } from "@/lib/utils";
-import { getUserByEmail } from "@/lib/query/user/query";
+import { getUserByEmail, insertTokenByEmail } from "@/lib/query/user/query";
 
 // Init Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Fetch User from db with email
-
-// Generate Token
-async function insertToken(email?: string) {
-  let token: string | undefined = undefined;
-  if (email) {
-    const user = await prisma.user.update({
-      where: {
-        email: email,
-      },
-      data: {
-        resetPasswordToken: generateToken(),
-        resetPasswordTokenExpire: getExpireDate(),
-      },
-    });
-    if (user && user.resetPasswordToken) {
-      token = user.resetPasswordToken;
-    }
-  }
-  return { token };
-}
-
 // {}
 export async function POST(request: NextRequest) {
   // Declare Var
-  let currentUser: User | undefined = undefined;
-  let isUserFound: boolean = false;
-  let dbEmail: string | undefined = undefined;
   let message = Results.LOGOUT_FIRST;
 
   // Create response
@@ -45,10 +19,11 @@ export async function POST(request: NextRequest) {
 
   // Create session and get User
   const session = await getSession(request, response);
-  currentUser = session.user;
+  const { user: currentUser } = session;
 
   // If the user is loggedout
   if (currentUser === undefined) {
+    let dbEmail: string | undefined = undefined;
     // Get data
     const { email } = await request.json();
 
@@ -58,10 +33,9 @@ export async function POST(request: NextRequest) {
     // If User found
     if (user !== undefined) {
       dbEmail = user.email;
-      isUserFound = true;
 
       // Generate Token
-      const { token } = await insertToken(dbEmail);
+      const { token } = await insertTokenByEmail(dbEmail);
 
       // If token generated
       if (dbEmail && token) {
@@ -92,7 +66,6 @@ export async function POST(request: NextRequest) {
     return createResponse(
       response,
       JSON.stringify({
-        isUserFound: isUserFound,
         email: dbEmail,
         message: message,
       }),
@@ -113,7 +86,8 @@ getUserByEmail()
     await prisma.$disconnect();
     process.exit(1);
   });
-insertToken()
+
+insertTokenByEmail()
   .then(async () => {
     await prisma.$disconnect();
   })

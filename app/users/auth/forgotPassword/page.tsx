@@ -11,7 +11,6 @@ function ForgotPassword() {
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
   const [isConnectionFailed, setIsConnectionFailed] = useState(false);
   const handleSubmit = async (e: FormEvent) => {
-    let isUserFound: boolean = false;
     let foundEmail: string | undefined = undefined;
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -27,15 +26,14 @@ function ForgotPassword() {
         body: JSON.stringify(formDataObject),
       });
       if (res.ok) {
-        const data = await res.json();
-        isUserFound = data?.isUserFound;
-        foundEmail = data?.email;
+        const { email, message } = await res.json();
+        foundEmail = email;
       }
     } catch (error: any) {
       setIsConnectionFailed(true);
       console.error(error.message);
     } finally {
-      if (isUserFound && foundEmail !== undefined) {
+      if (foundEmail) {
         setFlashMessage({
           message:
             "We have sent you an email to " +
