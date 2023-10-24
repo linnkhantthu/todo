@@ -5,24 +5,12 @@ import prisma from "@/db";
 import { Resend } from "resend";
 import ForgotPasswordEmailTemplate from "@/app/users/components/ForgotPasswordEmailTemplate";
 import { generateToken, getExpireDate } from "@/lib/utils";
+import { getUserByEmail } from "@/lib/query/user/query";
 
 // Init Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Fetch User from db with email
-async function fetchUser(email?: string) {
-  if (email) {
-    const data = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-    });
-    if (data !== null) {
-      return data;
-    }
-  }
-  return undefined;
-}
 
 // Generate Token
 async function insertToken(email?: string) {
@@ -65,7 +53,7 @@ export async function POST(request: NextRequest) {
     const { email } = await request.json();
 
     // Fetch User from user
-    const user = await fetchUser(email);
+    const user = await getUserByEmail(email);
 
     // If User found
     if (user !== undefined) {
@@ -116,7 +104,7 @@ export async function POST(request: NextRequest) {
   });
 }
 
-fetchUser()
+getUserByEmail()
   .then(async () => {
     await prisma.$disconnect();
   })

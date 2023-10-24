@@ -164,7 +164,9 @@ const Todos = () => {
   return (
     <>
       {isConnectionFailed ? (
-        AuthResults.CONNECTIONFAILED
+        <div className="flex flex-row justify-center">
+          {AuthResults.CONNECTIONFAILED}
+        </div>
       ) : isLoading ? (
         <Loading dataLength={100} />
       ) : (
