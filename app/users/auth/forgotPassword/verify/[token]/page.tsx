@@ -7,7 +7,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import PasswordResetForm from "../../components/PasswordResetForm";
 import { redirect } from "next/navigation";
 
-function VerifyResetPasswordToken({ params }: { params: any }) {
+function VerifyResetPasswordToken({ params }: { params: { token: string } }) {
   const { data, isError, isLoading: isUserLoading } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
@@ -69,10 +69,10 @@ function VerifyResetPasswordToken({ params }: { params: any }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [params.token]);
   return (
     <>
-      {isUserLoading ? (
+      {isUserLoading || isError ? (
         <Loading />
       ) : data?.user ? (
         <div className="flex flex-col justify-center">

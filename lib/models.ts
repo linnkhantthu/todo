@@ -22,6 +22,13 @@ export enum AuthResults {
   FAIL = "Operation Failed",
 }
 
+export enum Results {
+  LOGOUT_FIRST = "You need to logged out in order to perform this action",
+  SUCCESS = "Operation succeed",
+  FAIL = "Operation failed",
+  SERVER_ERROR = "Server error",
+}
+
 export interface Todo {
   id?: number;
   title?: string;
