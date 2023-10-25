@@ -1,8 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Navbar from "./components/Navbar";
-import Body from "./components/Body";
+import Nav from "./components/Nav";
+import Main from "./components/Main";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <Navbar isLoggedIn={true} />
-        <Body>{children}</Body>
+        <Nav isLoggedIn={true} />
+        <Main>{children}</Main>
         <footer className="footer footer-center fixed bottom-0 bg-slate-800 p-2">
           <a href="mailto:linnkhantthu1999mdy@gmail.com">
             This project is written by linnkhantthu &copy; 2023
