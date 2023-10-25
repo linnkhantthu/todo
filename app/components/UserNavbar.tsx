@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthResults } from "@/lib/models";
+import { AuthResults, Results } from "@/lib/models";
 import useUser from "@/lib/useUser";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -18,7 +18,7 @@ function UserNavbar() {
       fetch("/api/users/logout")
         .then((res) => res.json())
         .then((resData) => {
-          if (resData?.message === AuthResults.LOGGEDOUT) {
+          if (resData?.message === Results.SUCCESS) {
             router.push("/users/auth");
             mutateUser({ ...data, user: undefined, isLoggedIn: false });
           }

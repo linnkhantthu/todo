@@ -1,39 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
-import { AuthResults, User } from "@/lib/models";
+import { NextRequest } from "next/server";
+import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
+import { getUserByUsername } from "@/lib/query/user/query";
 
-// const prisma = new PrismaClient();
-
-async function login(username?: string) {
-  if (username) {
-    const data = await prisma.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
-    if (data !== null) {
-      return data;
-    }
-  }
-  return undefined;
-}
-
+// {user, message}: {user: User, message: Results}
 export async function POST(request: NextRequest) {
-  let currentUser: User | undefined = undefined;
+  let message = Results.LOGOUT_FIRST;
   // Create response
   const response = new Response();
   // Create session
   const session = await getSession(request, response);
-  currentUser = session.user;
+  let { user: currentUser } = session;
+
   if (currentUser === undefined) {
     // Get login data
-    const loginData = await request.json();
-
-    let message = AuthResults.INVALID;
-
-    const user = await login(loginData.username);
-    if (user !== undefined && user.password === loginData.password) {
+    const { username, password } = await request.json();
+    const user = await getUserByUsername(username);
+    if (user && user.password === password) {
       session.user = {
         username: user.username,
         email: user.email,
@@ -41,10 +25,9 @@ export async function POST(request: NextRequest) {
       };
       await session.save();
       currentUser = session.user;
-      message = AuthResults.LOGGEDIN;
+      message = Results.SUCCESS;
     } else {
-      console.log("Not logged in");
-      message = AuthResults.LOGINFAILED;
+      message = Results.FAIL;
     }
     return createResponse(
       response,
@@ -52,14 +35,12 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   }
-  return createResponse(
-    response,
-    JSON.stringify({ message: AuthResults.ALREADYLOGGEDIN }),
-    { status: 403 }
-  );
+  return createResponse(response, JSON.stringify({ message: message }), {
+    status: 403,
+  });
 }
 
-login()
+getUserByUsername()
   .then(async () => {
     await prisma.$disconnect();
   })

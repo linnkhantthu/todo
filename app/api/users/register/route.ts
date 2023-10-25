@@ -1,88 +1,34 @@
-import { NextRequest, NextResponse } from "next/server";
-import { AuthResults, User } from "@/lib/models";
+import { NextRequest } from "next/server";
+import { Results, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-
-// const prisma = new PrismaClient();
-
-async function register(
-  username?: string,
-  email?: string,
-  dob?: string,
-  password?: string
-) {
-  if (username && email && dob && password) {
-    const checkUsernameData = await prisma.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
-    const checkEmailData = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-    });
-    if (checkUsernameData === null && checkEmailData === null) {
-      const user = await prisma.user.create({
-        data: {
-          username: username,
-          email: email,
-          dob: new Date(dob),
-          password: password,
-        },
-      });
-      return user as User;
-    }
-  }
-  return undefined;
-}
+import { insertUser } from "@/lib/query/user/query";
 
 export async function POST(request: NextRequest) {
-  let currentUser: User | undefined = undefined;
-  let registeredUser: User | undefined = undefined;
+  let message = Results.LOGOUT_FIRST;
+  let user: User | undefined = undefined;
   // Create response
   const response = new Response();
   // Create session
   const session = await getSession(request, response);
-  currentUser = session.user;
-  let message = AuthResults.INVALID;
+  const { user: currentUser } = session;
+
   if (currentUser === undefined) {
-    if (currentUser === undefined) {
-      const loginData = await request.json();
-      const user = await register(
-        loginData.username,
-        loginData.email,
-        loginData.dob,
-        loginData.password
-      );
-      if (user) {
-        message = AuthResults.REGISTERED;
-        registeredUser = user;
-      } else {
-        message = AuthResults.REGISTERATIONFAILED;
-      }
-    }
-    // Get login data
-    return createResponse(
-      response,
-      JSON.stringify({
-        user: registeredUser,
-        message: message,
-      }),
-      { status: 200 }
-    );
+    const { username, email, dob, password } = await request.json();
+    user = await insertUser(username, email, dob, password);
+    message = user ? Results.SUCCESS : Results.FAIL;
   }
   return createResponse(
     response,
     JSON.stringify({
-      user: registeredUser,
-      message: AuthResults.ALREADYLOGGEDIN,
+      user: user,
+      message: message,
     }),
-    { status: 403 }
+    { status: 200 }
   );
 }
 
-register()
+insertUser()
   .then(async () => {
     await prisma.$disconnect();
   })
