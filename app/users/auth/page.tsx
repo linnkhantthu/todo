@@ -5,7 +5,7 @@ import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
 import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
-import { AuthResults, FlashMessage, User } from "@/lib/models";
+import { FlashMessage, Results, User } from "@/lib/models";
 import Loading from "../components/Loading";
 
 const Auth = () => {
@@ -47,18 +47,19 @@ const Auth = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        const user: User | undefined = data.user;
-        if (user) {
+        const { user, message }: { user: User | undefined; message: Results } =
+          data;
+        if (message === Results.SUCCESS && user) {
           mutateUser({ ...data, user: user });
         } else {
           setLoginFlashMessage({
-            message: AuthResults.LOGINFAILED,
+            message: message,
             category: "bg-error",
           });
         }
       } else {
         setLoginFlashMessage({
-          message: AuthResults.INVALID,
+          message: Results.CONNECTION_ERROR,
           category: "bg-error",
         });
       }
@@ -76,7 +77,6 @@ const Auth = () => {
 
     if (username && password && email && dob && password) {
       const registerData = {
-        type: "REGISTER",
         username: username,
         email: email,
         dob: dob,
@@ -91,9 +91,9 @@ const Auth = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        const message: AuthResults = data?.message;
+        const { message }: { message: Results } = data;
 
-        if (message === AuthResults.REGISTERED) {
+        if (message === Results.SUCCESS) {
           setIsRegistered(true);
           setLoginFlashMessage({
             message: "Registered successfully" + registerData.email,
@@ -104,7 +104,7 @@ const Auth = () => {
         }
       } else {
         setRegisterFlashMessage({
-          message: AuthResults.INVALID,
+          message: Results.CONNECTION_ERROR,
           category: "bg-info",
         });
       }

@@ -28,6 +28,7 @@ export enum Results {
   SUCCESS = "Operation succeed",
   FAIL = "Operation failed",
   SERVER_ERROR = "Server error",
+  CONNECTION_ERROR = "Connection error occcured",
 }
 
 export interface Todo {

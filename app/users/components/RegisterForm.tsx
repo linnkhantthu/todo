@@ -19,8 +19,8 @@ const RegisterForm = ({
 
   return (
     <>
-      <div className="mx-auto">
-        <fieldset>
+      <div className="flex flex-row justify-center w-screen">
+        <fieldset className="flex flex-col w-1/3">
           <Legend title={"Register"} flashMessage={flashMessage} />
           <form
             className=" form form-control text-lg"
@@ -95,10 +95,10 @@ const RegisterForm = ({
               value={"Submit"}
             />
           </form>
+          <a href="#" onClick={handler}>
+            Already have an account?
+          </a>
         </fieldset>
-        <a href="#" onClick={handler}>
-          Already have an account?
-        </a>
       </div>
     </>
   );

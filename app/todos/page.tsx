@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useEffect, useState } from "react";
 import Loading from "./loading";
-import { AuthResults, Todo } from "@/lib/models";
+import { Results, Todo } from "@/lib/models";
 import TodoList from "./components/TodoList";
 
 const Todos = () => {
@@ -24,9 +24,12 @@ const Todos = () => {
         body: JSON.stringify({ id: id }),
       });
       if (res.ok) {
-        const data = await res.json();
-        const deletedTodo: Todo = await data?.todo;
-        if (deletedTodo) {
+        const {
+          todo: deletedTodo,
+          message,
+        }: { todo: Todo | undefined; message: Results } = await res.json();
+        // const deletedTodo: Todo = await data?.todo;
+        if (message === Results.SUCCESS && deletedTodo) {
           setTodos(todos.filter((value) => value.id !== id));
           isSuccess = true;
         }
@@ -44,10 +47,8 @@ const Todos = () => {
     let isSuccess: boolean = false;
     let isError: boolean = false;
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const todoTitle = formData.get("todoInput")?.toString();
-    const newTodo = {
-      title: todoTitle,
-    };
+    const newTodoTitle = formData.get("todoInput")?.toString();
+
     // Adding new Todo into database
     try {
       const res = await fetch("/api/todos/crud", {
@@ -55,12 +56,15 @@ const Todos = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newTodo),
+        body: JSON.stringify({ title: newTodoTitle }),
       });
       if (res.ok) {
         const data = await res.json();
-        const addedTodo: Todo = await data?.todo;
-        if (addedTodo) {
+        const {
+          todo: addedTodo,
+          message,
+        }: { todo: Todo | undefined; message: Results } = await data;
+        if (message === Results.SUCCESS && addedTodo) {
           setTodos([...todos.reverse(), addedTodo].reverse());
           isSuccess = true;
         }
@@ -165,7 +169,7 @@ const Todos = () => {
     <>
       {isConnectionFailed ? (
         <div className="flex flex-row justify-center">
-          {AuthResults.CONNECTIONFAILED}
+          {Results.CONNECTION_ERROR}
         </div>
       ) : isLoading ? (
         <Loading dataLength={100} />

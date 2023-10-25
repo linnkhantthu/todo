@@ -1,7 +1,5 @@
 "use client";
 
-import useUser from "@/lib/useUser";
-import Link from "next/link";
 import UserNavbar from "./UserNavbar";
 
 function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
