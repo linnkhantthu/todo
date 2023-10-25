@@ -6,10 +6,12 @@ const LoginForm = ({
   handler,
   handleLogin,
   flashMessage,
+  isSubmitting,
 }: {
   handler: any;
   handleLogin: any;
   flashMessage: FlashMessage | undefined;
+  isSubmitting: boolean;
 }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -50,11 +52,14 @@ const LoginForm = ({
               }}
               required
             />
-            <input
+            {/* <input
               className="my-2 btn btn-info w-20"
               type="submit"
               value={"Submit"}
-            />
+            /> */}
+            <button type="submit" className="my-2 btn btn-info w-28">
+              {isSubmitting ? "Submitting" : "Submit"}
+            </button>
           </form>
           <a href="#" className="link link-success" onClick={handler}>
             Do not have an account?

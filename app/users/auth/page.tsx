@@ -10,31 +10,25 @@ import Loading from "../components/Loading";
 
 const Auth = () => {
   const { data, isError, isLoading, mutateUser } = useUser();
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [isShowRegisterForm, setIsShowRegisterForm] = useState(false);
   const [registerFlashMessage, setRegisterFlashMessage] =
     useState<FlashMessage>();
   const [loginFlashMessage, setLoginFlashMessage] = useState<FlashMessage>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (isRegistered) {
-      redirect("/users/auth");
-    }
-  }, [isRegistered]);
-
-  const [register, setRegister] = useState(false);
-  const handleSetRegister = () => {
-    setRegister((register) => !register);
+  const showRegisterForm = () => {
+    setIsShowRegisterForm((register) => !register);
   };
 
   // Handle Login Submit
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");
     const password = formData.get("password");
     if (username && password) {
       const loginData = {
-        type: "LOGIN",
         username: username,
         password: password,
       };
@@ -64,11 +58,13 @@ const Auth = () => {
         });
       }
     }
+    setIsSubmitting(false);
   };
 
   // Registeration handler
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");
     const email = formData.get("email");
@@ -94,9 +90,9 @@ const Auth = () => {
         const { message }: { message: Results } = data;
 
         if (message === Results.SUCCESS) {
-          setIsRegistered(true);
+          setIsShowRegisterForm(false);
           setLoginFlashMessage({
-            message: "Registered successfully" + registerData.email,
+            message: "Registered successfully as " + registerData.email,
             category: "bg-success",
           });
         } else {
@@ -109,32 +105,31 @@ const Auth = () => {
         });
       }
     }
+    setIsSubmitting(false);
   };
-  if (isLoading || isError) {
-    return <Loading />;
-  } else {
-    if (data?.user === undefined) {
-      return (
-        <>
-          {register ? (
-            <RegisterForm
-              handler={handleSetRegister}
-              handleRegister={handleRegister}
-              flashMessage={registerFlashMessage}
-            />
-          ) : (
-            <LoginForm
-              handler={handleSetRegister}
-              handleLogin={handleLogin}
-              flashMessage={loginFlashMessage}
-            />
-          )}
-        </>
-      );
-    } else {
-      redirect("/todos");
-    }
-  }
+  return isError ? (
+    Results.CONNECTION_ERROR
+  ) : isLoading ? (
+    <Loading />
+  ) : data?.user === undefined ? (
+    isShowRegisterForm ? (
+      <RegisterForm
+        handler={showRegisterForm}
+        handleRegister={handleRegister}
+        flashMessage={registerFlashMessage}
+        isSubmitting={isSubmitting}
+      />
+    ) : (
+      <LoginForm
+        handler={showRegisterForm}
+        handleLogin={handleLogin}
+        flashMessage={loginFlashMessage}
+        isSubmitting={isSubmitting}
+      />
+    )
+  ) : (
+    redirect("/todos")
+  );
 };
 
 export default Auth;

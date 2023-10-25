@@ -6,10 +6,12 @@ const RegisterForm = ({
   handler,
   handleRegister,
   flashMessage,
+  isSubmitting,
 }: {
   handler: any;
   handleRegister: any;
   flashMessage: FlashMessage | undefined;
+  isSubmitting: boolean;
 }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -89,11 +91,14 @@ const RegisterForm = ({
               ""
             )}
 
-            <input
+            {/* <input
               className="my-2 btn btn-info w-20"
               type="submit"
               value={"Submit"}
-            />
+            /> */}
+            <button type="submit" className="my-2 btn btn-info w-28">
+              {isSubmitting ? "Submitting" : "Submit"}
+            </button>
           </form>
           <a href="#" onClick={handler}>
             Already have an account?
