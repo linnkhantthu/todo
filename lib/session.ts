@@ -8,10 +8,10 @@ declare module "iron-session" {
 }
 export const getSession = (req: Request, res: Response) => {
   const session = getIronSession<IronSessionData>(req, res, {
-    password: "vFG6GEZfmFqiWEvA1MFLyR3q7qdkx0k1",
-    cookieName: "session",
+    password: process.env.COOKIE_KEY!,
+    cookieName: process.env.COOKIE_NAME!,
     cookieOptions: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production" ? true : false,
     },
   });
   return session;

@@ -1,6 +1,4 @@
-import useSWR, { useSWRConfig } from "swr";
-import { User } from "./models";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 const fetcher = (url: RequestInfo | URL) =>
   fetch(url).then((res) => res.json());
