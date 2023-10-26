@@ -1,6 +1,7 @@
 import prisma from "@/db";
 import { User } from "@/lib/models";
-import { generateToken, getExpireDate } from "@/lib/utils";
+import { HashPassword, generateToken, getExpireDate } from "@/lib/utils";
+import crypto from "crypto";
 
 export async function getUserByEmail(email?: string) {
   if (email) {
@@ -55,24 +56,28 @@ export async function insertUser(
   dob?: string,
   password?: string
 ) {
+  const hashPassword = new HashPassword();
   if (username && email && dob && password) {
-    const checkUsernameData = await prisma.user.findFirst({
+    const isUserExists = await prisma.user.findFirst({
       where: {
-        username: username,
+        OR: [
+          {
+            username: username,
+          },
+          {
+            email: email,
+          },
+        ],
       },
     });
-    const checkEmailData = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-    });
-    if (checkUsernameData === null && checkEmailData === null) {
+    if (isUserExists === null) {
+      const encryptedPassword = hashPassword.encrypt(password);
       const user = await prisma.user.create({
         data: {
           username: username,
           email: email,
           dob: new Date(dob),
-          password: password,
+          password: encryptedPassword,
         },
       });
       return user as User;
