@@ -1,6 +1,7 @@
 import { AuthResults, FlashMessage } from "@/lib/models";
 import React, { useState } from "react";
 import Legend from "./Legend";
+import Submit from "@/app/components/Submit";
 
 const RegisterForm = ({
   handler,
@@ -90,15 +91,7 @@ const RegisterForm = ({
             ) : (
               ""
             )}
-
-            {/* <input
-              className="my-2 btn btn-info w-20"
-              type="submit"
-              value={"Submit"}
-            /> */}
-            <button type="submit" className="my-2 btn btn-info w-28">
-              {isSubmitting ? "Submitting" : "Submit"}
-            </button>
+            <Submit isSubmitting={isSubmitting} />
           </form>
           <a href="#" onClick={handler}>
             Already have an account?

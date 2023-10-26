@@ -3,9 +3,11 @@ import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import { getUserByUsername } from "@/lib/query/user/query";
+import { HashPassword } from "@/lib/utils";
 
 // {user, message}: {user: User, message: Results}
 export async function POST(request: NextRequest) {
+  const hashPassword = new HashPassword();
   let message = Results.LOGOUT_FIRST;
   // Create response
   const response = new Response();
@@ -17,7 +19,7 @@ export async function POST(request: NextRequest) {
     // Get login data
     const { username, password } = await request.json();
     const user = await getUserByUsername(username);
-    if (user && user.password === password) {
+    if (user && hashPassword.decrypt(user.password) === password) {
       session.user = {
         username: user.username,
         email: user.email,

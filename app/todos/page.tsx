@@ -59,12 +59,12 @@ const Todos = () => {
         body: JSON.stringify({ title: newTodoTitle }),
       });
       if (res.ok) {
-        const data = await res.json();
         const {
           todo: addedTodo,
           message,
-        }: { todo: Todo | undefined; message: Results } = await data;
+        }: { todo: Todo | undefined; message: Results } = await res.json();
         if (message === Results.SUCCESS && addedTodo) {
+          setIsCompletedTodos(false);
           setTodos([...todos.reverse(), addedTodo].reverse());
           isSuccess = true;
         }

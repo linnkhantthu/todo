@@ -1,3 +1,4 @@
+import Submit from "@/app/components/Submit";
 import { FlashMessage } from "@/lib/models";
 import { redirect } from "next/navigation";
 import React, { FormEvent, useState } from "react";
@@ -82,11 +83,7 @@ function PasswordResetForm({
             ""
           )}
 
-          <input
-            className="my-2 btn btn-info w-24"
-            type="submit"
-            value={isSubmitting ? "Submitting..." : "Submit"}
-          />
+          <Submit isSubmitting={isSubmitting} />
         </form>
       </fieldset>
     </div>

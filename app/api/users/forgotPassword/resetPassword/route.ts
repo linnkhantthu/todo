@@ -2,43 +2,10 @@ import { NextRequest } from "next/server";
 import { Results, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-
-async function fetchUser(resetToken?: string) {
-  if (resetToken) {
-    const data = await prisma.user.findFirst({
-      where: {
-        resetPasswordToken: resetToken,
-        resetPasswordTokenExpire: {
-          gt: new Date(),
-        },
-      },
-    });
-    if (data !== null) {
-      return data;
-    }
-  }
-  return undefined;
-}
-
-async function updatePassword(token?: string, password?: string) {
-  if (token && password) {
-    const user = await prisma.user.update({
-      where: {
-        resetPasswordToken: token,
-        resetPasswordTokenExpire: {
-          gt: new Date(),
-        },
-      },
-      data: {
-        password: password,
-      },
-    });
-    if (user) {
-      return user;
-    }
-  }
-  return undefined;
-}
+import {
+  getUserByResetPasswordToken,
+  updatePasswordByResetPasswordToken,
+} from "@/lib/query/user/query";
 
 // {email, message}: {email: string, message: AuthResults}
 export async function POST(request: NextRequest) {
@@ -60,12 +27,15 @@ export async function POST(request: NextRequest) {
     const { token, password } = await request.json();
 
     // Fetch User from DB
-    const user = await fetchUser(token);
+    const user = await getUserByResetPasswordToken(token);
 
     // If user exists and has a password reset token
     if (user !== undefined && user.resetPasswordToken) {
       // Update the user's password with
-      const updatedUser = await updatePassword(token, password);
+      const updatedUser = await updatePasswordByResetPasswordToken(
+        token,
+        password
+      );
 
       // If the update function succeed
       if (updatedUser) {
@@ -89,7 +59,7 @@ export async function POST(request: NextRequest) {
   });
 }
 
-fetchUser()
+getUserByResetPasswordToken()
   .then(async () => {
     await prisma.$disconnect();
   })
@@ -99,7 +69,7 @@ fetchUser()
     process.exit(1);
   });
 
-updatePassword()
+updatePasswordByResetPasswordToken()
   .then(async () => {
     await prisma.$disconnect();
   })

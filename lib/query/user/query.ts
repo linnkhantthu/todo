@@ -85,3 +85,45 @@ export async function insertUser(
   }
   return undefined;
 }
+
+export async function getUserByResetPasswordToken(resetToken?: string) {
+  if (resetToken) {
+    const data = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: resetToken,
+        resetPasswordTokenExpire: {
+          gt: new Date(),
+        },
+      },
+    });
+    if (data !== null) {
+      return data;
+    }
+  }
+  return undefined;
+}
+
+export async function updatePasswordByResetPasswordToken(
+  token?: string,
+  password?: string
+) {
+  const hashPassword = new HashPassword();
+  if (token && password) {
+    const encryptedPassword = hashPassword.encrypt(password);
+    const user = await prisma.user.update({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordTokenExpire: {
+          gt: new Date(),
+        },
+      },
+      data: {
+        password: encryptedPassword,
+      },
+    });
+    if (user) {
+      return user;
+    }
+  }
+  return undefined;
+}

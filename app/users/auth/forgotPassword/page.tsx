@@ -14,20 +14,22 @@ function ForgotPassword() {
     let foundEmail: string | undefined = undefined;
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const formDataObject = {
-      email: formData.get("email"),
-    };
+    const formEmail = formData.get("email");
     try {
-      const res = await fetch("/api/users/forgotPassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formDataObject),
-      });
-      if (res.ok) {
-        const { email, message } = await res.json();
-        foundEmail = email;
+      if (formEmail?.length !== 0) {
+        const res = await fetch("/api/users/forgotPassword", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.get("email"),
+          }),
+        });
+        if (res.ok) {
+          const { email, message } = await res.json();
+          foundEmail = email;
+        }
       }
     } catch (error: any) {
       setIsConnectionFailed(true);

@@ -1,3 +1,4 @@
+import Submit from "@/app/components/Submit";
 import { FlashMessage } from "@/lib/models";
 import React, { FormEvent, useState } from "react";
 
@@ -49,11 +50,7 @@ function ForgotPasswordForm({
             }}
             required
           />
-          <input
-            className="my-2 btn btn-info w-20"
-            type="submit"
-            value={isSubmitting ? "Submitting..." : "Submit"}
-          />
+          <Submit isSubmitting={isSubmitting} />
         </form>
       </fieldset>
     </div>

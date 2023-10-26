@@ -1,6 +1,8 @@
 import { AuthResults, FlashMessage } from "@/lib/models";
 import React, { useState } from "react";
 import Legend from "./Legend";
+import Loading from "./Loading";
+import Submit from "@/app/components/Submit";
 
 const LoginForm = ({
   handler,
@@ -52,14 +54,7 @@ const LoginForm = ({
               }}
               required
             />
-            {/* <input
-              className="my-2 btn btn-info w-20"
-              type="submit"
-              value={"Submit"}
-            /> */}
-            <button type="submit" className="my-2 btn btn-info w-28">
-              {isSubmitting ? "Submitting" : "Submit"}
-            </button>
+            <Submit isSubmitting={isSubmitting} />
           </form>
           <a href="#" className="link link-success" onClick={handler}>
             Do not have an account?
