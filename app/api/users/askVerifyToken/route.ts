@@ -2,15 +2,12 @@ import { NextRequest } from "next/server";
 import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-import { Resend } from "resend";
 import EmailTemplate from "@/app/users/components/EmailTemplate";
 import {
   getUserByEmail,
-  insertResetPasswordTokenByEmail,
+  insertVerifyTokenByEmail,
 } from "@/lib/query/user/query";
-
-// Init Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendMail } from "@/lib/utils";
 
 // {email: string, message: Results}
 // { email: string }
@@ -26,7 +23,7 @@ export async function POST(request: NextRequest) {
   const { user: currentUser } = session;
 
   // If the user is loggedout
-  if (currentUser === undefined) {
+  if (currentUser) {
     let dbEmail: string | undefined = undefined;
     // Get data
     const { email } = await request.json();
@@ -39,25 +36,24 @@ export async function POST(request: NextRequest) {
       dbEmail = user.email;
 
       // Generate Token
-      const { token } = await insertResetPasswordTokenByEmail(dbEmail);
+      const { token } = await insertVerifyTokenByEmail(dbEmail);
 
       // If token generated
       if (dbEmail && token) {
         // Try to send the token as a form of react element with a Button
         try {
-          const data = await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: [dbEmail],
-            subject: "Todo: Reset password",
-            react: EmailTemplate({
-              description: "to reset the password",
+          const sentEmailId = await sendMail(
+            user.email,
+            "Todo: Verify your email",
+            EmailTemplate({
+              description: "to complete verification",
               username: user.username,
               token: token,
-              path: "/users/auth/forgotPassword/verify/",
-            }),
-          });
+              path: "/users/verify/",
+            })
+          );
           // If the mail is successfully sent
-          if (data.id) {
+          if (sentEmailId) {
             message = Results.SUCCESS;
           }
         } catch (error) {
@@ -84,16 +80,6 @@ export async function POST(request: NextRequest) {
 }
 
 getUserByEmail()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
-
-insertResetPasswordTokenByEmail()
   .then(async () => {
     await prisma.$disconnect();
   })

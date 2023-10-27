@@ -1,8 +1,12 @@
-import ForgotPasswordEmailTemplate from "@/app/users/components/ForgotPasswordEmailTemplate";
+import EmailTemplate from "@/app/users/components/EmailTemplate";
 import prisma from "@/db";
 import { User } from "@/lib/models";
-import { HashPassword, generateToken, getExpireDate } from "@/lib/utils";
-import crypto from "crypto";
+import {
+  HashPassword,
+  generateToken,
+  getExpireDate,
+  sendMail,
+} from "@/lib/utils";
 import { Resend } from "resend";
 
 export async function getUserByEmail(email?: string) {
@@ -19,7 +23,7 @@ export async function getUserByEmail(email?: string) {
   return undefined;
 }
 
-export async function insertTokenByEmail(email?: string) {
+export async function insertResetPasswordTokenByEmail(email?: string) {
   let token: string | undefined = undefined;
   if (email) {
     const user = await prisma.user.update({
@@ -33,6 +37,25 @@ export async function insertTokenByEmail(email?: string) {
     });
     if (user && user.resetPasswordToken) {
       token = user.resetPasswordToken;
+    }
+  }
+  return { token };
+}
+
+export async function insertVerifyTokenByEmail(email?: string) {
+  let token: string | undefined = undefined;
+  if (email) {
+    const user = await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        verifyToken: generateToken(),
+        verifyTokenExpire: getExpireDate(1440),
+      },
+    });
+    if (user && user.verifyToken) {
+      token = user.verifyToken;
     }
   }
   return { token };
@@ -58,7 +81,6 @@ export async function insertUser(
   dob?: string,
   password?: string
 ) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
   const hashPassword = new HashPassword();
   if (username && email && dob && password) {
     const isUserExists = await prisma.user.findFirst({
@@ -86,16 +108,17 @@ export async function insertUser(
         },
       });
       if (user) {
-        const data = await resend.emails.send({
-          from: "onboarding@resend.dev",
-          to: [email],
-          subject: "Todo: Verify email",
-          react: ForgotPasswordEmailTemplate({
-            username: username,
+        const sentEmailId = await sendMail(
+          user.email,
+          "Todo: Verify your email",
+          EmailTemplate({
+            description: "to complete the verification",
+            username: user.username,
             token: user.verifyToken!,
-          }),
-        });
-        return data.id ? (user as User) : undefined;
+            path: "/users/verify/",
+          })
+        );
+        return sentEmailId ? (user as User) : undefined;
       }
     }
   }
@@ -119,7 +142,26 @@ export async function getUserByResetPasswordToken(resetToken?: string) {
   return undefined;
 }
 
-export async function getUserByVerifyToken(verifyToken?: string) {
+export async function getUserByVerifyTokenAndVerified(
+  verifyToken?: string,
+  verified?: boolean
+) {
+  if (verifyToken && verified !== undefined) {
+    const user = await prisma.user.findFirst({
+      where: {
+        verifyToken: verifyToken,
+        verified: verified,
+        verifyTokenExpire: {
+          gt: new Date(),
+        },
+      },
+    });
+    return user;
+  }
+  return undefined;
+}
+
+export async function updateVerifiedByVerifyToken(verifyToken?: string) {
   if (verifyToken) {
     const data = await prisma.user.update({
       where: {

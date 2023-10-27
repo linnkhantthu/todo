@@ -5,7 +5,7 @@ import prisma from "@/db";
 import { fetchUserByResetPasswordToken } from "@/lib/query/user/query";
 
 export async function POST(request: NextRequest) {
-  let message = Results.REQUIRED_LOGIN;
+  let message = Results.REQUIRED_LOGOUT;
   let dbToken: string | undefined = undefined;
   // Create response
   const response = new Response();

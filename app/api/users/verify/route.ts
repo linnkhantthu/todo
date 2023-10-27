@@ -4,18 +4,33 @@ import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import {
   fetchUserByResetPasswordToken,
-  getUserByVerifyToken,
+  getUserByVerifyTokenAndVerified,
+  updateVerifiedByVerifyToken,
 } from "@/lib/query/user/query";
+import { User } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   let message = Results.FAIL;
   // Create response
   const response = new Response();
+  const session = await getSession(request, response);
   // Get login data
   const { token } = await request.json();
-  const user = await getUserByVerifyToken(token);
-  if (user !== undefined) {
-    message = Results.SUCCESS;
+  const user = await getUserByVerifyTokenAndVerified(token, false);
+  if (user) {
+    const verifiedUser = await updateVerifiedByVerifyToken(token);
+    if (verifiedUser) {
+      if (session.user) {
+        session.user = {
+          username: verifiedUser.username,
+          email: verifiedUser.email,
+          dob: verifiedUser.dob,
+          verified: verifiedUser.verified,
+        };
+        await session.save();
+      }
+      message = Results.SUCCESS;
+    }
   }
   return createResponse(
     response,

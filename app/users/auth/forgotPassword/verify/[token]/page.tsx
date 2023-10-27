@@ -49,7 +49,6 @@ function VerifyResetPasswordToken({ params }: { params: { token: string } }) {
         body: JSON.stringify({ token: token }),
       });
       const { token: fetchedToken, message } = await res.json();
-      console.log(message);
       if (res.ok) {
         if (fetchedToken !== undefined) {
           setFlashMessage({ message: message, category: "bg-success" });

@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { Resend } from "resend";
 
 export function generateToken(): string {
   return crypto.randomBytes(16).toString("hex");
@@ -43,4 +44,19 @@ export class HashPassword {
     let decrypted = decipher.update(text, "base64", "utf8");
     return decrypted + decipher.final("utf8");
   };
+}
+
+export async function sendMail(
+  email: string,
+  subject: string,
+  template: JSX.Element
+): Promise<string> {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const data = await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: [email],
+    subject: subject,
+    react: template,
+  });
+  return data.id;
 }
