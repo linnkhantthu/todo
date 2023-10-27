@@ -119,6 +119,7 @@ export async function updatePasswordByResetPasswordToken(
       },
       data: {
         password: encryptedPassword,
+        resetPasswordTokenExpire: new Date(),
       },
     });
     if (user) {

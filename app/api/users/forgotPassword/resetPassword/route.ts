@@ -13,6 +13,8 @@ export async function POST(request: NextRequest) {
   // Declaring vars
   let email: string | undefined = undefined;
   let message = Results.REQUIRED_LOGOUT;
+  let token = undefined;
+  let password = undefined;
 
   // Create response
   const response = new Response();
@@ -20,12 +22,15 @@ export async function POST(request: NextRequest) {
   // Create session and get session user
   const session = await getSession(request, response);
   const { user: currentUser } = session;
-
+  try {
+    const { token: formToken, password: formPassword } = await request.json();
+    token = formToken;
+    password = formPassword;
+  } catch (error: any) {
+    message = Results.FAIL;
+  }
   // If user is loggedout
-  if (currentUser === undefined) {
-    // Get data
-    const { token, password } = await request.json();
-
+  if (currentUser === undefined && token && password) {
     // Fetch User from DB
     const user = await getUserByResetPasswordToken(token);
 
