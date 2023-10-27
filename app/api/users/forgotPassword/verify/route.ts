@@ -1,60 +1,42 @@
 import { NextRequest } from "next/server";
-import { AuthResults, User } from "@/lib/models";
+import { AuthResults, Results, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-
-async function fetchUser(token?: string) {
-  if (token) {
-    const data = await prisma.user.findFirst({
-      where: {
-        resetPasswordToken: token,
-        resetPasswordTokenExpire: {
-          gt: new Date(),
-        },
-      },
-    });
-    if (data !== null) {
-      return data;
-    }
-  }
-  return undefined;
-}
+import { fetchUserByResetPasswordToken } from "@/lib/query/user/query";
 
 export async function POST(request: NextRequest) {
-  let currentUser: User | undefined = undefined;
-  let token: string | undefined = undefined;
+  let message = Results.REQUIRED_LOGIN;
+  let dbToken: string | undefined = undefined;
   // Create response
   const response = new Response();
   // Create session
   const session = await getSession(request, response);
-  currentUser = session.user;
+  const { user: currentUser } = session;
   if (currentUser === undefined) {
+    message = Results.FAIL;
     // Get login data
-    const formData = await request.json();
-    let message = AuthResults.FAIL;
+    const { token } = await request.json();
 
-    const user = await fetchUser(formData.token);
+    const user = await fetchUserByResetPasswordToken(token);
     if (user !== undefined && user.resetPasswordToken) {
-      token = user.resetPasswordToken;
-      message = AuthResults.SUCCESS;
+      dbToken = token;
+      message = Results.SUCCESS;
     }
     return createResponse(
       response,
       JSON.stringify({
-        token: token,
+        token: dbToken,
         message: message,
       }),
       { status: 200 }
     );
   }
-  return createResponse(
-    response,
-    JSON.stringify({ message: AuthResults.INVALID }),
-    { status: 403 }
-  );
+  return createResponse(response, JSON.stringify({ message: message }), {
+    status: 403,
+  });
 }
 
-fetchUser()
+fetchUserByResetPasswordToken()
   .then(async () => {
     await prisma.$disconnect();
   })

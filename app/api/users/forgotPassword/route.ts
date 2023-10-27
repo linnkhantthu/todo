@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Results, User } from "@/lib/models";
+import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import { Resend } from "resend";
@@ -9,10 +9,11 @@ import { getUserByEmail, insertTokenByEmail } from "@/lib/query/user/query";
 // Init Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// {}
+// {email: string, message: Results}
+// { email: string }
 export async function POST(request: NextRequest) {
   // Declare Var
-  let message = Results.LOGOUT_FIRST;
+  let message = Results.REQUIRED_LOGOUT;
 
   // Create response
   const response = new Response();

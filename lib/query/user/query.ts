@@ -127,3 +127,20 @@ export async function updatePasswordByResetPasswordToken(
   }
   return undefined;
 }
+
+export async function fetchUserByResetPasswordToken(token?: string) {
+  if (token) {
+    const data = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordTokenExpire: {
+          gt: new Date(),
+        },
+      },
+    });
+    if (data !== null) {
+      return data;
+    }
+  }
+  return undefined;
+}

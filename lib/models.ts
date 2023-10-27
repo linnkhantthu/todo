@@ -23,12 +23,13 @@ export enum AuthResults {
 }
 
 export enum Results {
-  LOGIN_FIRST = "You need to login to perform this action",
-  LOGOUT_FIRST = "You need to logged out in order to perform this action",
+  REQUIRED_LOGIN = "You need to login to perform this action",
+  REQUIRED_LOGOUT = "You need to logged out in order to perform this action",
   SUCCESS = "Operation succeed",
   FAIL = "Operation failed",
   SERVER_ERROR = "Server error",
   CONNECTION_ERROR = "Connection error occcured",
+  AUTH_ERROR = "Username or password is incorrect",
 }
 
 export interface Todo {

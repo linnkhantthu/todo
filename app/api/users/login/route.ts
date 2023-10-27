@@ -5,10 +5,11 @@ import prisma from "@/db";
 import { getUserByUsername } from "@/lib/query/user/query";
 import { HashPassword } from "@/lib/utils";
 
-// {user, message}: {user: User, message: Results}
+// {user: User, message: Results}
+// Request { username, password }
 export async function POST(request: NextRequest) {
   const hashPassword = new HashPassword();
-  let message = Results.LOGOUT_FIRST;
+  let message = Results.REQUIRED_LOGOUT;
   // Create response
   const response = new Response();
   // Create session

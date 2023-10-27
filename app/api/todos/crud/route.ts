@@ -8,11 +8,11 @@ import {
   updateTodoByIdAndUsername,
 } from "@/lib/query/todo/query";
 
-// Add Todo if method: POST {todo, message}: {todo: Todo, message: Results}
+// Add Todo if method: POST {todo: Todo, message: Results}
 // Need { title }
 export async function POST(request: NextRequest) {
   // Declaring currentUser
-  let message = Results.LOGIN_FIRST;
+  let message = Results.REQUIRED_LOGIN;
 
   // Create response
   const response = new Response();
@@ -22,10 +22,7 @@ export async function POST(request: NextRequest) {
   const { user: currentUser } = session;
 
   if (currentUser) {
-    // Get data
     const { title } = await request.json();
-
-    // Call Function
     const todo = await insertTodoByUsername(title, currentUser.username);
     message = todo ? Results.SUCCESS : Results.FAIL;
     return createResponse(
@@ -39,16 +36,16 @@ export async function POST(request: NextRequest) {
   return createResponse(
     response,
     JSON.stringify({
-      message: Results.LOGIN_FIRST,
+      message: message,
     }),
     { status: 403 }
   );
 }
 
-// Update Todo if method: PUT {todo, message}: {todo: Todo, message: Results}
+// Update Todo if method: PUT {todo: Todo, message: Results}
 // Need { id, title, completed }
 export async function PUT(request: NextRequest) {
-  let message = Results.LOGIN_FIRST;
+  let message = Results.REQUIRED_LOGIN;
   // Create response
   const response = new Response();
   // Create session
@@ -59,7 +56,7 @@ export async function PUT(request: NextRequest) {
     const { id, title, completed } = await request.json();
     const todo = await updateTodoByIdAndUsername(
       id,
-      currentUser?.username,
+      currentUser.username,
       title,
       completed
     );
@@ -81,10 +78,10 @@ export async function PUT(request: NextRequest) {
   );
 }
 
-// Delete Todo if method: DELETE {todo, message}: {todo: Todo, message: Results}
+// Delete Todo if method: DELETE {todo: Todo, message: Results}
 // Need { id }
 export async function DELETE(request: NextRequest) {
-  let message = Results.LOGIN_FIRST;
+  let message = Results.REQUIRED_LOGIN;
   // Create response
   const response = new Response();
   // Create session
@@ -93,7 +90,7 @@ export async function DELETE(request: NextRequest) {
   // Get data
   if (currentUser) {
     const { id } = await request.json();
-    const todo = await deleteTodoById(id, currentUser?.username);
+    const todo = await deleteTodoById(id, currentUser.username);
     message = todo ? Results.SUCCESS : Results.FAIL;
     return createResponse(
       response,

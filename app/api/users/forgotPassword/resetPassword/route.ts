@@ -7,19 +7,19 @@ import {
   updatePasswordByResetPasswordToken,
 } from "@/lib/query/user/query";
 
-// {email, message}: {email: string, message: AuthResults}
+// {email: string, message: Results}
+// Need { token, password }
 export async function POST(request: NextRequest) {
   // Declaring vars
-  let currentUser: User | undefined = undefined;
   let email: string | undefined = undefined;
-  let message = Results.LOGOUT_FIRST;
+  let message = Results.REQUIRED_LOGOUT;
 
   // Create response
   const response = new Response();
 
   // Create session and get session user
   const session = await getSession(request, response);
-  currentUser = session.user;
+  const { user: currentUser } = session;
 
   // If user is loggedout
   if (currentUser === undefined) {
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     const user = await getUserByResetPasswordToken(token);
 
     // If user exists and has a password reset token
-    if (user !== undefined && user.resetPasswordToken) {
+    if (user && user.resetPasswordToken) {
       // Update the user's password with
       const updatedUser = await updatePasswordByResetPasswordToken(
         token,

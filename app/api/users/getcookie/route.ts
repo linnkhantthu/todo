@@ -1,34 +1,48 @@
 // getCookie
 
+import prisma from "@/db";
 import { Results } from "@/lib/models";
 import { getUserByUsername } from "@/lib/query/user/query";
 import { createResponse, getSession } from "@/lib/session";
 import { NextRequest } from "next/server";
 
+// {user: User, isLoggedIn: boolean, message: Results}
+// Req: {}
 export async function GET(request: NextRequest) {
   let message = Results.FAIL;
+  let isLoggedIn = false;
   const response = new Response();
   // Create session
   const session = await getSession(request, response);
-  const user = session.user;
-  const userFromDb = await getUserByUsername(user?.username);
+  const { user: currentUser } = session;
+  const dbUser = await getUserByUsername(currentUser?.username);
 
-  if (user && userFromDb) {
+  if (currentUser && dbUser) {
     message = Results.SUCCESS;
+    isLoggedIn = true;
     return createResponse(
       response,
       JSON.stringify({
-        user: user,
-        isLoggedIn: true,
+        user: currentUser,
+        isLoggedIn: isLoggedIn,
         message: message,
       }),
       { status: 200 }
     );
   } else {
+    return createResponse(
+      response,
+      JSON.stringify({ isLoggedIn: isLoggedIn, message: message }),
+      { status: 403 }
+    );
   }
-  return createResponse(
-    response,
-    JSON.stringify({ isLoggedIn: false, message: message }),
-    { status: 200 }
-  );
 }
+getUserByUsername()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

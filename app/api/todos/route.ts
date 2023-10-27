@@ -1,23 +1,20 @@
 import prisma from "@/db";
-import { AuthResults, Todo, User } from "@/lib/models";
+import { Results, Todo } from "@/lib/models";
 import { getAllTodoByUsername } from "@/lib/query/todo/query";
 import { getSession } from "@/lib/session";
 
+// {todo: Todo[], message: Results}
 export async function GET(request: Request) {
-  let currentUser: User | undefined = undefined;
+  let message = Results.REQUIRED_LOGIN;
   const response = new Response();
   const session = await getSession(request, response);
-  currentUser = session.user;
-  const todos: Todo[] | undefined = await getAllTodoByUsername(
-    currentUser?.username
-  );
+  const { user: currentUser } = session;
   if (currentUser) {
-    return Response.json({ todos: todos }, { status: 200 });
+    const todos = await getAllTodoByUsername(currentUser.username);
+    message = Results.SUCCESS;
+    return Response.json({ todos: todos, message: message }, { status: 200 });
   } else {
-    return Response.json(
-      { todos: undefined, message: AuthResults.INVALID },
-      { status: 403 }
-    );
+    return Response.json({ message: message }, { status: 403 });
   }
 }
 

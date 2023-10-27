@@ -15,7 +15,7 @@ export async function getAllTodoByUsername(username?: string) {
         },
       });
       if (todos) {
-        return todos;
+        return todos as Todo[];
       }
     }
   }

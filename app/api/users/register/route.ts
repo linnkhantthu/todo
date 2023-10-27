@@ -5,8 +5,9 @@ import prisma from "@/db";
 import { insertUser } from "@/lib/query/user/query";
 
 export async function POST(request: NextRequest) {
-  let message = Results.LOGOUT_FIRST;
+  let message = Results.REQUIRED_LOGOUT;
   let user: User | undefined = undefined;
+  let status = 403;
   // Create response
   const response = new Response();
   // Create session
@@ -14,6 +15,7 @@ export async function POST(request: NextRequest) {
   const { user: currentUser } = session;
 
   if (currentUser === undefined) {
+    status = 200;
     const { username, email, dob, password } = await request.json();
     user = await insertUser(username, email, dob, password);
     message = user ? Results.SUCCESS : Results.FAIL;
@@ -24,7 +26,7 @@ export async function POST(request: NextRequest) {
       user: user,
       message: message,
     }),
-    { status: 200 }
+    { status: status }
   );
 }
 
