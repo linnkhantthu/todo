@@ -1,7 +1,9 @@
+import ForgotPasswordEmailTemplate from "@/app/users/components/ForgotPasswordEmailTemplate";
 import prisma from "@/db";
 import { User } from "@/lib/models";
 import { HashPassword, generateToken, getExpireDate } from "@/lib/utils";
 import crypto from "crypto";
+import { Resend } from "resend";
 
 export async function getUserByEmail(email?: string) {
   if (email) {
@@ -56,6 +58,7 @@ export async function insertUser(
   dob?: string,
   password?: string
 ) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const hashPassword = new HashPassword();
   if (username && email && dob && password) {
     const isUserExists = await prisma.user.findFirst({
@@ -78,9 +81,22 @@ export async function insertUser(
           email: email,
           dob: new Date(dob),
           password: encryptedPassword,
+          verifyToken: generateToken(),
+          verifyTokenExpire: getExpireDate(1440),
         },
       });
-      return user as User;
+      if (user) {
+        const data = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: [email],
+          subject: "Todo: Verify email",
+          react: ForgotPasswordEmailTemplate({
+            username: username,
+            token: user.verifyToken!,
+          }),
+        });
+        return data.id ? (user as User) : undefined;
+      }
     }
   }
   return undefined;

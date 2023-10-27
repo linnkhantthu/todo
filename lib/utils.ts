@@ -4,9 +4,9 @@ export function generateToken(): string {
   return crypto.randomBytes(16).toString("hex");
 }
 
-export function getExpireDate(): Date {
+export function getExpireDate(mins?: number): Date {
   let now = new Date();
-  now.setMinutes(now.getMinutes() + 15);
+  now.setMinutes(now.getMinutes() + (mins ? mins : 15));
   return now;
 }
 
