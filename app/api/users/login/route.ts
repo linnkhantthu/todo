@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
         username: user.username,
         email: user.email,
         dob: user.dob,
+        verified: user.verified,
       };
       await session.save();
       currentUser = session.user;

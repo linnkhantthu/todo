@@ -9,7 +9,7 @@ import { NextRequest } from "next/server";
 // {user: User, isLoggedIn: boolean, message: Results}
 // Req: {}
 export async function GET(request: NextRequest) {
-  let message = Results.FAIL;
+  let message = Results.SUCCESS;
   let isLoggedIn = false;
   const response = new Response();
   // Create session
@@ -18,7 +18,6 @@ export async function GET(request: NextRequest) {
   const dbUser = await getUserByUsername(currentUser?.username);
 
   if (currentUser && dbUser) {
-    message = Results.SUCCESS;
     isLoggedIn = true;
     return createResponse(
       response,
@@ -33,7 +32,7 @@ export async function GET(request: NextRequest) {
     return createResponse(
       response,
       JSON.stringify({ isLoggedIn: isLoggedIn, message: message }),
-      { status: 403 }
+      { status: 200 }
     );
   }
 }

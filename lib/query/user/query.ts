@@ -119,6 +119,28 @@ export async function getUserByResetPasswordToken(resetToken?: string) {
   return undefined;
 }
 
+export async function getUserByVerifyToken(verifyToken?: string) {
+  if (verifyToken) {
+    const data = await prisma.user.update({
+      where: {
+        verifyToken: verifyToken,
+        verifyTokenExpire: {
+          gt: new Date(),
+        },
+        verified: false,
+      },
+      data: {
+        verified: true,
+        verifyTokenExpire: new Date(),
+      },
+    });
+    if (data !== null) {
+      return data;
+    }
+  }
+  return undefined;
+}
+
 export async function updatePasswordByResetPasswordToken(
   token?: string,
   password?: string

@@ -9,6 +9,10 @@ export const middleware = async (req: NextRequest) => {
   const { user } = session;
   if (user === undefined) {
     return NextResponse.redirect(new URL("/users/auth", req.url));
+  } else {
+    if (!user.verified) {
+      return NextResponse.redirect(new URL("/users/pleaseVerify", req.url));
+    }
   }
 
   return res;

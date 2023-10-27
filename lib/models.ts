@@ -2,6 +2,7 @@ export interface User {
   username: string;
   email: string;
   dob: Date;
+  verified: boolean;
 }
 
 export interface FlashMessage {
