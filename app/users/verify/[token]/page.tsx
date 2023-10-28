@@ -6,6 +6,7 @@ import Loading from "../../components/Loading";
 
 function Verify({ params }: { params: { token: string } }) {
   const [isSubmitting, setIsSubmitting] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     fetch("/api/users/verify", {
@@ -17,6 +18,7 @@ function Verify({ params }: { params: { token: string } }) {
     }).then((res) =>
       res.json().then((data) => {
         if (data?.message === Results.SUCCESS) {
+          setIsVerified(true);
           setIsSubmitting(false);
         } else {
           setIsSubmitting(false);
@@ -32,7 +34,14 @@ function Verify({ params }: { params: { token: string } }) {
           <p>Verifying</p>
         </>
       ) : (
-        <a href="/users/auth">Go Home</a>
+        <>
+          {isVerified ? (
+            <p className="text-success">Verified successfully</p>
+          ) : (
+            <p className="text-error">The token is expired</p>
+          )}
+          <a href="/users/auth">Start Using</a>
+        </>
       )}
     </div>
   );

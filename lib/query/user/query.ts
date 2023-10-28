@@ -162,7 +162,10 @@ export async function getUserByVerifyTokenAndVerified(
 }
 
 export async function updateVerifiedByVerifyToken(verifyToken?: string) {
-  if (verifyToken) {
+  if (
+    verifyToken &&
+    (await getUserByVerifyTokenAndVerified(verifyToken, false))
+  ) {
     const data = await prisma.user.update({
       where: {
         verifyToken: verifyToken,

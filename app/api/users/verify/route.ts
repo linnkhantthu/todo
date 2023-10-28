@@ -7,14 +7,11 @@ import {
   getUserByVerifyTokenAndVerified,
   updateVerifiedByVerifyToken,
 } from "@/lib/query/user/query";
-import { User } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   let message = Results.FAIL;
-  // Create response
   const response = new Response();
   const session = await getSession(request, response);
-  // Get login data
   const { token } = await request.json();
   const user = await getUserByVerifyTokenAndVerified(token, false);
   if (user) {
