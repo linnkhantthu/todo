@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
               username: user.username,
               token: token,
               path: "/users/auth/forgotPassword/verify/",
+              buttonValue: "Reset Password",
             }),
           });
           // If the mail is successfully sent

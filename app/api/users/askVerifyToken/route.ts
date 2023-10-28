@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
               username: user.username,
               token: token,
               path: "/users/verify/",
+              buttonValue: "Verify",
             })
           );
           // If the mail is successfully sent

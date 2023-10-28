@@ -3,6 +3,7 @@ interface EmailTemplateProps {
   username: string;
   token: string;
   path: string;
+  buttonValue: string;
 }
 
 import React from "react";
@@ -12,6 +13,7 @@ function EmailTemplate({
   username,
   token,
   path,
+  buttonValue,
 }: EmailTemplateProps) {
   return (
     <div>
@@ -19,7 +21,7 @@ function EmailTemplate({
         Hello, {username}, please click the following button {description}.
       </h1>
       <button className="btn btn-error">
-        <a href={"http://localhost:3000" + path + token}>Reset Password</a>
+        <a href={"http://localhost:3000" + path + token}>{buttonValue}</a>
       </button>
     </div>
   );
