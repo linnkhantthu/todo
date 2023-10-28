@@ -7,7 +7,6 @@ import {
   getExpireDate,
   sendMail,
 } from "@/lib/utils";
-import { Resend } from "resend";
 
 export async function getUserByEmail(email?: string) {
   if (email) {
@@ -116,6 +115,7 @@ export async function insertUser(
             username: user.username,
             token: user.verifyToken!,
             path: "/users/verify/",
+            buttonValue: "Verify",
           })
         );
         return sentEmailId ? (user as User) : undefined;
