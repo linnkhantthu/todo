@@ -7,10 +7,10 @@ Environment variables (.env)
 DATABASE_URL="postgresql://postgres:PASSWORD@HOST:PORT/todo"
 # Generated from Resend account
 RESEND_API_KEY=""
-# Initiative Vector 16 characters long
-IV=""
 # Cipher algorithm i.e: "aes-256-cbc"
 ALGO=""
+# Initiative Vector 16 characters long ** IV is depend on ALGO
+IV=""
 # 32 characters long password
 COOKIE_KEY=""
 # 16 characters long password
