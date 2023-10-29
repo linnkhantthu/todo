@@ -21,7 +21,7 @@ export default function RootLayout({
         <Nav isLoggedIn={true} />
         <Main>{children}</Main>
         <footer className="footer footer-center fixed bottom-0 bg-slate-800 p-2">
-          <a href="mailto:linnkhantthu1999mdy@gmail.com">
+          <a href="mailto:dimensions.mm.it@gmail.com">
             This project is written by linnkhantthu &copy; 2023
           </a>
         </footer>
