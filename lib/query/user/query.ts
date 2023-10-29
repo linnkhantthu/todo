@@ -1,4 +1,4 @@
-import EmailTemplate from "@/app/users/components/EmailTemplate";
+import EmailTemplate from "@/emails/EmailTemplate";
 import prisma from "@/db";
 import { User } from "@/lib/models";
 import {

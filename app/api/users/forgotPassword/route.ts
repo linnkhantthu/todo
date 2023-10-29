@@ -3,7 +3,7 @@ import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import { Resend } from "resend";
-import EmailTemplate from "@/app/users/components/EmailTemplate";
+import EmailTemplate from "@/emails/EmailTemplate";
 import {
   getUserByEmail,
   insertResetPasswordTokenByEmail,
