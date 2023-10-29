@@ -54,7 +54,8 @@ export async function sendMail(
   const resend = new Resend(process.env.RESEND_API_KEY);
   const data = await resend.emails.send({
     from: "onboarding@resend.dev",
-    to: [email],
+    // to: [email],
+    to: "delivered@resend.dev",
     subject: subject,
     react: template,
   });

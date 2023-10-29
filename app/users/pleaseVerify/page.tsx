@@ -9,7 +9,9 @@ import { FlashMessage, Results } from "@/lib/models";
 function PleaseVerify() {
   const { data: userData, isLoading, isError } = useUser();
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
+  const [isRequesting, setIsRequesting] = useState(false);
   const handleClick = () => {
+    setIsRequesting(true);
     fetch("/api/users/askVerifyToken", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -29,6 +31,7 @@ function PleaseVerify() {
             category: "bg-error",
           });
         }
+        setIsRequesting(false);
       })
     );
   };
@@ -37,15 +40,21 @@ function PleaseVerify() {
   ) : userData?.user?.verified ? (
     redirect("/todos")
   ) : (
-    <div className="flex flex-row justify-center h-full">
+    <div className="flex flex-row justify-center h-full mt-36">
       <span className=" flex flex-col justify-center">
-        <span className={flashMessage?.category}>{flashMessage?.message}</span>
-        <span className="mt-36">
-          We have send an verification email to your mail.
+        <span className={"rounded p-1 " + flashMessage?.category}>
+          {flashMessage?.message}
         </span>
+        <span>We have send an verification email to your mail.</span>
         <span>Please verify to continue.</span>
-        <span className="link link-primary" onClick={handleClick}>
-          Request verification link
+        <span className="link link-success" onClick={handleClick}>
+          {isRequesting ? (
+            <small className=" float-left">
+              <Loading />
+            </small>
+          ) : (
+            "Request verification link"
+          )}
         </span>
       </span>
     </div>
