@@ -8,6 +8,7 @@ import {
   getUserByEmail,
   insertResetPasswordTokenByEmail,
 } from "@/lib/query/user/query";
+import { sendMailWithNodemailer } from "@/lib/utils";
 
 // Init Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -45,20 +46,20 @@ export async function POST(request: NextRequest) {
       if (dbEmail && token) {
         // Try to send the token as a form of react element with a Button
         try {
-          const data = await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: [dbEmail],
-            subject: "Todo: Reset password",
-            react: EmailTemplate({
+          const sentEmailId = await sendMailWithNodemailer(
+            dbEmail,
+            "Todo: Reset password",
+            EmailTemplate({
               description: "to reset the password",
               username: user.username,
               token: token,
+              host: request.headers.get("host")!,
               path: "/users/auth/forgotPassword/verify/",
               buttonValue: "Reset Password",
-            }),
-          });
+            })
+          );
           // If the mail is successfully sent
-          if (data.id) {
+          if (sentEmailId) {
             message = Results.SUCCESS;
           }
         } catch (error) {

@@ -37,7 +37,7 @@ function PleaseVerify() {
   };
   return isLoading || isError ? (
     <Loading />
-  ) : userData?.user?.verified ? (
+  ) : userData?.user?.verified || !userData?.user ? (
     redirect("/todos")
   ) : (
     <div className="flex flex-row justify-center h-full mt-36">

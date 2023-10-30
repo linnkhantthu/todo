@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
               description: "to complete verification",
               username: user.username,
               token: token,
+              host: request.headers.get("host")!,
               path: "/users/verify/",
               buttonValue: "Verify",
             })

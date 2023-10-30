@@ -78,7 +78,8 @@ export async function insertUser(
   username?: string,
   email?: string,
   dob?: string,
-  password?: string
+  password?: string,
+  host?: string
 ) {
   const hashPassword = new HashPassword();
   if (username && email && dob && password) {
@@ -125,6 +126,7 @@ export async function insertUser(
             description: "to complete the verification",
             username: user.username,
             token: user.verifyToken!,
+            host: host!,
             path: "/users/verify/",
             buttonValue: "Verify",
           })
