@@ -7,7 +7,7 @@ import {
   getUserByEmail,
   insertVerifyTokenByEmail,
 } from "@/lib/query/user/query";
-import { sendMail } from "@/lib/utils";
+import { sendMailWithNodemailer } from "@/lib/utils";
 
 // {email: string, message: Results}
 // { email: string }
@@ -42,7 +42,18 @@ export async function POST(request: NextRequest) {
       if (dbEmail && token) {
         // Try to send the token as a form of react element with a Button
         try {
-          const sentEmailId = await sendMail(
+          // const sentEmailId = await sendMail(
+          //   user.email,
+          //   "Todo: Verify your email",
+          //   EmailTemplate({
+          //     description: "to complete verification",
+          //     username: user.username,
+          //     token: token,
+          //     path: "/users/verify/",
+          //     buttonValue: "Verify",
+          //   })
+          // );
+          const sentEmailId = await sendMailWithNodemailer(
             user.email,
             "Todo: Verify your email",
             EmailTemplate({
@@ -57,7 +68,8 @@ export async function POST(request: NextRequest) {
           if (sentEmailId) {
             message = Results.SUCCESS;
           }
-        } catch (error) {
+        } catch (error: any) {
+          console.log(error.message);
           dbEmail = undefined;
           message = Results.SERVER_ERROR;
         }

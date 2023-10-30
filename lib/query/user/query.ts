@@ -5,7 +5,7 @@ import {
   HashPassword,
   generateToken,
   getExpireDate,
-  sendMail,
+  sendMailWithNodemailer,
 } from "@/lib/utils";
 
 export async function getUserByEmail(email?: string) {
@@ -107,7 +107,18 @@ export async function insertUser(
         },
       });
       if (user) {
-        const sentEmailId = await sendMail(
+        // const sentEmailId = await sendMail(
+        //   user.email,
+        //   "Todo: Verify your email",
+        //   EmailTemplate({
+        //     description: "to complete the verification",
+        //     username: user.username,
+        //     token: user.verifyToken!,
+        //     path: "/users/verify/",
+        //     buttonValue: "Verify",
+        //   })
+        // );
+        const sentEmailId = await sendMailWithNodemailer(
           user.email,
           "Todo: Verify your email",
           EmailTemplate({

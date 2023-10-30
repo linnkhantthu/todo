@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 export function generateToken(): string {
   return crypto.randomBytes(16).toString("hex");
@@ -60,4 +61,30 @@ export async function sendMail(
     react: template,
   });
   return data.id;
+}
+
+export async function sendMailWithNodemailer(
+  email: string,
+  subject: string,
+  template: JSX.Element
+): Promise<string> {
+  const ReactDOMServer = (await import("react-dom/server")).default;
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      type: "OAuth2",
+      user: process.env.MAIL_USERNAME,
+      // pass: process.env.MAIL_PASSWORD,
+      clientId: process.env.OAUTH_CLIENTID,
+      clientSecret: process.env.OAUTH_CLIENT_SECRET,
+      refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+    },
+  });
+  const info = await transporter.sendMail({
+    from: "todo@dimensions.com",
+    to: email,
+    subject: subject,
+    html: ReactDOMServer.renderToString(template),
+  });
+  return info.messageId;
 }
