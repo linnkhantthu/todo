@@ -2,7 +2,11 @@ import { NextRequest } from "next/server";
 import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
-import { getUserByUsername } from "@/lib/query/user/query";
+import {
+  getUserByEmail,
+  getUserByUsername,
+  insertSessionIdByEmail,
+} from "@/lib/query/user/query";
 import { HashPassword } from "@/lib/utils";
 
 // {user: User, message: Results}
@@ -21,15 +25,21 @@ export async function POST(request: NextRequest) {
     const { username, password } = await request.json();
     const user = await getUserByUsername(username);
     if (user && hashPassword.decrypt(user.password) === password) {
-      session.user = {
-        username: user.username,
-        email: user.email,
-        dob: user.dob,
-        verified: user.verified,
-      };
-      await session.save();
-      currentUser = session.user;
-      message = Results.SUCCESS;
+      const { sessionId } = await insertSessionIdByEmail(user.email);
+      if (sessionId) {
+        session.user = {
+          username: user.username,
+          email: user.email,
+          dob: user.dob,
+          verified: user.verified,
+          sessionId: sessionId,
+        };
+        await session.save();
+        currentUser = session.user;
+        message = Results.SUCCESS;
+      } else {
+        message = Results.FAIL;
+      }
     } else {
       message = Results.FAIL;
     }

@@ -17,7 +17,15 @@ export async function GET(request: NextRequest) {
   const { user: currentUser } = session;
   const dbUser = await getUserByUsername(currentUser?.username);
 
-  if (currentUser && dbUser) {
+  if (currentUser && dbUser && currentUser.sessionId === dbUser.sessionId) {
+    session.user = {
+      username: dbUser.username,
+      email: dbUser.email,
+      dob: dbUser.dob,
+      verified: dbUser.verified,
+      sessionId: dbUser.sessionId,
+    };
+    await session.save();
     isLoggedIn = true;
     return createResponse(
       response,
@@ -29,6 +37,7 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } else {
+    await session.destroy();
     return createResponse(
       response,
       JSON.stringify({ isLoggedIn: isLoggedIn, message: message }),

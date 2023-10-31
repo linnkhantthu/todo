@@ -44,17 +44,22 @@ export async function insertResetPasswordTokenByEmail(email?: string) {
 export async function insertVerifyTokenByEmail(email?: string) {
   let token: string | undefined = undefined;
   if (email) {
-    const user = await prisma.user.update({
-      where: {
-        email: email,
-      },
-      data: {
-        verifyToken: generateToken(),
-        verifyTokenExpire: getExpireDate(1440),
-      },
+    const user = await prisma.user.findFirst({
+      where: { email: email, verified: false },
     });
-    if (user && user.verifyToken) {
-      token = user.verifyToken;
+    if (user) {
+      const user = await prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          verifyToken: generateToken(),
+          verifyTokenExpire: getExpireDate(1440),
+        },
+      });
+      if (user && user.verifyToken) {
+        token = user.verifyToken;
+      }
     }
   }
   return { token };
@@ -240,4 +245,22 @@ export async function fetchUserByResetPasswordToken(token?: string) {
     }
   }
   return undefined;
+}
+
+export async function insertSessionIdByEmail(email?: string) {
+  let sessionId: string | undefined = undefined;
+  if (email) {
+    const user = await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        sessionId: generateToken(),
+      },
+    });
+    if (user) {
+      sessionId = user.sessionId!;
+    }
+  }
+  return { sessionId };
 }

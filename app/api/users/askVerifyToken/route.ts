@@ -33,13 +33,12 @@ export async function POST(request: NextRequest) {
 
     // If User found
     if (user !== undefined) {
-      dbEmail = user.email;
-
       // Generate Token
-      const { token } = await insertVerifyTokenByEmail(dbEmail);
+      const { token } = await insertVerifyTokenByEmail(user.email);
 
       // If token generated
-      if (dbEmail && token) {
+      if (token) {
+        dbEmail = user.email;
         // Try to send the token as a form of react element with a Button
         try {
           // const sentEmailId = await sendMail(

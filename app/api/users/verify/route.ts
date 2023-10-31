@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Results } from "@/lib/models";
+import { Results, User } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import {
@@ -18,12 +18,7 @@ export async function POST(request: NextRequest) {
     const verifiedUser = await updateVerifiedByVerifyToken(token);
     if (verifiedUser) {
       if (session.user) {
-        session.user = {
-          username: verifiedUser.username,
-          email: verifiedUser.email,
-          dob: verifiedUser.dob,
-          verified: verifiedUser.verified,
-        };
+        session.user = verifiedUser as User;
         await session.save();
       }
       message = Results.SUCCESS;

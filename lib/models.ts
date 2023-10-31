@@ -3,6 +3,7 @@ export interface User {
   email: string;
   dob: Date;
   verified: boolean;
+  sessionId: string;
 }
 
 export interface FlashMessage {

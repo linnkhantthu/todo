@@ -19,6 +19,7 @@ model User {
   verifyTokenExpire        DateTime?
   resetPasswordToken       String?   @unique
   resetPasswordTokenExpire DateTime?
+  sessionId                String?   @unique
   todos                    Todo[]
 }
 

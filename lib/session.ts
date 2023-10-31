@@ -11,8 +11,8 @@ export const getSession = (req: Request, res: Response) => {
     password: process.env.COOKIE_KEY!,
     cookieName: process.env.COOKIE_NAME!,
     cookieOptions: {
-      // secure: process.env.NODE_ENV === "production" ? true : false,
-      secure: false,
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      maxAge: undefined,
     },
   });
   return session;

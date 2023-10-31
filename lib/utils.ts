@@ -47,7 +47,7 @@ export class HashPassword {
   };
 }
 
-export async function sendMail(
+async function sendMail(
   email: string,
   subject: string,
   template: JSX.Element
