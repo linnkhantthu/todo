@@ -33,6 +33,11 @@ export enum Results {
   CONNECTION_ERROR = "Connection error occcured",
   AUTH_ERROR = "Username or password is incorrect",
 }
+export enum Messages {
+  REQUIRED_LOGIN = "You need to login to perform this action",
+  REQUIRED_LOGOUT = "You need to logged out in order to perform this action",
+  INVALID_REQUEST = "Unauthorised Request",
+}
 
 export interface Todo {
   id?: number;

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Results } from "@/lib/models";
+import { Messages, Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import EmailTemplate from "@/emails/EmailTemplate";
@@ -13,7 +13,7 @@ import { isAuth, sendMailWithNodemailer } from "@/lib/utils";
 // { email: string }
 export async function POST(request: NextRequest) {
   // Declare Var
-  let message = "";
+  let message: string = Messages.REQUIRED_LOGIN;
   let isSuccess = false;
 
   // Create response
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
   }
   return createResponse(
     response,
-    JSON.stringify({ isSuccess: isSuccess, message: "Unauthorised Request" }),
+    JSON.stringify({ isSuccess: isSuccess, message: Messages.INVALID_REQUEST }),
     {
       status: 403,
     }
