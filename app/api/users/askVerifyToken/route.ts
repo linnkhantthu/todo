@@ -7,89 +7,78 @@ import {
   getUserByEmail,
   insertVerifyTokenByEmail,
 } from "@/lib/query/user/query";
-import { sendMailWithNodemailer } from "@/lib/utils";
+import { isAuth, sendMailWithNodemailer } from "@/lib/utils";
 
 // {email: string, message: Results}
 // { email: string }
 export async function POST(request: NextRequest) {
   // Declare Var
-  let message = Results.REQUIRED_LOGOUT;
+  let message = "";
+  let isSuccess = false;
 
   // Create response
   const response = new Response();
 
   // Create session and get User
-  const session = await getSession(request, response);
-  const { user: currentUser } = session;
+  const { isLoggedIn, currentUser } = await isAuth(request, response);
 
   // If the user is loggedout
-  if (currentUser) {
-    let dbEmail: string | undefined = undefined;
-    // Get data
-    const { email } = await request.json();
-
-    // Fetch User from user
-    const user = await getUserByEmail(email);
-
-    // If User found
-    if (user !== undefined) {
-      // Generate Token
-      const { token } = await insertVerifyTokenByEmail(user.email);
-
-      // If token generated
-      if (token) {
-        dbEmail = user.email;
-        // Try to send the token as a form of react element with a Button
-        try {
-          // const sentEmailId = await sendMail(
-          //   user.email,
-          //   "Todo: Verify your email",
-          //   EmailTemplate({
-          //     description: "to complete verification",
-          //     username: user.username,
-          //     token: token,
-          //     path: "/users/verify/",
-          //     buttonValue: "Verify",
-          //   })
-          // );
-          const sentEmailId = await sendMailWithNodemailer(
-            user.email,
-            "Todo: Verify your email",
-            EmailTemplate({
-              description: "to complete verification",
-              username: user.username,
-              token: token,
-              host: request.headers.get("host")!,
-              path: "/users/verify/",
-              buttonValue: "Verify",
-            })
-          );
-          // If the mail is successfully sent
-          if (sentEmailId) {
-            message = Results.SUCCESS;
-          }
-        } catch (error: any) {
-          console.log(error.message);
-          dbEmail = undefined;
-          message = Results.SERVER_ERROR;
+  if (isLoggedIn && currentUser) {
+    const { token } = await insertVerifyTokenByEmail(currentUser.email);
+    if (token) {
+      try {
+        // const sentEmailId = await sendMail(
+        //   user.email,
+        //   "Todo: Verify your email",
+        //   EmailTemplate({
+        //     description: "to complete verification",
+        //     username: user.username,
+        //     token: token,
+        //     path: "/users/verify/",
+        //     buttonValue: "Verify",
+        //   })
+        // );
+        const sentEmailId = await sendMailWithNodemailer(
+          currentUser.email,
+          "Todo: Verify your email",
+          EmailTemplate({
+            description: "to complete verification",
+            username: currentUser.username,
+            token: token,
+            host: request.headers.get("host")!,
+            path: "/users/verify/",
+            buttonValue: "Verify",
+          })
+        );
+        if (sentEmailId) {
+          isSuccess = true;
+          message =
+            "We have sent a verification token to " +
+            currentUser.email +
+            "successfully";
         }
+      } catch (error: any) {
+        isSuccess = false;
+        message = "Failed to send an email to " + currentUser.email + ".";
       }
-    } else {
-      dbEmail = undefined;
-      message = Results.FAIL;
     }
     return createResponse(
       response,
       JSON.stringify({
-        email: dbEmail,
+        data: { email: currentUser.email },
+        isSuccess: isSuccess,
         message: message,
       }),
       { status: 200 }
     );
   }
-  return createResponse(response, JSON.stringify({ message: message }), {
-    status: 403,
-  });
+  return createResponse(
+    response,
+    JSON.stringify({ isSuccess: isSuccess, message: "Unauthorised Request" }),
+    {
+      status: 403,
+    }
+  );
 }
 
 getUserByEmail()

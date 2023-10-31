@@ -4,36 +4,35 @@ import useUser from "@/lib/useUser";
 import React, { useState } from "react";
 import Loading from "../components/Loading";
 import { redirect } from "next/navigation";
-import { FlashMessage, Results } from "@/lib/models";
+import { FlashMessage, Results, responseModel } from "@/lib/models";
 
 function PleaseVerify() {
   const { data: userData, isLoading, isError } = useUser();
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
   const [isRequesting, setIsRequesting] = useState(false);
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsRequesting(true);
-    fetch("/api/users/askVerifyToken", {
+    const res = await fetch("/api/users/askVerifyToken", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userData?.user?.email }),
-    }).then((res) =>
-      res.json().then((data) => {
-        if (data?.message === Results.SUCCESS) {
-          setFlashMessage({
-            message:
-              "We have sent a verification link to " + userData?.user?.email,
-            category: "bg-success",
-          });
-        } else {
-          setFlashMessage({
-            message:
-              "Failed to send a verification link to " + userData?.user?.email,
-            category: "bg-error",
-          });
-        }
-        setIsRequesting(false);
-      })
-    );
+    });
+    if (res.ok) {
+      const data: responseModel = await res.json();
+      if (data.isSuccess) {
+        setFlashMessage({
+          message: "We have sent a verification link to " + data.data?.email,
+          category: "bg-success",
+        });
+      } else {
+        setFlashMessage({
+          message: "Failed to send a verification link to " + data.data?.email,
+          category: "bg-error",
+        });
+      }
+      setIsRequesting(false);
+    } else {
+      redirect("/users/auth");
+    }
   };
   return isLoading || isError ? (
     <Loading />

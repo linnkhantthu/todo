@@ -1,15 +1,15 @@
 import prisma from "@/db";
 import { Results, Todo } from "@/lib/models";
 import { getAllTodoByUsername } from "@/lib/query/todo/query";
-import { getSession } from "@/lib/session";
+import { isAuth } from "@/lib/utils";
+import { NextRequest } from "next/server";
 
 // {todo: Todo[], message: Results}
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   let message = Results.REQUIRED_LOGIN;
   const response = new Response();
-  const session = await getSession(request, response);
-  const { user: currentUser } = session;
-  if (currentUser) {
+  const { isLoggedIn, currentUser } = await isAuth(request, response);
+  if (isLoggedIn && currentUser) {
     const todos = await getAllTodoByUsername(currentUser.username);
     message = Results.SUCCESS;
     return Response.json({ todos: todos, message: message }, { status: 200 });

@@ -42,3 +42,9 @@ export interface Todo {
   author?: any;
   authorId?: number;
 }
+
+export interface responseModel {
+  data?: any;
+  isSuccess: boolean;
+  message: string;
+}

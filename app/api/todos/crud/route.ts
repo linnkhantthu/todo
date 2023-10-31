@@ -7,6 +7,7 @@ import {
   insertTodoByUsername,
   updateTodoByIdAndUsername,
 } from "@/lib/query/todo/query";
+import { isAuth } from "@/lib/utils";
 
 // Add Todo if method: POST {todo: Todo, message: Results}
 // Need { title }
@@ -17,11 +18,9 @@ export async function POST(request: NextRequest) {
   // Create response
   const response = new Response();
 
-  // Create session
-  const session = await getSession(request, response);
-  const { user: currentUser } = session;
+  const { isLoggedIn, currentUser } = await isAuth(request, response);
 
-  if (currentUser) {
+  if (isLoggedIn && currentUser) {
     const { title } = await request.json();
     const todo = await insertTodoByUsername(title, currentUser.username);
     message = todo ? Results.SUCCESS : Results.FAIL;
@@ -49,10 +48,9 @@ export async function PUT(request: NextRequest) {
   // Create response
   const response = new Response();
   // Create session
-  const session = await getSession(request, response);
-  const { user: currentUser } = session;
+  const { isLoggedIn, currentUser } = await isAuth(request, response);
   // Get data
-  if (currentUser) {
+  if (isLoggedIn && currentUser) {
     const { id, title, completed } = await request.json();
     const todo = await updateTodoByIdAndUsername(
       id,
@@ -85,10 +83,9 @@ export async function DELETE(request: NextRequest) {
   // Create response
   const response = new Response();
   // Create session
-  const session = await getSession(request, response);
-  const { user: currentUser } = session;
+  const { isLoggedIn, currentUser } = await isAuth(request, response);
   // Get data
-  if (currentUser) {
+  if (isLoggedIn && currentUser) {
     const { id } = await request.json();
     const todo = await deleteTodoById(id, currentUser.username);
     message = todo ? Results.SUCCESS : Results.FAIL;
