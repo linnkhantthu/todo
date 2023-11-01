@@ -12,26 +12,34 @@ function PleaseVerify() {
   const [isRequesting, setIsRequesting] = useState(false);
   const handleClick = async () => {
     setIsRequesting(true);
-    const res = await fetch("/api/users/askVerifyToken", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (res.ok) {
-      const data: responseModel = await res.json();
-      if (data.isSuccess) {
-        setFlashMessage({
-          message: "We have sent a verification link to " + data.data?.email,
-          category: "bg-success",
-        });
+    try {
+      const res = await fetch("/api/users/askVerifyToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.ok) {
+        const data: responseModel = await res.json();
+        if (data.isSuccess) {
+          setFlashMessage({
+            message: "We have sent a verification link to " + data.data?.email,
+            category: "bg-success",
+          });
+        } else {
+          setFlashMessage({
+            message:
+              "Failed to send a verification link to " + data.data?.email,
+            category: "bg-error",
+          });
+        }
+        setIsRequesting(false);
       } else {
-        setFlashMessage({
-          message: "Failed to send a verification link to " + data.data?.email,
-          category: "bg-error",
-        });
+        redirect("/users/auth");
       }
-      setIsRequesting(false);
-    } else {
-      redirect("/users/auth");
+    } catch (error: any) {
+      setFlashMessage({
+        message: error.message,
+        category: "bg-error",
+      });
     }
   };
   return isLoading || isError ? (

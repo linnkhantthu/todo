@@ -14,6 +14,7 @@ import { isAuth, sendMailWithNodemailer } from "@/lib/utils";
 export async function POST(request: NextRequest) {
   // Declare Var
   let message: string = Messages.REQUIRED_LOGOUT;
+  let isSuccess = false;
 
   // Create response
   const response = new Response();
@@ -51,30 +52,39 @@ export async function POST(request: NextRequest) {
             );
             // If the mail is successfully sent
             if (sentEmailId) {
-              message = Results.SUCCESS;
+              isSuccess = true;
+              message =
+                "We have sent an email to " + user.email + " successfully.";
             }
           } catch (error) {
             message = Results.SERVER_ERROR;
           }
         }
       } else {
-        message = Results.FAIL;
+        message = "User not found.";
       }
       return createResponse(
         response,
         JSON.stringify({
-          email: user?.email,
+          data: { email: user?.email },
+          isSuccess: isSuccess,
           message: message,
         }),
         { status: 200 }
       );
     } else {
+      message = Messages.REQUIRED_LOGOUT;
       throw new Error(message);
     }
   } catch (error: any) {
-    return createResponse(response, JSON.stringify({ message: message }), {
-      status: 403,
-    });
+    message = error.message;
+    return createResponse(
+      response,
+      JSON.stringify({ isSuccess: isSuccess, message: message }),
+      {
+        status: 403,
+      }
+    );
   }
 
   // If the user is loggedout

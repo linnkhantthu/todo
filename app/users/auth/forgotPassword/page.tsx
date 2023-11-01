@@ -1,5 +1,5 @@
 "use client";
-import { AuthResults, FlashMessage } from "@/lib/models";
+import { AuthResults, FlashMessage, responseModel } from "@/lib/models";
 import useUser from "@/lib/useUser";
 import { redirect } from "next/navigation";
 import React, { FormEvent, useState } from "react";
@@ -9,9 +9,7 @@ import ForgotPasswordForm from "./components/ForgotPasswordForm";
 function ForgotPassword() {
   const { data, isError, isLoading } = useUser();
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
-  const [isConnectionFailed, setIsConnectionFailed] = useState(false);
   const handleSubmit = async (e: FormEvent) => {
-    let foundEmail: string | undefined = undefined;
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const formEmail = formData.get("email");
@@ -26,35 +24,27 @@ function ForgotPassword() {
             email: formData.get("email"),
           }),
         });
-        if (res.ok) {
-          const { email, message } = await res.json();
-          foundEmail = email;
+        const { data, isSuccess, message }: responseModel = await res.json();
+        if (res.ok && isSuccess && data?.email && message) {
+          setFlashMessage({
+            message: message,
+            category: "bg-success",
+          });
+        } else {
+          throw new Error(message);
         }
       }
     } catch (error: any) {
-      setIsConnectionFailed(true);
-      console.error(error.message);
-    } finally {
-      if (foundEmail) {
-        setFlashMessage({
-          message:
-            "We have sent you an email to " +
-            foundEmail +
-            " to reset the password",
-          category: "bg-success",
-        });
-      } else {
-        setFlashMessage({
-          message: "Email not found.",
-          category: "bg-error",
-        });
-      }
+      setFlashMessage({
+        message: error.message,
+        category: "bg-error",
+      });
     }
   };
   return (
     <>
-      {isError || isConnectionFailed ? (
-        AuthResults.CONNECTIONFAILED
+      {isError ? (
+        <span>{AuthResults.CONNECTIONFAILED}</span>
       ) : isLoading ? (
         <Loading />
       ) : data.user === undefined ? (
