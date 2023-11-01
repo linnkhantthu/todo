@@ -22,82 +22,75 @@ const RegisterForm = ({
 
   return (
     <>
-      <div className="flex flex-row justify-center w-screen">
-        <fieldset className="flex flex-col w-1/3">
-          <Legend title={"Register"} flashMessage={flashMessage} />
-          <form
-            className=" form form-control text-lg"
-            onSubmit={handleRegister}
-          >
-            <label className="label label-text" htmlFor="username">
-              Username
-            </label>
-            <input
-              className="input input-bordered"
-              type="text"
-              name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+      <Legend title={"Register"} flashMessage={flashMessage} />
+      <form className=" form form-control text-lg" onSubmit={handleRegister}>
+        <label className="label label-text" htmlFor="username">
+          Username
+        </label>
+        <input
+          className="input input-bordered"
+          type="text"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
-            <label className="label label-text" htmlFor="email">
-              email
-            </label>
-            <input
-              className="input input-bordered"
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+        <label className="label label-text" htmlFor="email">
+          email
+        </label>
+        <input
+          className="input input-bordered"
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-            <label className="label label-text" htmlFor="dob">
-              Birth Date
-            </label>
-            <input
-              className="input input-bordered"
-              type="date"
-              name="dob"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
-            />
+        <label className="label label-text" htmlFor="dob">
+          Birth Date
+        </label>
+        <input
+          className="input input-bordered"
+          type="date"
+          name="dob"
+          value={dob}
+          onChange={(e) => setDob(e.target.value)}
+        />
 
-            <label className="label label-text" htmlFor="password">
-              Password
-            </label>
-            <input
-              className="input input-bordered"
-              type="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+        <label className="label label-text" htmlFor="password">
+          Password
+        </label>
+        <input
+          className="input input-bordered"
+          type="password"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-            <label className="label label-text" htmlFor="confirmPassword">
-              Confirm Password
-            </label>
-            <input
-              className="input input-bordered"
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+        <label className="label label-text" htmlFor="confirmPassword">
+          Confirm Password
+        </label>
+        <input
+          className="input input-bordered"
+          type="password"
+          name="confirmPassword"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
-            {confirmPassword !== password ? (
-              <small className="text-red-600">
-                Confirm Password much equal to Password
-              </small>
-            ) : (
-              ""
-            )}
-            <Submit isSubmitting={isSubmitting} />
-          </form>
-          <a href="#" onClick={handler}>
-            Already have an account?
-          </a>
-        </fieldset>
-      </div>
+        {confirmPassword !== password ? (
+          <small className="text-red-600">
+            Confirm Password much equal to Password
+          </small>
+        ) : (
+          ""
+        )}
+        <Submit isSubmitting={isSubmitting} />
+      </form>
+      <a href="#" onClick={handler}>
+        Already have an account?
+      </a>
     </>
   );
 };

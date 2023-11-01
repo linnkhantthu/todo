@@ -44,7 +44,7 @@ function ForgotPassword() {
   return (
     <>
       {isError ? (
-        <span>{AuthResults.CONNECTIONFAILED}</span>
+        <span className="text-center">{AuthResults.CONNECTIONFAILED}</span>
       ) : isLoading ? (
         <Loading />
       ) : data.user === undefined ? (
