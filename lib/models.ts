@@ -1,3 +1,5 @@
+import { getDateNow } from "./utils";
+
 export interface User {
   username: string;
   email: string;
@@ -52,4 +54,9 @@ export interface responseModel {
   data?: any;
   isSuccess: boolean;
   message: string;
+}
+
+export enum Rules {
+  MIN_PWD_LEN = 8,
+  MIN_BOD = 18,
 }

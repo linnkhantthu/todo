@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
 import { FlashMessage, Results, User } from "@/lib/models";
 import Loading from "../components/Loading";
+import Form from "@/app/components/Form";
 
 const Auth = () => {
   const { data, isError, isLoading, mutateUser } = useUser();
@@ -15,6 +16,7 @@ const Auth = () => {
     useState<FlashMessage>();
   const [loginFlashMessage, setLoginFlashMessage] = useState<FlashMessage>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [disable, setDisable] = useState(false);
 
   const showRegisterForm = () => {
     setIsShowRegisterForm((register) => !register);
@@ -23,6 +25,7 @@ const Auth = () => {
   // Handle Login Submit
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+    setDisable(true);
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");
@@ -59,11 +62,13 @@ const Auth = () => {
       }
     }
     setIsSubmitting(false);
+    setDisable(false);
   };
 
   // Registeration handler
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
+    setDisable(true);
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get("username");
@@ -106,29 +111,34 @@ const Auth = () => {
       }
     }
     setIsSubmitting(false);
+    setDisable(false);
   };
-  return isError ? (
-    Results.CONNECTION_ERROR
-  ) : isLoading ? (
-    <Loading />
-  ) : data?.user === undefined ? (
-    isShowRegisterForm ? (
-      <RegisterForm
-        handler={showRegisterForm}
-        handleRegister={handleRegister}
-        flashMessage={registerFlashMessage}
-        isSubmitting={isSubmitting}
-      />
-    ) : (
-      <LoginForm
-        handler={showRegisterForm}
-        handleLogin={handleLogin}
-        flashMessage={loginFlashMessage}
-        isSubmitting={isSubmitting}
-      />
-    )
-  ) : (
-    redirect("/todos")
+  return (
+    <Form disable={disable}>
+      {isError ? (
+        Results.CONNECTION_ERROR
+      ) : isLoading ? (
+        <Loading />
+      ) : data?.user === undefined ? (
+        isShowRegisterForm ? (
+          <RegisterForm
+            handler={showRegisterForm}
+            handleRegister={handleRegister}
+            flashMessage={registerFlashMessage}
+            isSubmitting={isSubmitting}
+          />
+        ) : (
+          <LoginForm
+            handler={showRegisterForm}
+            handleLogin={handleLogin}
+            flashMessage={loginFlashMessage}
+            isSubmitting={isSubmitting}
+          />
+        )
+      ) : (
+        redirect("/todos")
+      )}
+    </Form>
   );
 };
 

@@ -1,4 +1,4 @@
-import { AuthResults, FlashMessage } from "@/lib/models";
+import { AuthResults, FlashMessage, Rules } from "@/lib/models";
 import React, { useState } from "react";
 import Legend from "./Legend";
 import Submit from "@/app/components/Submit";
@@ -20,6 +20,18 @@ const RegisterForm = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  function getDate(lessThan?: number): string {
+    let now = new Date();
+    now.setFullYear(now.getFullYear() - (lessThan ? lessThan : 18));
+    const date = now.toLocaleString().split(",")[0].split("/");
+    console.log(date);
+    const year = date[2].toString();
+    const month = parseInt(date[1]);
+    const strMonth = month > 10 ? month.toString() : "0" + month.toString();
+    const day = date[0].toString();
+    return year + "-" + strMonth + "-" + day;
+  }
+
   return (
     <>
       <Legend title={"Register"} flashMessage={flashMessage} />
@@ -27,6 +39,7 @@ const RegisterForm = ({
         <label className="label label-text" htmlFor="username">
           Username
         </label>
+        0{" "}
         <input
           className="input input-bordered"
           type="text"
@@ -34,7 +47,6 @@ const RegisterForm = ({
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-
         <label className="label label-text" htmlFor="email">
           email
         </label>
@@ -45,7 +57,6 @@ const RegisterForm = ({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
         <label className="label label-text" htmlFor="dob">
           Birth Date
         </label>
@@ -55,8 +66,9 @@ const RegisterForm = ({
           name="dob"
           value={dob}
           onChange={(e) => setDob(e.target.value)}
+          max={getDate()}
+          required
         />
-
         <label className="label label-text" htmlFor="password">
           Password
         </label>
@@ -66,8 +78,9 @@ const RegisterForm = ({
           name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          minLength={Rules.MIN_PWD_LEN}
+          required
         />
-
         <label className="label label-text" htmlFor="confirmPassword">
           Confirm Password
         </label>
@@ -77,8 +90,9 @@ const RegisterForm = ({
           name="confirmPassword"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          minLength={Rules.MIN_PWD_LEN}
+          required
         />
-
         {confirmPassword !== password ? (
           <small className="text-red-600">
             Confirm Password much equal to Password

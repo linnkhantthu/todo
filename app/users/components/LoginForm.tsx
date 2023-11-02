@@ -1,4 +1,4 @@
-import { AuthResults, FlashMessage } from "@/lib/models";
+import { AuthResults, FlashMessage, Rules } from "@/lib/models";
 import React, { useState } from "react";
 import Legend from "./Legend";
 import Submit from "@/app/components/Submit";
@@ -16,6 +16,7 @@ const LoginForm = ({
 }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   return (
     <>
       <Legend title={"Login"} flashMessage={flashMessage} />
@@ -49,6 +50,7 @@ const LoginForm = ({
           onChange={(e) => {
             setPassword(e.target.value);
           }}
+          minLength={Rules.MIN_PWD_LEN}
           required
         />
         <Submit isSubmitting={isSubmitting} />

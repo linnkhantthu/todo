@@ -5,11 +5,15 @@ import { redirect } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import Loading from "../../components/Loading";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
+import Form from "@/app/components/Form";
 
 function ForgotPassword() {
   const { data, isError, isLoading } = useUser();
   const [flashMessage, setFlashMessage] = useState<FlashMessage>();
+  const [disable, setDisable] = useState(false);
+
   const handleSubmit = async (e: FormEvent) => {
+    setDisable(true);
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const formEmail = formData.get("email");
@@ -40,21 +44,24 @@ function ForgotPassword() {
         category: "bg-error",
       });
     }
+    setDisable(false);
   };
   return (
     <>
-      {isError ? (
-        <span className="text-center">{AuthResults.CONNECTIONFAILED}</span>
-      ) : isLoading ? (
-        <Loading />
-      ) : data.user === undefined ? (
-        <ForgotPasswordForm
-          flashMessage={flashMessage}
-          handleSubmit={handleSubmit}
-        />
-      ) : (
-        redirect("/todos")
-      )}
+      <Form disable={disable}>
+        {isError ? (
+          <span className="text-center">{AuthResults.CONNECTIONFAILED}</span>
+        ) : isLoading ? (
+          <Loading />
+        ) : data.user === undefined ? (
+          <ForgotPasswordForm
+            flashMessage={flashMessage}
+            handleSubmit={handleSubmit}
+          />
+        ) : (
+          redirect("/todos")
+        )}
+      </Form>
     </>
   );
 }
